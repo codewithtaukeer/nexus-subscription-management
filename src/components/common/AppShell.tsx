@@ -59,12 +59,14 @@ export const AppShell: React.FC<AppShellProps> = ({
       <div className="md:hidden flex items-center justify-between p-4 bg-[#0D1919] border-b border-[rgba(220,255,245,0.12)] sticky top-0 z-40">
         <button
           onClick={() => onNavigate('landing')}
-          className="flex items-center gap-2 font-mono font-bold text-sm text-[#8DFFCB]"
+          className="flex items-center gap-2.5 font-mono font-bold text-sm text-[#8DFFCB]"
         >
-          <div className="w-6 h-6 rounded bg-[#8DFFCB] text-[#071112] flex items-center justify-center text-xs">
-            N
-          </div>
-          NEXUS
+          <img
+            src="/nexus-logo.png"
+            alt="NEXUS"
+            className="w-7 h-7 object-contain drop-shadow-[0_0_10px_rgba(141,255,203,0.4)]"
+          />
+          <span>NEXUS</span>
         </button>
 
         <div className="flex items-center gap-2">
@@ -92,8 +94,12 @@ export const AppShell: React.FC<AppShellProps> = ({
             onClick={() => onNavigate('landing')}
             className="flex items-center gap-3 text-left focus:outline-none group"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#8DFFCB] text-[#071112] flex items-center justify-center font-mono font-bold text-base shadow-[0_0_15px_rgba(141,255,203,0.3)]">
-              N
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8DFFCB]/20 to-[#071112] p-[1px] flex items-center justify-center shadow-[0_0_15px_rgba(141,255,203,0.3)]">
+              <img
+                src="/nexus-logo.png"
+                alt="NEXUS Logo"
+                className="w-full h-full object-contain p-1 rounded-[10px] group-hover:scale-105 transition-transform"
+              />
             </div>
             <div>
               <div className="font-bold text-sm tracking-wide text-[#F1F5F0] flex items-center gap-1.5">

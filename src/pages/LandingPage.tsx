@@ -113,14 +113,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-3xl space-y-6"
           >
-            {/* Eyebrow badge */}
+            {/* Eyebrow badge with Logo */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#8DFFCB]/10 border border-[#8DFFCB]/20 text-[#8DFFCB] text-xs font-mono tracking-wider"
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0D1919]/90 border border-[#8DFFCB]/30 text-[#8DFFCB] text-xs font-mono tracking-wider shadow-[0_0_20px_rgba(141,255,203,0.2)] backdrop-blur-md"
             >
-              <span className="w-2 h-2 rounded-full bg-[#8DFFCB] animate-ping" />
+              <img src="/nexus-logo.png" alt="NEXUS Logo" className="w-5 h-5 object-contain drop-shadow-[0_0_8px_rgba(141,255,203,0.6)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB] animate-ping" />
               <span>MEMBERSHIP OPERATIONS, REIMAGINED • TOPIC 34</span>
             </motion.div>
 

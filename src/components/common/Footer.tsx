@@ -84,8 +84,13 @@ export const Footer: React.FC<{ onNavigate: (view: string) => void }> = ({ onNav
       {/* Bottom Bar */}
       <div className="border-t border-[rgba(220,255,245,0.08)] py-6 text-xs text-[#8E9F9B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="font-mono text-[#F1F5F0]">NEXUS v1.0</span>
+          <div className="flex items-center gap-3">
+            <img
+              src="/nexus-logo.png"
+              alt="NEXUS"
+              className="w-6 h-6 object-contain drop-shadow-[0_0_8px_rgba(141,255,203,0.5)]"
+            />
+            <span className="font-mono text-[#F1F5F0] font-bold">NEXUS v1.0</span>
             <span>•</span>
             <span>DBMS Topic 34: Subscription & Membership Management</span>
             <span>•</span>
