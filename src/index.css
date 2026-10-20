@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg: #071112;
+    --bg-deep: #040909;
+    --surface: #0D1919;
+    --surface-raised: #122222;
+    --surface-light: #F2F3EF;
+    --text: #F1F5F0;
+    --text-muted: #8E9F9B;
+    --ink: #101A18;
+    --accent: #8DFFCB;
+    --accent-secondary: #D9FF72;
+    --border: rgba(220, 255, 245, 0.12);
+    --border-strong: rgba(220, 255, 245, 0.24);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #071112;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(141, 255, 203, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(141, 255, 203, 0.4);
+}
+
+/* Mesh & Dot Patterns */
+.dot-grid-pattern {
+  background-image: radial-gradient(rgba(141, 255, 203, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dot-grid-dense {
+  background-image: radial-gradient(rgba(141, 255, 203, 0.22) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+.glass-panel {
+  background: rgba(13, 25, 25, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.glass-panel-elevated {
+  background: rgba(18, 34, 34, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-strong);
+}
+
+.accent-glow {
+  box-shadow: 0 0 25px rgba(141, 255, 203, 0.18);
+}
+
+.editorial-cutout {
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
+}

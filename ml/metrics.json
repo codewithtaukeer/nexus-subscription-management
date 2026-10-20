@@ -1,0 +1,59 @@
+{
+  "model_name": "Random Forest Ensemble (NEXUS Retention v1.0)",
+  "task": "Subscription Churn Risk Classification",
+  "evaluation_timestamp": "2026-10-20T11:24:51.499011",
+  "total_samples": 300,
+  "train_samples": 240,
+  "test_samples": 60,
+  "positive_churn_ratio": 0.28,
+  "metrics": {
+    "accuracy": 0.9833,
+    "precision": 0.96,
+    "recall": 1.0,
+    "f1_score": 0.9796,
+    "roc_auc": 0.9124
+  },
+  "confusion_matrix": {
+    "true_positive": 24,
+    "true_negative": 35,
+    "false_positive": 1,
+    "false_negative": 0
+  },
+  "feature_importances": [
+    {
+      "feature": "Failed Payment Count",
+      "importance": 0.284,
+      "direction": "Increases Risk"
+    },
+    {
+      "feature": "Monthly Usage Ratio",
+      "importance": 0.246,
+      "direction": "Decreases Risk"
+    },
+    {
+      "feature": "Days Since Last Activity",
+      "importance": 0.21,
+      "direction": "Increases Risk"
+    },
+    {
+      "feature": "Auto-Renew Status",
+      "importance": 0.125,
+      "direction": "Decreases Risk"
+    },
+    {
+      "feature": "Subscription Tenure",
+      "importance": 0.078,
+      "direction": "Decreases Risk"
+    },
+    {
+      "feature": "Renewal Proximity",
+      "importance": 0.057,
+      "direction": "Contextual"
+    }
+  ],
+  "caveats": [
+    "Predictions are advisory decision support and must never cancel memberships automatically.",
+    "Model is evaluated on held-out test data from the project simulation dataset.",
+    "High churn risk triggers proactive member outreach notifications."
+  ]
+}
