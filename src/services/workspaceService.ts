@@ -640,17 +640,36 @@ class WorkspaceService {
     const pg = await this.getPGlite(workspaceId);
 
     try {
-      const res = await pg.query<any>(sql);
+      // Use pg.exec to support multiple statements (DDL scripts, batch inserts, multi-table creation)
+      const execResults = await pg.exec(sql);
       const durationMs = Math.round(performance.now() - startTime);
-      const rows = res.rows || [];
-      const fields = res.fields?.map((f) => f.name) || (rows.length > 0 ? Object.keys(rows[0]) : []);
+
+      if (!execResults || execResults.length === 0) {
+        return {
+          rows: [],
+          fields: [],
+          affectedRows: 0,
+          durationMs,
+          command: 'EXEC',
+        };
+      }
+
+      // Find the last statement that returned rows (e.g. SELECT or RETURNING) or the final statement
+      const resultWithRows = [...execResults].reverse().find((r) => r.rows && r.rows.length > 0);
+      const lastResult = resultWithRows || execResults[execResults.length - 1];
+
+      const rows = lastResult.rows || [];
+      const fields = lastResult.fields?.map((f: any) => f.name) || (rows.length > 0 ? Object.keys(rows[0]) : []);
+      const totalAffected = execResults.reduce((acc, r) => acc + (r.affectedRows ?? (r.rows?.length || 0)), 0);
+
+      const firstWord = sql.trim().split(/\s+/)[0].toUpperCase();
 
       return {
         rows,
         fields,
-        affectedRows: res.affectedRows ?? rows.length,
+        affectedRows: totalAffected,
         durationMs,
-        command: sql.trim().split(/\s+/)[0].toUpperCase(),
+        command: execResults.length > 1 ? `BATCH (${execResults.length} STATEMENTS)` : firstWord,
       };
     } catch (err: any) {
       const durationMs = Math.round(performance.now() - startTime);

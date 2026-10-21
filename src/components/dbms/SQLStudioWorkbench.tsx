@@ -119,7 +119,13 @@ export const SQLStudioWorkbench: React.FC<SQLStudioWorkbenchProps> = ({
         affectedRows: res.affectedRows,
       });
 
-      if (!res.error && (res.command === 'CREATE' || res.command === 'DROP' || res.command === 'ALTER')) {
+      if (!res.error && (
+        res.command === 'CREATE' || 
+        res.command === 'DROP' || 
+        res.command === 'ALTER' || 
+        res.command.startsWith('BATCH') || 
+        /CREATE|DROP|ALTER/i.test(sqlToRun)
+      )) {
         if (onTableCreatedOrModified) onTableCreatedOrModified();
       }
     } catch (err: any) {
