@@ -37,13 +37,11 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
             onClick={() => onNavigate('landing')}
             className="flex items-center gap-3 group text-left focus:outline-none"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8DFFCB]/20 to-[#0D1919] p-[1px] flex items-center justify-center shadow-[0_0_20px_rgba(141,255,203,0.35)]">
-              <img
-                src="/nexus-logo.png"
-                alt="NEXUS Logo"
-                className="w-full h-full object-contain p-0.5 rounded-[10px] group-hover:scale-105 transition-transform"
-              />
-            </div>
+            <img
+              src="/nexus-logo.png"
+              alt="NEXUS Logo"
+              className="h-11 w-11 shrink-0 object-contain bg-transparent rounded-none shadow-none group-hover:scale-105 transition-transform"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-lg tracking-tight text-[#F1F5F0]">NEXUS</span>

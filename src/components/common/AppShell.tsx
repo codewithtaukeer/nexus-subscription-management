@@ -94,13 +94,11 @@ export const AppShell: React.FC<AppShellProps> = ({
             onClick={() => onNavigate('landing')}
             className="flex items-center gap-3 text-left focus:outline-none group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8DFFCB]/20 to-[#071112] p-[1px] flex items-center justify-center shadow-[0_0_15px_rgba(141,255,203,0.3)]">
-              <img
-                src="/nexus-logo.png"
-                alt="NEXUS Logo"
-                className="w-full h-full object-contain p-1 rounded-[10px] group-hover:scale-105 transition-transform"
-              />
-            </div>
+            <img
+              src="/nexus-logo.png"
+              alt="NEXUS Logo"
+              className="h-11 w-11 shrink-0 object-contain bg-transparent rounded-none shadow-none group-hover:scale-105 transition-transform"
+            />
             <div>
               <div className="font-bold text-sm tracking-wide text-[#F1F5F0] flex items-center gap-1.5">
                 NEXUS <span className="text-[9px] font-mono text-[#8DFFCB]">34</span>
