@@ -1,7 +1,7 @@
 {
   "model_name": "Random Forest Ensemble (NEXUS Retention v1.0)",
   "task": "Subscription Churn Risk Classification",
-  "evaluation_timestamp": "2026-10-20T11:24:51.499011",
+  "evaluation_timestamp": "2026-10-21T20:54:01.904931",
   "total_samples": 300,
   "train_samples": 240,
   "test_samples": 60,
