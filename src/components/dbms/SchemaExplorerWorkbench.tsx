@@ -25,7 +25,7 @@ import {
 import { workspaceService } from '../../services/workspaceService';
 import type { DatabaseWorkspace, IntrospectedTable } from '../../services/workspaceService';
 import { InteractiveERCanvas } from './InteractiveERCanvas';
-import type { ERTable } from './InteractiveERCanvas';
+import type { ERTable, ERRelation } from './InteractiveERCanvas';
 
 interface SchemaExplorerWorkbenchProps {
   activeWorkspace: DatabaseWorkspace;
@@ -89,15 +89,17 @@ export const SchemaExplorerWorkbench: React.FC<SchemaExplorerWorkbenchProps> = (
     return t.columns.some((c) => c.name.toLowerCase().includes(q) || c.type.toLowerCase().includes(q));
   });
 
-  // Convert introspected tables into ER canvas nodes
+  // Convert introspected tables into ER canvas nodes with dynamic coordinates
   const erCanvasTables: ERTable[] = tables.map((t, idx) => {
     const col = idx % 3;
     const row = Math.floor(idx / 3);
+    const colors = ['#8DFFCB', '#38BDF8', '#D9FF72', '#F472B6', '#A78BFA', '#FBBF24'];
     return {
       id: t.name,
       name: t.name,
-      x: 40 + col * 260,
-      y: 40 + row * 220,
+      x: 40 + col * 340,
+      y: 40 + row * 280,
+      color: colors[idx % colors.length],
       columns: t.columns.map((c) => ({
         name: c.name,
         type: c.type,
@@ -106,6 +108,22 @@ export const SchemaExplorerWorkbench: React.FC<SchemaExplorerWorkbenchProps> = (
         refTable: c.refTable,
       })),
     };
+  });
+
+  // Calculate real FK relations from introspected schema
+  const workspaceRelations: ERRelation[] = [];
+  tables.forEach((t) => {
+    t.columns.forEach((c) => {
+      if (c.isFK && c.refTable) {
+        workspaceRelations.push({
+          fromTable: c.refTable,
+          fromCol: c.refColumn || 'id',
+          toTable: t.name,
+          toCol: c.name,
+          type: '1:N',
+        });
+      }
+    });
   });
 
   // Export Mermaid ER format
@@ -492,7 +510,13 @@ export const SchemaExplorerWorkbench: React.FC<SchemaExplorerWorkbenchProps> = (
           </div>
 
           <div className="rounded-2xl border border-[rgba(220,255,245,0.12)] overflow-hidden bg-[#071112]">
-            <InteractiveERCanvas />
+            <InteractiveERCanvas
+              key={`${activeWorkspace.id}-${tables.length}`}
+              initialTables={erCanvasTables}
+              initialRelations={workspaceRelations}
+              workspaceName={activeWorkspace.name}
+              onOpenSQLStudio={() => onOpenTableInSQLStudio('')}
+            />
           </div>
         </div>
       )}

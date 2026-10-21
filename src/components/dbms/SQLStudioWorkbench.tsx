@@ -24,6 +24,7 @@ import type { DatabaseWorkspace, QueryExecutionResult } from '../../services/wor
 interface SQLStudioWorkbenchProps {
   activeWorkspace: DatabaseWorkspace;
   onTableCreatedOrModified?: () => void;
+  initialSQL?: string;
 }
 
 interface SavedQuery {
@@ -45,10 +46,18 @@ interface HistoryItem {
 export const SQLStudioWorkbench: React.FC<SQLStudioWorkbenchProps> = ({
   activeWorkspace,
   onTableCreatedOrModified,
+  initialSQL,
 }) => {
   const [sql, setSql] = useState<string>(
+    initialSQL ||
     `-- SQL Studio • Connected to: ${activeWorkspace.name}\nSELECT \n    m.full_name,\n    m.email,\n    mp.name AS plan_name,\n    s.status AS subscription_status,\n    s.billing_cycle,\n    s.price_at_signup,\n    s.current_period_end\nFROM subscriptions s\nJOIN members m ON s.member_id = m.id\nJOIN membership_plans mp ON s.plan_id = mp.id\nORDER BY s.current_period_end ASC;\n`
   );
+
+  useEffect(() => {
+    if (initialSQL) {
+      setSql(initialSQL);
+    }
+  }, [initialSQL]);
 
   const [executing, setExecuting] = useState(false);
   const [result, setResult] = useState<QueryExecutionResult | null>(null);

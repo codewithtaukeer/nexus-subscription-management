@@ -41,8 +41,12 @@ export interface ERRelation {
   type: '1:1' | '1:N' | 'N:M';
 }
 
-interface InteractiveERCanvasProps {
+export interface InteractiveERCanvasProps {
+  initialTables?: ERTable[];
+  initialRelations?: ERRelation[];
   onDeployDDL?: (sql: string) => void;
+  workspaceName?: string;
+  onOpenSQLStudio?: () => void;
 }
 
 const DEFAULT_NEXUS_TABLES: ERTable[] = [
@@ -185,10 +189,46 @@ const DEFAULT_RELATIONS: ERRelation[] = [
   { fromTable: 'subscriptions', fromCol: 'id', toTable: 'churn_predictions', toCol: 'subscription_id', type: '1:N' },
 ];
 
-export const InteractiveERCanvas: React.FC<InteractiveERCanvasProps> = ({ onDeployDDL }) => {
-  const [tables, setTables] = useState<ERTable[]>(DEFAULT_NEXUS_TABLES);
-  const [relations, setRelations] = useState<ERRelation[]>(DEFAULT_RELATIONS);
-  const [selectedTableId, setSelectedTableId] = useState<string | null>('subscriptions');
+export const InteractiveERCanvas: React.FC<InteractiveERCanvasProps> = ({ 
+  initialTables, 
+  initialRelations, 
+  onDeployDDL,
+  workspaceName,
+  onOpenSQLStudio 
+}) => {
+  const [tables, setTables] = useState<ERTable[]>(initialTables ?? DEFAULT_NEXUS_TABLES);
+  const [relations, setRelations] = useState<ERRelation[]>(initialRelations ?? DEFAULT_RELATIONS);
+  const [selectedTableId, setSelectedTableId] = useState<string | null>(
+    (initialTables && initialTables.length > 0) ? initialTables[0].id : 'subscriptions'
+  );
+
+  // Sync when initialTables or initialRelations change
+  useEffect(() => {
+    if (initialTables !== undefined) {
+      setTables(initialTables);
+      if (initialRelations !== undefined) {
+        setRelations(initialRelations);
+      } else {
+        // Automatically infer foreign key relations
+        const inferred: ERRelation[] = [];
+        initialTables.forEach((t) => {
+          t.columns.forEach((c) => {
+            if (c.isFK && c.refTable) {
+              inferred.push({
+                fromTable: c.refTable,
+                fromCol: 'id',
+                toTable: t.name,
+                toCol: c.name,
+                type: '1:N',
+              });
+            }
+          });
+        });
+        setRelations(inferred);
+      }
+      setSelectedTableId(initialTables.length > 0 ? initialTables[0].id : null);
+    }
+  }, [initialTables, initialRelations]);
   const [zoom, setZoom] = useState(0.9);
   const [draggedTable, setDraggedTable] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -674,6 +714,38 @@ export const InteractiveERCanvas: React.FC<InteractiveERCanvasProps> = ({ onDepl
               </div>
             );
           })}
+
+          {tables.length === 0 && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] flex items-center justify-center text-[#8DFFCB] shadow-lg">
+                <Database className="w-8 h-8 opacity-60" />
+              </div>
+              <div className="space-y-1.5 max-w-md">
+                <h3 className="text-base font-bold text-[#F1F5F0]">No Tables in this Workspace Yet</h3>
+                <p className="text-xs text-[#8E9F9B]">
+                  Workspace <strong className="text-[#8DFFCB]">{workspaceName || 'Current'}</strong> is currently empty.
+                  Create your first table using the custom builder above, run CREATE TABLE in SQL Studio, or import DDL.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setBuilderOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] transition-colors flex items-center gap-1.5"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add First Table</span>
+                </button>
+                {onOpenSQLStudio && (
+                  <button
+                    onClick={onOpenSQLStudio}
+                    className="px-4 py-2 rounded-xl bg-[#122222] border border-[rgba(220,255,245,0.15)] text-xs font-mono text-[#8DFFCB] hover:bg-[#1a2d2d] transition-colors"
+                  >
+                    Open SQL Studio
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

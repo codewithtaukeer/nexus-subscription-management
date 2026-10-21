@@ -46,7 +46,12 @@ export const DBMSStudioPage: React.FC = () => {
     setSchemaRefreshTrigger((prev) => prev + 1);
   };
 
+  const [targetSQL, setTargetSQL] = useState<string | undefined>(undefined);
+
   const handleOpenTableInSQL = (tableName: string) => {
+    if (tableName && tableName.trim()) {
+      setTargetSQL(`SELECT * FROM ${tableName} LIMIT 25;`);
+    }
     setActiveTab('sql_studio');
   };
 
@@ -201,8 +206,9 @@ export const DBMSStudioPage: React.FC = () => {
 
         {activeTab === 'sql_studio' && (
           <SQLStudioWorkbench
-            key={activeWorkspace.id}
+            key={`${activeWorkspace.id}-${targetSQL || 'default'}`}
             activeWorkspace={activeWorkspace}
+            initialSQL={targetSQL}
             onTableCreatedOrModified={() => setSchemaRefreshTrigger((p) => p + 1)}
           />
         )}
