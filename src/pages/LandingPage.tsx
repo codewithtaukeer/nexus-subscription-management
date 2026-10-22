@@ -12,11 +12,15 @@ import {
   Layers,
   Cpu,
   Activity,
-  ShieldCheck
+  ShieldCheck,
+  UserPlus,
+  LogIn,
+  CreditCard
 } from 'lucide-react';
 import { QuantumDotMesh } from '../components/common/QuantumDotMesh';
 import { fetchPlans } from '../lib/supabase';
 import type { MembershipPlan } from '../types/database';
+import { AuthModal } from '../components/auth/AuthModal';
 
 interface LandingPageProps {
   onNavigate: (view: string) => void;
@@ -27,6 +31,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [activeFeatureTab, setActiveFeatureTab] = useState<number>(0);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
 
   useEffect(() => {
     fetchPlans()
@@ -164,6 +170,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               >
                 <span>Explore Plans</span>
                 <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setAuthMode('signup');
+                  setAuthModalOpen(true);
+                }}
+                className="px-6 py-3 rounded-lg bg-[#8DFFCB]/15 border border-[#8DFFCB]/40 text-[#8DFFCB] text-sm font-mono font-semibold hover:bg-[#8DFFCB]/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Create Free Account</span>
               </button>
 
               <button
@@ -678,6 +695,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
         </div>
       </section>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+        onSuccess={() => onNavigate('personal_subs')}
+      />
     </div>
   );
 };

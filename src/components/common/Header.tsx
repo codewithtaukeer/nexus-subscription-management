@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Database, Shield, Bell, Terminal, Sparkles, ChevronDown, Check } from 'lucide-react';
+import { Database, Shield, Bell, Terminal, Sparkles, ChevronDown, Check, UserPlus, LogIn, CreditCard } from 'lucide-react';
 import type { UserRole } from '../../types/database';
+import { AuthModal } from '../auth/AuthModal';
 
 interface HeaderProps {
   currentView: string;
@@ -13,6 +14,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
   const { currentUser, role, switchPersona } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
   useEffect(() => {
     const onScroll = () => {
@@ -74,6 +77,15 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
               Plans & Pricing
             </button>
             <button
+              onClick={() => onNavigate('personal_subs')}
+              className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
+                currentView === 'personal_subs' ? 'text-[#8DFFCB] bg-[#8DFFCB]/10' : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+              }`}
+            >
+              <CreditCard className="w-3.5 h-3.5" />
+              Subscriptions
+            </button>
+            <button
               onClick={() => onNavigate('dbms')}
               className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
                 currentView === 'dbms'
@@ -98,6 +110,30 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
 
         {/* Right side controls */}
         <div className="flex items-center gap-3">
+          {/* Member Login / Sign Up buttons */}
+          <div className="hidden sm:flex items-center gap-2">
+            <button
+              onClick={() => {
+                setAuthMode('login');
+                setAuthModalOpen(true);
+              }}
+              className="px-3 py-1.5 text-xs font-mono rounded-lg text-[#F1F5F0] hover:text-[#8DFFCB] hover:bg-white/5 transition-colors flex items-center gap-1.5"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Log In</span>
+            </button>
+            <button
+              onClick={() => {
+                setAuthMode('signup');
+                setAuthModalOpen(true);
+              }}
+              className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-[#8DFFCB]/15 text-[#8DFFCB] border border-[#8DFFCB]/30 hover:bg-[#8DFFCB]/25 transition-all flex items-center gap-1.5"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Sign Up</span>
+            </button>
+          </div>
+
           {/* Persona Switcher Dropdown */}
           <div className="relative">
             <button
@@ -159,14 +195,22 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
 
           {/* Primary App CTA */}
           <button
-            onClick={() => onNavigate(role === 'member' ? 'portal' : 'dashboard')}
+            onClick={() => onNavigate(role === 'member' ? 'personal_subs' : 'dashboard')}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#8DFFCB] text-[#071112] text-xs font-semibold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all font-mono"
           >
             <Terminal className="w-3.5 h-3.5" />
-            {role === 'member' ? 'My Portal' : 'Open Console'}
+            {role === 'member' ? 'My Subscriptions' : 'Open Console'}
           </button>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+        onSuccess={() => onNavigate('personal_subs')}
+      />
     </header>
   );
 };

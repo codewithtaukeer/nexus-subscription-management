@@ -7,6 +7,8 @@ interface AuthContextType {
   role: UserRole;
   isLoading: boolean;
   switchPersona: (role: UserRole, email?: string) => Promise<void>;
+  signUp: (email: string, password?: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
+  signIn: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -44,6 +46,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadUser = async () => {
     setIsLoading(true);
     try {
+      // Check if custom member is saved
+      const savedCustomUser = localStorage.getItem('nexus_custom_user');
+      if (savedCustomUser) {
+        try {
+          const parsed = JSON.parse(savedCustomUser);
+          if (parsed && parsed.id) {
+            setCurrentUser(parsed);
+            setIsLoading(false);
+            return;
+          }
+        } catch {
+          // ignore parsing error
+        }
+      }
+
       // Check saved demo persona in localStorage
       const savedPersona = localStorage.getItem('nexus_persona') as UserRole || 'admin';
       const persona = DEMO_PERSONAS[savedPersona] || DEMO_PERSONAS.admin;
@@ -86,7 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       localStorage.setItem('nexus_persona', role);
-      const targetEmail = customEmail || DEMO_PERSONAS[role].email;
+      const targetEmail = customEmail || DEMO_PERSONAS[role]?.email;
       
       const { data, error } = await supabase
         .from('profiles')
@@ -97,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data && !error) {
         setCurrentUser(data);
       } else {
-        const fallback = DEMO_PERSONAS[role];
+        const fallback = DEMO_PERSONAS[role] || DEMO_PERSONAS.member;
         setCurrentUser({
           id: fallback.id!,
           full_name: fallback.full_name!,
@@ -114,7 +131,106 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signUp = async (email: string, _password?: string, fullName?: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    try {
+      const generatedId = crypto.randomUUID ? crypto.randomUUID() : `u-${Date.now()}`;
+      const newProfile: Profile = {
+        id: generatedId,
+        full_name: fullName || email.split('@')[0],
+        email: email.toLowerCase(),
+        role: 'member',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+        notification_preferences: { email: true, in_app: true },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // Try inserting into Supabase profiles
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .insert([newProfile]);
+        
+        if (error) {
+          console.warn('Direct Supabase profile insert failed (RLS or duplicate), saving locally:', error);
+        }
+      } catch (dbErr) {
+        console.warn('Supabase profile insert skipped:', dbErr);
+      }
+
+      // Save custom user to localStorage
+      localStorage.setItem('nexus_custom_user', JSON.stringify(newProfile));
+      localStorage.setItem('nexus_persona', 'member');
+      setCurrentUser(newProfile);
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Registration failed' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signIn = async (email: string, _password?: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    try {
+      const cleanEmail = email.toLowerCase().trim();
+
+      // Check if matches demo persona
+      const matchedDemoRole = (Object.keys(DEMO_PERSONAS) as UserRole[]).find(
+        (r) => DEMO_PERSONAS[r].email?.toLowerCase() === cleanEmail
+      );
+
+      if (matchedDemoRole) {
+        await switchPersona(matchedDemoRole);
+        return { success: true };
+      }
+
+      // Check saved custom user
+      const savedUserStr = localStorage.getItem('nexus_custom_user');
+      if (savedUserStr) {
+        const saved = JSON.parse(savedUserStr) as Profile;
+        if (saved.email.toLowerCase() === cleanEmail) {
+          setCurrentUser(saved);
+          return { success: true };
+        }
+      }
+
+      // Try Supabase lookup
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+
+      if (data && !error) {
+        setCurrentUser(data);
+        return { success: true };
+      }
+
+      // Fallback: create or log in as new member with this email
+      const newMember: Profile = {
+        id: crypto.randomUUID ? crypto.randomUUID() : `u-${Date.now()}`,
+        full_name: cleanEmail.split('@')[0],
+        email: cleanEmail,
+        role: 'member',
+        timezone: 'UTC',
+        notification_preferences: { email: true, in_app: true },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      localStorage.setItem('nexus_custom_user', JSON.stringify(newMember));
+      setCurrentUser(newMember);
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Login failed' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signOut = () => {
+    localStorage.removeItem('nexus_custom_user');
     switchPersona('member');
   };
 
@@ -136,6 +252,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: currentUser?.role || 'member',
         isLoading,
         switchPersona,
+        signUp,
+        signIn,
         signOut,
         refreshUser,
       }}

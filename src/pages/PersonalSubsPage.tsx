@@ -24,7 +24,9 @@ import {
   RotateCcw,
   Layers,
   ArrowUpRight,
-  Info
+  Info,
+  LogIn,
+  UserPlus
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -110,6 +112,8 @@ export const PersonalSubsPage: React.FC = () => {
   };
 
   const [form, setForm] = useState(initialFormState);
+  const [providerSearch, setProviderSearch] = useState('');
+  const [selectedCategoryTab, setSelectedCategoryTab] = useState<string>('all');
 
   // Load everything
   const loadData = async () => {
@@ -710,80 +714,192 @@ export const PersonalSubsPage: React.FC = () => {
 
       {/* TAB 3: ADD SUBSCRIPTION FORM */}
       {activeTab === 'add' && (
-        <div className="max-w-3xl mx-auto p-8 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] shadow-2xl">
-          <form onSubmit={handleCreateSubscription} className="space-y-6">
-            <div>
-              <h2 className="text-lg font-bold text-[#F1F5F0]">Add New Tracked Subscription</h2>
-              <p className="text-xs text-[#8E9F9B] mt-0.5">
-                Select from our predefined provider catalogue or enter a custom service.
-              </p>
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Quick Connect Popular Platforms Grid */}
+          <div className="p-6 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-[#F1F5F0] font-mono flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#8DFFCB]" />
+                  <span>Popular Subscription Platforms</span>
+                </h3>
+                <p className="text-xs text-[#8E9F9B] mt-0.5 font-mono">
+                  Search & click any service below to auto-populate logo, category, and renewal settings.
+                </p>
+              </div>
+
+              {/* Provider Search input */}
+              <div className="relative min-w-[220px]">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#8E9F9B]" />
+                <input
+                  type="text"
+                  placeholder="Filter 15+ platforms..."
+                  value={providerSearch}
+                  onChange={(e) => setProviderSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.15)] text-xs font-mono text-[#F1F5F0] placeholder-[#8E9F9B]/60 focus:outline-none focus:border-[#8DFFCB]"
+                />
+              </div>
             </div>
 
-            {/* Provider Selection */}
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-[#8DFFCB] uppercase tracking-wider block">
-                Provider / Platform *
-              </label>
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap gap-1.5 pt-1 border-t border-[rgba(220,255,245,0.06)]">
+              {['all', 'entertainment', 'productivity', 'shopping', 'development', 'gaming'].map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategoryTab(cat)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono capitalize transition-all ${
+                    selectedCategoryTab === cat
+                      ? 'bg-[#8DFFCB]/20 text-[#8DFFCB] border border-[#8DFFCB]/40 font-semibold'
+                      : 'bg-[#071112] text-[#8E9F9B] border border-[rgba(220,255,245,0.08)] hover:text-[#F1F5F0]'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
 
-              {!form.is_custom_provider ? (
-                <div className="space-y-2">
-                  <select
-                    value={form.provider_id}
-                    onChange={(e) => {
-                      if (e.target.value === 'custom') {
-                        setForm({ ...form, is_custom_provider: true, provider_id: '' });
-                      } else {
-                        const prov = providers.find((p) => p.id === e.target.value);
+            {/* Popular Platform Cards Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-2">
+              {providers
+                .filter((p) => {
+                  const matchSearch = p.name.toLowerCase().includes(providerSearch.toLowerCase()) ||
+                    p.category.toLowerCase().includes(providerSearch.toLowerCase());
+                  const matchCat = selectedCategoryTab === 'all' || p.category === selectedCategoryTab;
+                  return matchSearch && matchCat;
+                })
+                .slice(0, 15)
+                .map((prov) => {
+                  const isSelected = form.provider_id === prov.id;
+                  return (
+                    <button
+                      key={prov.id}
+                      type="button"
+                      onClick={() => {
                         setForm({
                           ...form,
-                          provider_id: e.target.value,
-                          category: prov?.category || form.category,
-                          manage_url: prov?.manage_url || form.manage_url
+                          provider_id: prov.id,
+                          is_custom_provider: false,
+                          custom_provider_name: '',
+                          plan_name: form.plan_name || `${prov.name} Standard`,
+                          category: prov.category || form.category,
+                          manage_url: prov.manage_url || form.manage_url
                         });
-                      }
-                    }}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.2)] text-xs font-mono text-[#F1F5F0] focus:outline-none focus:border-[#8DFFCB]"
-                  >
-                    <option value="">Select a known provider...</option>
-                    {providers.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name} ({p.category})
-                      </option>
-                    ))}
-                    <option value="custom">+ Other / Custom Provider...</option>
-                  </select>
-
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => setForm({ ...form, is_custom_provider: true, provider_id: '' })}
-                      className="text-[11px] font-mono text-[#8DFFCB] hover:underline"
+                        showFeedback(`Selected ${prov.name}`);
+                      }}
+                      className={`p-3 rounded-xl flex flex-col items-center text-center gap-2 transition-all group ${
+                        isSelected
+                          ? 'bg-[#8DFFCB]/15 border-2 border-[#8DFFCB] shadow-[0_0_15px_rgba(141,255,203,0.25)]'
+                          : 'bg-[#071112] border border-[rgba(220,255,245,0.1)] hover:border-[#8DFFCB]/40 hover:bg-[#122222]'
+                      }`}
                     >
-                      Can't find your provider? Add custom &rarr;
+                      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center p-1.5 group-hover:scale-110 transition-transform">
+                        {prov.logo_url ? (
+                          <img src={prov.logo_url} alt={prov.name} className="w-full h-full object-contain" />
+                        ) : (
+                          <span className="font-mono font-bold text-xs text-[#8DFFCB]">
+                            {prov.name[0]}
+                          </span>
+                        )}
+                      </div>
+                      <div className="w-full">
+                        <div className="text-xs font-bold text-[#F1F5F0] truncate font-mono">
+                          {prov.name}
+                        </div>
+                        <div className="text-[10px] text-[#8E9F9B] capitalize font-mono truncate">
+                          {prov.category}
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#8DFFCB] text-[#071112] font-bold">
+                          Selected
+                        </span>
+                      )}
                     </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="e.g. Duolingo, Strava, ChatGPT Plus, Claude Pro"
-                      value={form.custom_provider_name}
-                      onChange={(e) => setForm({ ...form, custom_provider_name: e.target.value })}
-                      className="flex-1 px-4 py-2.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.2)] text-xs font-mono text-[#F1F5F0] focus:outline-none focus:border-[#8DFFCB]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setForm({ ...form, is_custom_provider: false })}
-                      className="px-3 py-2 rounded-xl bg-[#122222] text-[#8E9F9B] text-xs font-mono hover:text-[#F1F5F0]"
-                    >
-                      Choose Known
-                    </button>
-                  </div>
-                </div>
-              )}
+                  );
+                })}
             </div>
+          </div>
+
+          {/* Form Card */}
+          <div className="p-8 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] shadow-2xl">
+            <form onSubmit={handleCreateSubscription} className="space-y-6">
+              <div>
+                <h2 className="text-lg font-bold text-[#F1F5F0] font-mono">
+                  {form.provider_id
+                    ? `Configure ${providers.find((p) => p.id === form.provider_id)?.name || ''} Subscription`
+                    : 'Configure Subscription Details'}
+                </h2>
+                <p className="text-xs text-[#8E9F9B] mt-0.5 font-mono">
+                  Review and customize plan tier, billing cycle, renewal date, and payment method.
+                </p>
+              </div>
+
+              {/* Provider Selection Row */}
+              <div className="space-y-2">
+                <label className="text-xs font-mono text-[#8DFFCB] uppercase tracking-wider block">
+                  Selected Platform / Custom Service *
+                </label>
+
+                {!form.is_custom_provider ? (
+                  <div className="space-y-2">
+                    <select
+                      value={form.provider_id}
+                      onChange={(e) => {
+                        if (e.target.value === 'custom') {
+                          setForm({ ...form, is_custom_provider: true, provider_id: '' });
+                        } else {
+                          const prov = providers.find((p) => p.id === e.target.value);
+                          setForm({
+                            ...form,
+                            provider_id: e.target.value,
+                            category: prov?.category || form.category,
+                            manage_url: prov?.manage_url || form.manage_url
+                          });
+                        }
+                      }}
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.2)] text-xs font-mono text-[#F1F5F0] focus:outline-none focus:border-[#8DFFCB]"
+                    >
+                      <option value="">Select a known provider from list...</option>
+                      {providers.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.category})
+                        </option>
+                      ))}
+                      <option value="custom">+ Other / Custom Platform...</option>
+                    </select>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, is_custom_provider: true, provider_id: '' })}
+                        className="text-[11px] font-mono text-[#8DFFCB] hover:underline"
+                      >
+                        Can't find your platform? Type custom service name &rarr;
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. Duolingo, Strava, ChatGPT Plus, Claude Pro, Midjourney"
+                        value={form.custom_provider_name}
+                        onChange={(e) => setForm({ ...form, custom_provider_name: e.target.value })}
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.2)] text-xs font-mono text-[#F1F5F0] focus:outline-none focus:border-[#8DFFCB]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, is_custom_provider: false })}
+                        className="px-3 py-2 rounded-xl bg-[#122222] text-[#8E9F9B] text-xs font-mono hover:text-[#F1F5F0]"
+                      >
+                        Choose Known
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
             {/* Plan Name & Tier */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -987,6 +1103,7 @@ export const PersonalSubsPage: React.FC = () => {
               </button>
             </div>
           </form>
+          </div>
         </div>
       )}
 

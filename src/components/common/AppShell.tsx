@@ -16,9 +16,12 @@ import {
   Menu, 
   X, 
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  UserPlus,
+  LogIn
 } from 'lucide-react';
 import type { UserRole } from '../../types/database';
+import { AuthModal } from '../auth/AuthModal';
 
 interface AppShellProps {
   currentView: string;
@@ -33,8 +36,10 @@ export const AppShell: React.FC<AppShellProps> = ({
   children,
   unreadCount = 0,
 }) => {
-  const { currentUser, role, switchPersona } = useAuth();
+  const { currentUser, role, switchPersona, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
 
   const navItems = [
     { id: 'dashboard', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'operator'] },
@@ -170,7 +175,30 @@ export const AppShell: React.FC<AppShellProps> = ({
         </nav>
 
         {/* Footer Actions */}
-        <div className="p-3 border-t border-[rgba(220,255,245,0.08)] space-y-1 text-xs font-mono">
+        <div className="p-3 border-t border-[rgba(220,255,245,0.08)] space-y-1.5 text-xs font-mono">
+          <div className="grid grid-cols-2 gap-1.5 mb-1">
+            <button
+              onClick={() => {
+                setAuthMode('login');
+                setAuthModalOpen(true);
+              }}
+              className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-[#071112] border border-[rgba(220,255,245,0.15)] text-[#8E9F9B] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all text-[11px]"
+            >
+              <LogIn className="w-3 h-3" />
+              <span>Login</span>
+            </button>
+            <button
+              onClick={() => {
+                setAuthMode('signup');
+                setAuthModalOpen(true);
+              }}
+              className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 text-[#8DFFCB] hover:bg-[#8DFFCB]/20 transition-all text-[11px] font-semibold"
+            >
+              <UserPlus className="w-3 h-3" />
+              <span>Sign Up</span>
+            </button>
+          </div>
+
           <button
             onClick={() => onNavigate('landing')}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#8E9F9B] hover:text-[#F1F5F0] hover:bg-white/5 transition-colors"
@@ -187,6 +215,14 @@ export const AppShell: React.FC<AppShellProps> = ({
           {children}
         </div>
       </main>
+
+      {/* Member Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+        onSuccess={() => onNavigate('personal_subs')}
+      />
     </div>
   );
 };
