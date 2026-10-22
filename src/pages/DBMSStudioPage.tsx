@@ -62,13 +62,11 @@ export const DBMSStudioPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           {/* Active Workspace Info */}
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#8DFFCB]/20 to-[#071112] border border-[#8DFFCB]/30 p-[1px] flex items-center justify-center shadow-[0_0_20px_rgba(141,255,203,0.2)]">
-              <img
-                src="/nexus-logo.png"
-                alt="NEXUS"
-                className="w-8 h-8 object-contain drop-shadow-[0_0_8px_rgba(141,255,203,0.6)]"
-              />
-            </div>
+            <img
+              src="/nexus-logo.png"
+              alt="NEXUS"
+              className="w-10 h-10 shrink-0 object-contain bg-transparent rounded-none shadow-none"
+            />
 
             <div>
               <div className="flex items-center gap-2">

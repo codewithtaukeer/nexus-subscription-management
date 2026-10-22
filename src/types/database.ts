@@ -257,3 +257,143 @@ export interface PlanPerformanceView {
   cancelled_subscribers: number;
   lifetime_collected_revenue: number;
 }
+
+// ============================================================================
+// CENTRALIZED SUBSCRIPTION MANAGEMENT TYPES (3rd-Party & Custom Tracked)
+// ============================================================================
+
+export type BillingFrequency = 
+  | 'weekly' 
+  | 'monthly' 
+  | 'quarterly' 
+  | 'half_yearly' 
+  | 'yearly' 
+  | 'one_time' 
+  | 'custom';
+
+export type PersonalSubStatus = 
+  | 'trialing' 
+  | 'active' 
+  | 'cancellation_pending' 
+  | 'cancellation_scheduled' 
+  | 'cancelled_active' 
+  | 'cancelled' 
+  | 'expired' 
+  | 'paused' 
+  | 'payment_failed' 
+  | 'reactivation_pending' 
+  | 'unknown';
+
+export type PersonalSubStatusSource = 'user_reported' | 'provider_verified' | 'integration_synced';
+
+export interface SubProvider {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  logo_url?: string | null;
+  website_url?: string | null;
+  manage_url?: string | null;
+  supports_direct_cancel: boolean;
+  supports_direct_reactivate: boolean;
+  supports_status_sync?: boolean;
+  supports_billing_sync?: boolean;
+  supports_invoice_retrieval?: boolean;
+  supports_webhooks?: boolean;
+  notes?: string | null;
+  is_custom: boolean;
+  created_by?: string | null;
+  created_at: string;
+}
+
+export interface PersonalSubscription {
+  id: string;
+  user_id: string;
+  provider_id?: string | null;
+  custom_provider_name?: string | null;
+  plan_name: string;
+  plan_tier?: string | null;
+  category: string;
+  amount: number;
+  currency: string;
+  billing_frequency: BillingFrequency;
+  custom_frequency_days?: number | null;
+  start_date: string;
+  purchase_date?: string | null;
+  next_billing_date?: string | null;
+  expiry_date?: string | null;
+  trial_start_date?: string | null;
+  trial_end_date?: string | null;
+  auto_renew: boolean;
+  status: PersonalSubStatus;
+  status_source: PersonalSubStatusSource;
+  payment_method_label?: string | null;
+  account_nickname?: string | null;
+  manage_url?: string | null;
+  notes?: string | null;
+  is_archived: boolean;
+  is_tracking_paused: boolean;
+  created_at: string;
+  updated_at: string;
+  // Joined fields
+  sub_providers?: SubProvider | null;
+}
+
+export interface PersonalSubPayment {
+  id: string;
+  subscription_id: string;
+  user_id: string;
+  amount: number;
+  currency: string;
+  payment_date: string;
+  billing_period_start?: string | null;
+  billing_period_end?: string | null;
+  payment_method_label?: string | null;
+  invoice_reference?: string | null;
+  status: 'paid' | 'pending' | 'failed' | 'refunded';
+  notes?: string | null;
+  created_at: string;
+  // Joined
+  personal_subscriptions?: PersonalSubscription | null;
+}
+
+export interface PersonalSubHistory {
+  id: string;
+  subscription_id: string;
+  user_id: string;
+  action: string;
+  previous_status?: string | null;
+  new_status?: string | null;
+  user_note?: string | null;
+  metadata: Record<string, any>;
+  created_at: string;
+}
+
+export interface SubRenewalReminder {
+  id: string;
+  subscription_id: string;
+  user_id: string;
+  remind_date: string;
+  reminder_type: string;
+  is_sent: boolean;
+  sent_at?: string | null;
+  dedupe_key: string;
+  created_at: string;
+  personal_subscriptions?: PersonalSubscription | null;
+}
+
+export interface StoredInvoiceDocument {
+  id: string;
+  subscription_id: string;
+  user_id: string;
+  invoice_number?: string | null;
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  file_data: string; // base64 data URL for secure local document storage & preview
+  uploaded_at: string;
+  amount?: number | null;
+  currency?: string | null;
+  billing_period?: string | null;
+  notes?: string | null;
+}

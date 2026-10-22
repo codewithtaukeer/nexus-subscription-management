@@ -120,7 +120,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0D1919]/90 border border-[#8DFFCB]/30 text-[#8DFFCB] text-xs font-mono tracking-wider shadow-[0_0_20px_rgba(141,255,203,0.2)] backdrop-blur-md"
             >
-              <img src="/nexus-logo.png" alt="NEXUS Logo" className="w-5 h-5 object-contain drop-shadow-[0_0_8px_rgba(141,255,203,0.6)]" />
+              <img src="/nexus-logo.png" alt="NEXUS Logo" className="w-5 h-5 object-contain" />
               <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB] animate-ping" />
               <span>MEMBERSHIP OPERATIONS, REIMAGINED • TOPIC 34</span>
             </motion.div>

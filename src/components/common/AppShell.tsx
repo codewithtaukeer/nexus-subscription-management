@@ -38,6 +38,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
   const navItems = [
     { id: 'dashboard', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'operator'] },
+    { id: 'personal_subs', label: 'My Subscriptions', icon: CreditCard, roles: ['admin', 'operator', 'member'], badge: 'Central Hub' },
     { id: 'portal', label: 'My Portal', icon: UserCheck, roles: ['member'] },
     { id: 'plans', label: 'Plans & Pricing', icon: Layers, roles: ['admin', 'operator', 'member'] },
     { id: 'members', label: 'Members Directory', icon: Users, roles: ['admin', 'operator'] },

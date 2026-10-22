@@ -16,6 +16,7 @@ import { AnalyticsPage } from './pages/AnalyticsPage';
 import { RetentionPage } from './pages/RetentionPage';
 import { DBMSStudioPage } from './pages/DBMSStudioPage';
 import { MemberPortalPage } from './pages/MemberPortalPage';
+import { PersonalSubsPage } from './pages/PersonalSubsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { fetchNotifications } from './lib/supabase';
@@ -62,6 +63,7 @@ const AppContent: React.FC = () => {
       unreadCount={unreadCount}
     >
       {currentView === 'dashboard' && <DashboardPage onNavigate={handleNavigate} />}
+      {currentView === 'personal_subs' && <PersonalSubsPage />}
       {currentView === 'portal' && <MemberPortalPage onNavigate={handleNavigate} />}
       {currentView === 'plans' && <PlansPage />}
       {currentView === 'members' && <MembersPage />}
