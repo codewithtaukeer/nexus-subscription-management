@@ -13,6 +13,7 @@ import {
 import { supabase, fetchChurnPredictions } from '../lib/supabase';
 import type { ChurnPrediction } from '../types/database';
 import metricsData from '../data/metrics.json';
+import { retentionMLService } from '../services/retentionMLService';
 
 export const RetentionPage: React.FC = () => {
   const [predictions, setPredictions] = useState<ChurnPrediction[]>([]);
@@ -40,54 +41,12 @@ export const RetentionPage: React.FC = () => {
     setScoring(true);
     setScoreSuccess(null);
     try {
-      // Query eligible active/past_due/paused subscriptions
-      const { data: subs, error } = await supabase
-        .from('subscriptions')
-        .select('id, status, member_id, price_at_signup');
-
-      if (error) throw error;
-
-      if (subs && subs.length > 0) {
-        for (const sub of subs) {
-          let score = 0.15;
-          let level: 'low' | 'medium' | 'high' = 'low';
-          let factors = [
-            { factor: 'Standard API query velocity', impact: '-0.20' },
-            { factor: 'Verified on-time billing record', impact: '-0.30' },
-          ];
-
-          if (sub.status === 'past_due') {
-            score = 0.88;
-            level = 'high';
-            factors = [
-              { factor: 'Unresolved past-due invoice', impact: '+0.45' },
-              { factor: 'Decline in daily API invocations', impact: '+0.25' },
-              { factor: 'Payment retry failure', impact: '+0.18' },
-            ];
-          } else if (sub.status === 'paused') {
-            score = 0.65;
-            level = 'medium';
-            factors = [
-              { factor: 'Subscription currently paused', impact: '+0.35' },
-              { factor: 'Approaching period renewal date', impact: '+0.20' },
-            ];
-          }
-
-          await supabase.from('churn_predictions').insert({
-            subscription_id: sub.id,
-            risk_score: score,
-            risk_level: level,
-            model_version: 'v1.0-rf',
-            top_factors: factors,
-          });
-        }
-      }
-
-      setScoreSuccess('Inference pipeline executed. Generated calibrated risk scores for all subscriptions.');
-      setTimeout(() => setScoreSuccess(null), 4000);
-      loadPredictions();
+      const { processedCount } = await retentionMLService.runBatchInference();
+      setScoreSuccess(`Live ML inference pipeline completed across ${processedCount} active subscriptions with calibrated probabilistic risk weights.`);
+      setTimeout(() => setScoreSuccess(null), 5000);
+      await loadPredictions();
     } catch (err: any) {
-      alert('Error running inference: ' + err.message);
+      alert('Error running inference pipeline: ' + err.message);
     } finally {
       setScoring(false);
     }

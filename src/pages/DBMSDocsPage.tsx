@@ -16,8 +16,10 @@ import {
   ArrowRight,
   Printer,
   Copy,
-  Check
+  Check,
+  Download
 } from 'lucide-react';
+import { generateAcademicReportPDF } from '../utils/generateAcademicPDF';
 
 export const DBMSDocsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('all');
@@ -65,20 +67,19 @@ export const DBMSDocsPage: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <button
+              onClick={() => generateAcademicReportPDF()}
+              className="px-4 py-2.5 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Download Official Report PDF</span>
+            </button>
+            <button
               onClick={() => window.print()}
               className="px-4 py-2.5 rounded-xl glass-card text-xs font-mono text-[#F1F5F0] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all flex items-center gap-2"
             >
               <Printer className="w-4 h-4 text-[#8DFFCB]" />
-              <span>Print / Save PDF</span>
+              <span>Print View</span>
             </button>
-            <a
-              href="#er_schema"
-              onClick={() => setActiveSection('er_schema')}
-              className="px-4 py-2.5 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all flex items-center gap-1.5"
-            >
-              <span>View Schema Details</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
           </div>
         </div>
       </div>
