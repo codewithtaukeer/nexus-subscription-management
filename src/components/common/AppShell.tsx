@@ -62,19 +62,19 @@ export const AppShell: React.FC<AppShellProps> = ({
   const filteredNav = navItems.filter((item) => item.roles.includes(role));
 
   return (
-    <div className="min-h-screen bg-[#071112] text-[#F1F5F0] flex flex-col md:flex-row">
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-[#0D1919] border-b border-[rgba(220,255,245,0.12)] sticky top-0 z-40">
+    <div className="min-h-screen bg-[#0B0F12] text-[#F1F5F0] flex flex-col md:flex-row p-3 sm:p-5 gap-5">
+      {/* Mobile Top Header */}
+      <div className="md:hidden flex items-center justify-between p-4 rounded-2xl glass-panel sticky top-3 z-40">
         <button
           onClick={() => onNavigate('landing')}
-          className="flex items-center gap-2.5 font-mono font-bold text-sm text-[#8DFFCB]"
+          className="flex items-center gap-2.5 font-bold text-sm text-[#8DFFCB]"
         >
           <img
             src="/nexus-logo.png"
             alt="NEXUS"
             className="w-7 h-7 object-contain drop-shadow-[0_0_10px_rgba(141,255,203,0.4)]"
           />
-          <span>NEXUS</span>
+          <span className="tracking-tight text-white">NEXUS</span>
         </button>
 
         <div className="flex items-center gap-2">
@@ -83,21 +83,21 @@ export const AppShell: React.FC<AppShellProps> = ({
           </span>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 rounded-lg bg-[#071112] text-[#8E9F9B] border border-[rgba(220,255,245,0.1)]"
+            className="p-1.5 rounded-xl bg-white/[0.04] text-[#94A3B8] border border-white/[0.08]"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Desktop Sidebar Navigation */}
+      {/* Floating Curved Glass Sidebar Navigation */}
       <aside
         className={`${
           mobileMenuOpen ? 'block' : 'hidden'
-        } md:block w-full md:w-64 bg-[#0D1919] border-r border-[rgba(220,255,245,0.1)] flex flex-col shrink-0 z-30 md:sticky md:top-0 md:h-screen`}
+        } md:flex w-full md:w-64 rounded-3xl glass-sidebar flex-col shrink-0 z-30 md:sticky md:top-5 md:h-[calc(100vh-2.5rem)] overflow-hidden shadow-2xl`}
       >
         {/* Brand Header */}
-        <div className="p-5 border-b border-[rgba(220,255,245,0.08)] flex items-center justify-between">
+        <div className="p-5 border-b border-white/[0.06] flex items-center justify-between">
           <button
             onClick={() => onNavigate('landing')}
             className="flex items-center gap-3 text-left focus:outline-none group"
@@ -105,20 +105,20 @@ export const AppShell: React.FC<AppShellProps> = ({
             <img
               src="/nexus-logo.png"
               alt="NEXUS Logo"
-              className="h-11 w-11 shrink-0 object-contain bg-transparent rounded-none shadow-none group-hover:scale-105 transition-transform"
+              className="h-9 w-9 shrink-0 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_12px_rgba(141,255,203,0.35)]"
             />
             <div>
-              <div className="font-bold text-sm tracking-wide text-[#F1F5F0] flex items-center gap-1.5">
-                NEXUS <span className="text-[9px] font-mono text-[#8DFFCB]">34</span>
+              <div className="font-extrabold text-sm tracking-tight text-[#F1F5F0] flex items-center gap-1.5">
+                NEXUS <span className="text-[9px] font-mono text-[#8DFFCB] font-bold">34</span>
               </div>
-              <div className="text-[10px] text-[#8E9F9B] font-mono">Postgres Subscriptions</div>
+              <div className="text-[10px] text-[#94A3B8]">DBMS Architecture</div>
             </div>
           </button>
         </div>
 
         {/* Persona Pill */}
-        <div className="px-4 py-3 border-b border-[rgba(220,255,245,0.06)] bg-[#071112]/40">
-          <div className="text-[10px] uppercase font-mono text-[#8E9F9B] mb-1">Active Role</div>
+        <div className="px-4 py-3 border-b border-white/[0.06] bg-black/20">
+          <div className="text-[10px] uppercase font-mono text-[#94A3B8] mb-1">Active Role</div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-3.5 h-3.5 text-[#8DFFCB]" />
@@ -127,14 +127,14 @@ export const AppShell: React.FC<AppShellProps> = ({
             <select
               value={role}
               onChange={(e) => switchPersona(e.target.value as UserRole)}
-              className="text-[11px] font-mono bg-[#0D1919] text-[#8DFFCB] border border-[rgba(220,255,245,0.2)] rounded px-1.5 py-0.5 focus:outline-none"
+              className="text-[11px] font-mono bg-white/[0.05] text-[#8DFFCB] border border-white/[0.1] rounded-lg px-2 py-0.5 focus:outline-none"
             >
-              <option value="admin">Admin</option>
-              <option value="operator">Operator</option>
-              <option value="member">Member</option>
+              <option value="admin" className="bg-[#0D1919]">Admin</option>
+              <option value="operator" className="bg-[#0D1919]">Operator</option>
+              <option value="member" className="bg-[#0D1919]">Member</option>
             </select>
           </div>
-          <div className="text-[10px] text-[#8E9F9B] truncate mt-0.5">
+          <div className="text-[10px] text-[#94A3B8] truncate mt-1">
             {currentUser?.email || 'authenticated'}
           </div>
         </div>
@@ -151,18 +151,18 @@ export const AppShell: React.FC<AppShellProps> = ({
                   onNavigate(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-all text-left ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-medium transition-all text-left ${
                   active
-                    ? 'bg-[#8DFFCB]/15 text-[#8DFFCB] font-semibold border border-[#8DFFCB]/30 shadow-[0_0_12px_rgba(141,255,203,0.15)]'
-                    : 'text-[#8E9F9B] hover:text-[#F1F5F0] hover:bg-white/5'
+                    ? 'bg-[#8DFFCB]/15 text-[#8DFFCB] font-semibold border border-[#8DFFCB]/35 shadow-[0_4px_16px_rgba(141,255,203,0.15)]'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.04]'
                 }`}
               >
                 <div className="flex items-center gap-2.5 truncate">
-                  <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#8DFFCB]' : 'text-[#8E9F9B]'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#8DFFCB]' : 'text-[#94A3B8]'}`} />
                   <span className="truncate">{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-[#8DFFCB]/20 text-[#8DFFCB] border border-[#8DFFCB]/30">
+                  <span className="text-[9px] uppercase px-1.5 py-0.5 rounded-full bg-[#8DFFCB]/15 text-[#8DFFCB] border border-[#8DFFCB]/25 font-mono">
                     {item.badge}
                   </span>
                 )}
@@ -177,14 +177,14 @@ export const AppShell: React.FC<AppShellProps> = ({
         </nav>
 
         {/* Footer Actions */}
-        <div className="p-3 border-t border-[rgba(220,255,245,0.08)] space-y-1.5 text-xs font-mono">
+        <div className="p-3 border-t border-white/[0.06] space-y-1.5 text-xs">
           <div className="grid grid-cols-2 gap-1.5 mb-1">
             <button
               onClick={() => {
                 setAuthMode('login');
                 setAuthModalOpen(true);
               }}
-              className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-[#071112] border border-[rgba(220,255,245,0.15)] text-[#8E9F9B] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all text-[11px]"
+              className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#94A3B8] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all text-[11px]"
             >
               <LogIn className="w-3 h-3" />
               <span>Login</span>
@@ -194,7 +194,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 setAuthMode('signup');
                 setAuthModalOpen(true);
               }}
-              className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 text-[#8DFFCB] hover:bg-[#8DFFCB]/20 transition-all text-[11px] font-semibold"
+              className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 text-[#8DFFCB] hover:bg-[#8DFFCB]/20 transition-all text-[11px] font-semibold"
             >
               <UserPlus className="w-3 h-3" />
               <span>Sign Up</span>
@@ -203,7 +203,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
           <button
             onClick={() => onNavigate('landing')}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#8E9F9B] hover:text-[#F1F5F0] hover:bg-white/5 transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.04] transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Public Landing</span>
@@ -211,9 +211,9 @@ export const AppShell: React.FC<AppShellProps> = ({
         </div>
       </aside>
 
-      {/* Main Content Viewport */}
+      {/* Main Floating Glass Viewport */}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+        <div className="max-w-7xl w-full mx-auto space-y-6">
           {children}
         </div>
       </main>

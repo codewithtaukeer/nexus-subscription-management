@@ -26,95 +26,85 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
   }, []);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-[#071112]/90 backdrop-blur-md border-b border-[rgba(220,255,245,0.12)] py-3 shadow-xl shadow-black/40'
-          : 'bg-transparent py-5'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 rounded-full glass-nav-pill border border-[rgba(255,255,255,0.08)] shadow-[0_12px_36px_rgba(0,0,0,0.5)]">
         {/* Brand */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-7">
           <button
             onClick={() => onNavigate('landing')}
-            className="flex items-center gap-3 group text-left focus:outline-none"
+            className="flex items-center gap-2.5 group text-left focus:outline-none"
           >
             <img
               src="/nexus-logo.png"
               alt="NEXUS Logo"
-              className="h-11 w-11 shrink-0 object-contain bg-transparent rounded-none shadow-none group-hover:scale-105 transition-transform"
+              className="h-8 w-8 shrink-0 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_12px_rgba(141,255,203,0.35)]"
             />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-lg tracking-tight text-[#F1F5F0]">NEXUS</span>
-                <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#8DFFCB]/10 text-[#8DFFCB] border border-[#8DFFCB]/20">
-                  Topic 34
-                </span>
-              </div>
-              <p className="text-[10px] text-[#8E9F9B] font-mono tracking-wider hidden sm:block">
-                SUBSCRIPTION ARCHITECTURE
-              </p>
-            </div>
+            <span className="font-extrabold text-base tracking-tight text-[#F1F5F0]">
+              NEXUS
+            </span>
           </button>
 
-          {/* Quick links */}
-          <nav className="hidden md:flex items-center gap-1 pl-4 border-l border-[rgba(220,255,245,0.1)] text-xs font-medium">
+          {/* Clean Navigation Links with proper padding & orientation */}
+          <nav className="hidden lg:flex items-center gap-1 text-xs font-medium">
             <button
               onClick={() => onNavigate('landing')}
-              className={`px-3 py-1.5 rounded-md transition-colors ${
-                currentView === 'landing' ? 'text-[#8DFFCB] bg-[#8DFFCB]/10' : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                currentView === 'landing'
+                  ? 'text-[#8DFFCB] bg-white/[0.06] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.03]'
               }`}
             >
               Overview
             </button>
             <button
               onClick={() => onNavigate('plans')}
-              className={`px-3 py-1.5 rounded-md transition-colors ${
-                currentView === 'plans' ? 'text-[#8DFFCB] bg-[#8DFFCB]/10' : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                currentView === 'plans'
+                  ? 'text-[#8DFFCB] bg-white/[0.06] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.03]'
               }`}
             >
               Plans & Pricing
             </button>
             <button
               onClick={() => onNavigate('personal_subs')}
-              className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
-                currentView === 'personal_subs' ? 'text-[#8DFFCB] bg-[#8DFFCB]/10' : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+              className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all ${
+                currentView === 'personal_subs'
+                  ? 'text-[#8DFFCB] bg-white/[0.06] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.03]'
               }`}
             >
-              <CreditCard className="w-3.5 h-3.5" />
-              Subscriptions
+              <span>Subscriptions</span>
             </button>
             <button
               onClick={() => onNavigate('dbms')}
-              className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all ${
                 currentView === 'dbms'
-                  ? 'text-[#8DFFCB] bg-[#8DFFCB]/15 font-semibold border border-[#8DFFCB]/30'
-                  : 'text-[#8DFFCB] hover:bg-[#8DFFCB]/10'
+                  ? 'text-[#8DFFCB] bg-white/[0.06] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.03]'
               }`}
             >
-              <Database className="w-3.5 h-3.5" />
-              DBMS Studio
+              <span>DBMS Studio</span>
             </button>
             <button
               onClick={() => onNavigate('dbms_docs')}
-              className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all ${
                 currentView === 'dbms_docs'
-                  ? 'text-[#8DFFCB] bg-[#8DFFCB]/15 font-semibold border border-[#8DFFCB]/30'
-                  : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+                  ? 'text-[#8DFFCB] bg-white/[0.06] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.03]'
               }`}
             >
-              <BookOpen className="w-3.5 h-3.5 text-[#8DFFCB]" />
-              DBMS Report & ER
+              <span>DBMS Report</span>
             </button>
             <button
               onClick={() => onNavigate('retention')}
-              className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
-                currentView === 'retention' ? 'text-[#8DFFCB] bg-[#8DFFCB]/10' : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+              className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all ${
+                currentView === 'retention'
+                  ? 'text-[#8DFFCB] bg-white/[0.06] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F0] hover:bg-white/[0.03]'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              AI Intelligence
+              <span>AI Retention</span>
             </button>
           </nav>
         </div>
@@ -122,44 +112,41 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
         {/* Right side controls */}
         <div className="flex items-center gap-3">
           {/* Member Login / Sign Up buttons */}
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 setAuthMode('login');
                 setAuthModalOpen(true);
               }}
-              className="px-3 py-1.5 text-xs font-mono rounded-lg text-[#F1F5F0] hover:text-[#8DFFCB] hover:bg-white/5 transition-colors flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-xs font-medium rounded-full text-[#F1F5F0] hover:text-[#8DFFCB] hover:bg-white/[0.04] transition-colors"
             >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Log In</span>
+              Log In
             </button>
             <button
               onClick={() => {
                 setAuthMode('signup');
                 setAuthModalOpen(true);
               }}
-              className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-[#8DFFCB]/15 text-[#8DFFCB] border border-[#8DFFCB]/30 hover:bg-[#8DFFCB]/25 transition-all flex items-center gap-1.5"
+              className="px-4 py-1.5 text-xs font-semibold rounded-full bg-[#8DFFCB] text-[#071112] hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.35)] transition-all"
             >
-              <UserPlus className="w-3.5 h-3.5" />
-              <span>Sign Up</span>
+              Sign Up
             </button>
           </div>
 
-          {/* Persona Switcher Dropdown */}
+          {/* Testing Persona Pill */}
           <div className="relative">
             <button
               onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded-full bg-[#0D1919] border border-[rgba(220,255,245,0.2)] hover:border-[#8DFFCB]/40 transition-all text-[#F1F5F0]"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-full bg-white/[0.04] border border-white/[0.08] hover:border-[#8DFFCB]/40 transition-all text-[#94A3B8] hover:text-[#F1F5F0]"
             >
               <Shield className="w-3.5 h-3.5 text-[#8DFFCB]" />
-              <span className="capitalize">{role}</span>
-              <span className="text-[10px] text-[#8E9F9B] hidden sm:inline">({currentUser?.full_name?.split(' ')[0]})</span>
-              <ChevronDown className="w-3 h-3 text-[#8E9F9B]" />
+              <span className="capitalize text-[#F1F5F0]">{role}</span>
+              <ChevronDown className="w-3 h-3 text-[#94A3B8]" />
             </button>
 
             {roleMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#0D1919] border border-[rgba(220,255,245,0.2)] p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95">
-                <div className="text-[11px] uppercase font-mono text-[#8E9F9B] px-3 py-1 border-b border-[rgba(220,255,245,0.1)]">
+              <div className="absolute right-0 mt-3 w-64 rounded-2xl glass-panel-elevated p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95">
+                <div className="text-[10px] uppercase font-mono text-[#94A3B8] px-3 py-1.5 border-b border-white/[0.06]">
                   Switch Testing Persona
                 </div>
                 {(['admin', 'operator', 'member'] as UserRole[]).map((r) => (
@@ -169,13 +156,13 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
                       switchPersona(r);
                       setRoleMenuOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-colors text-left ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono transition-colors text-left ${
                       role === r ? 'bg-[#8DFFCB]/15 text-[#8DFFCB]' : 'text-[#F1F5F0] hover:bg-white/5'
                     }`}
                   >
                     <div>
                       <div className="font-semibold capitalize">{r}</div>
-                      <div className="text-[10px] text-[#8E9F9B]">
+                      <div className="text-[10px] text-[#94A3B8]">
                         {r === 'admin'
                           ? 'Alex Vance (Full DBMS & System Access)'
                           : r === 'operator'
@@ -193,10 +180,10 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
           {/* Notifications button */}
           <button
             onClick={() => onNavigate('notifications')}
-            className="relative p-2 rounded-lg bg-[#0D1919] border border-[rgba(220,255,245,0.15)] text-[#8E9F9B] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/30 transition-all"
+            className="relative p-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-[#94A3B8] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/30 transition-all"
             title="Notifications"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-3.5 h-3.5" />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#8DFFCB] text-[#071112] text-[10px] font-bold flex items-center justify-center">
                 {unreadCount}
@@ -207,10 +194,10 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
           {/* Primary App CTA */}
           <button
             onClick={() => onNavigate(role === 'member' ? 'personal_subs' : 'dashboard')}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#8DFFCB] text-[#071112] text-xs font-semibold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all font-mono"
+            className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] text-[#F1F5F0] text-xs font-medium hover:bg-white/[0.1] hover:text-[#8DFFCB] transition-all"
           >
-            <Terminal className="w-3.5 h-3.5" />
-            {role === 'member' ? 'My Subscriptions' : 'Open Console'}
+            <Terminal className="w-3 h-3 text-[#8DFFCB]" />
+            <span>{role === 'member' ? 'Dashboard' : 'Console'}</span>
           </button>
         </div>
       </div>
