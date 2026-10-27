@@ -18,7 +18,8 @@ import {
   ShieldCheck,
   UserCheck,
   UserPlus,
-  LogIn
+  LogIn,
+  BookOpen
 } from 'lucide-react';
 import type { UserRole } from '../../types/database';
 import { AuthModal } from '../auth/AuthModal';
@@ -53,6 +54,7 @@ export const AppShell: React.FC<AppShellProps> = ({
     { id: 'analytics', label: 'Reports & Revenue', icon: BarChart3, roles: ['admin', 'operator'] },
     { id: 'retention', label: 'Retention Intelligence', icon: Sparkles, roles: ['admin', 'operator'] },
     { id: 'dbms', label: 'DBMS Studio', icon: Database, roles: ['admin', 'operator', 'member'], badge: 'Live SQL' },
+    { id: 'dbms_docs', label: 'DBMS Report & Docs', icon: BookOpen, roles: ['admin', 'operator', 'member'], badge: 'MNNIT' },
     { id: 'notifications', label: 'Notifications', icon: Bell, roles: ['admin', 'operator', 'member'], count: unreadCount },
     { id: 'settings', label: 'Settings', icon: Settings, roles: ['admin', 'operator', 'member'] },
   ];

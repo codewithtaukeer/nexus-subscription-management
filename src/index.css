@@ -54,18 +54,48 @@
 
 .glass-panel {
   background: rgba(13, 25, 25, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(220, 255, 245, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .glass-panel-elevated {
-  background: rgba(18, 34, 34, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-strong);
+  background: rgba(18, 34, 34, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(220, 255, 245, 0.22);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(13, 25, 25, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(220, 255, 245, 0.14);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(141, 255, 203, 0.35);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(141, 255, 203, 0.15);
+  transform: translateY(-2px);
+}
+
+.glass-pill {
+  background: rgba(141, 255, 203, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(141, 255, 203, 0.25);
 }
 
 .accent-glow {
   box-shadow: 0 0 25px rgba(141, 255, 203, 0.18);
+}
+
+.accent-glow-strong {
+  box-shadow: 0 0 35px rgba(141, 255, 203, 0.35);
 }
 
 .editorial-cutout {

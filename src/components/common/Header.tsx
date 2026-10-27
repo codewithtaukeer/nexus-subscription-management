@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Database, Shield, Bell, Terminal, Sparkles, ChevronDown, Check, UserPlus, LogIn, CreditCard } from 'lucide-react';
+import { Database, Shield, Bell, Terminal, Sparkles, ChevronDown, Check, UserPlus, LogIn, CreditCard, BookOpen } from 'lucide-react';
 import type { UserRole } from '../../types/database';
 import { AuthModal } from '../auth/AuthModal';
 
@@ -95,6 +95,17 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
             >
               <Database className="w-3.5 h-3.5" />
               DBMS Studio
+            </button>
+            <button
+              onClick={() => onNavigate('dbms_docs')}
+              className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
+                currentView === 'dbms_docs'
+                  ? 'text-[#8DFFCB] bg-[#8DFFCB]/15 font-semibold border border-[#8DFFCB]/30'
+                  : 'text-[#8E9F9B] hover:text-[#F1F5F0]'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 text-[#8DFFCB]" />
+              DBMS Report & ER
             </button>
             <button
               onClick={() => onNavigate('retention')}

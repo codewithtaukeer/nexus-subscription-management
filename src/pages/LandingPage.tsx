@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   UserPlus,
   LogIn,
-  CreditCard
+  CreditCard,
+  BookOpen
 } from 'lucide-react';
 import { QuantumDotMesh } from '../components/common/QuantumDotMesh';
 import { fetchPlans } from '../lib/supabase';
@@ -189,6 +190,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               >
                 <Database className="w-4 h-4 text-[#8DFFCB]" />
                 <span>Launch DBMS Lab</span>
+              </button>
+
+              <button
+                onClick={() => onNavigate('dbms_docs')}
+                className="px-5 py-3 rounded-lg bg-[#0D1919]/60 border border-[rgba(220,255,245,0.15)] text-[#8E9F9B] text-sm font-mono hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 hover:bg-[#122222] transition-all flex items-center gap-2"
+              >
+                <BookOpen className="w-4 h-4 text-[#8DFFCB]" />
+                <span>DBMS Report & ER</span>
               </button>
             </motion.div>
 

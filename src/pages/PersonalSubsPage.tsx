@@ -411,7 +411,7 @@ export const PersonalSubsPage: React.FC = () => {
         <div className="space-y-8">
           {/* 4 Core Financial KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-5 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] space-y-2">
+            <div className="p-5 rounded-2xl glass-card space-y-2">
               <div className="text-xs font-mono text-[#8E9F9B] flex items-center justify-between">
                 <span>Active Subscriptions</span>
                 <CreditCard className="w-4 h-4 text-[#8DFFCB]" />
@@ -420,7 +420,7 @@ export const PersonalSubsPage: React.FC = () => {
               <div className="text-[11px] text-[#8E9F9B]">Across all connected providers</div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] space-y-2">
+            <div className="p-5 rounded-2xl glass-card space-y-2">
               <div className="text-xs font-mono text-[#8E9F9B] flex items-center justify-between">
                 <span>Monthly Recurring Expense</span>
                 <TrendingUp className="w-4 h-4 text-[#8DFFCB]" />
@@ -429,7 +429,7 @@ export const PersonalSubsPage: React.FC = () => {
               <div className="text-[11px] text-[#8E9F9B]">Normalized monthly equivalent</div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] space-y-2">
+            <div className="p-5 rounded-2xl glass-card space-y-2">
               <div className="text-xs font-mono text-[#8E9F9B] flex items-center justify-between">
                 <span>Projected Annual Expense</span>
                 <Calendar className="w-4 h-4 text-cyan-300" />
@@ -438,7 +438,7 @@ export const PersonalSubsPage: React.FC = () => {
               <div className="text-[11px] text-[#8E9F9B]">12-month forward commitment</div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] space-y-2">
+            <div className="p-5 rounded-2xl glass-card space-y-2">
               <div className="text-xs font-mono text-[#8E9F9B] flex items-center justify-between">
                 <span>Actual Paid (This Month)</span>
                 <Clock className="w-4 h-4 text-amber-300" />
@@ -477,7 +477,7 @@ export const PersonalSubsPage: React.FC = () => {
           {/* Breakdown Section: Category Spending & Upcoming Renewals */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left: Category Breakdown */}
-            <div className="lg:col-span-5 p-6 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] space-y-4">
+            <div className="lg:col-span-5 p-6 rounded-3xl glass-panel space-y-4">
               <h3 className="text-sm font-bold text-[#F1F5F0] font-mono flex items-center gap-2">
                 <Layers className="w-4 h-4 text-[#8DFFCB]" />
                 <span>Monthly Spending by Category</span>
@@ -511,7 +511,7 @@ export const PersonalSubsPage: React.FC = () => {
             </div>
 
             {/* Right: Upcoming Renewals in Next 30 Days */}
-            <div className="lg:col-span-7 p-6 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] space-y-4">
+            <div className="lg:col-span-7 p-6 rounded-3xl glass-panel space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-[#F1F5F0] font-mono flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[#8DFFCB]" />
@@ -529,12 +529,12 @@ export const PersonalSubsPage: React.FC = () => {
                   metrics.upcomingRenewals.slice(0, 5).map((sub) => {
                     const daysUntil = Math.ceil((new Date(sub.next_billing_date!).getTime() - new Date().getTime()) / 86400000);
                     return (
-                      <div key={sub.id} className="p-3.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] flex items-center justify-between">
+                      <div key={sub.id} className="p-3.5 rounded-2xl glass-card flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           {sub.sub_providers?.logo_url ? (
-                            <img src={sub.sub_providers.logo_url} alt="" className="w-7 h-7 object-contain rounded" />
+                            <img src={sub.sub_providers.logo_url} alt="" className="w-8 h-8 object-contain rounded" />
                           ) : (
-                            <div className="w-7 h-7 rounded bg-[#8DFFCB]/10 text-[#8DFFCB] flex items-center justify-center font-bold text-xs font-mono">
+                            <div className="w-8 h-8 rounded-xl bg-[#8DFFCB]/10 text-[#8DFFCB] flex items-center justify-center font-bold text-xs font-mono">
                               {(sub.sub_providers?.name || sub.custom_provider_name || 'S')[0]}
                             </div>
                           )}
@@ -651,7 +651,7 @@ export const PersonalSubsPage: React.FC = () => {
                   <div
                     key={sub.id}
                     onClick={() => handleOpenDetail(sub)}
-                    className="p-5 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] hover:border-[#8DFFCB]/40 hover:bg-[#122222]/80 transition-all cursor-pointer flex flex-col justify-between space-y-4 group shadow-lg"
+                    className="p-5 rounded-3xl glass-card cursor-pointer flex flex-col justify-between space-y-4 group"
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-3">

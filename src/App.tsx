@@ -15,6 +15,7 @@ import { RenewalRadarPage } from './pages/RenewalRadarPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { RetentionPage } from './pages/RetentionPage';
 import { DBMSStudioPage } from './pages/DBMSStudioPage';
+import { DBMSDocsPage } from './pages/DBMSDocsPage';
 import { MemberPortalPage } from './pages/MemberPortalPage';
 import { PersonalSubsPage } from './pages/PersonalSubsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
@@ -73,6 +74,7 @@ const AppContent: React.FC = () => {
       {currentView === 'analytics' && <AnalyticsPage onNavigate={handleNavigate} />}
       {currentView === 'retention' && <RetentionPage />}
       {currentView === 'dbms' && <DBMSStudioPage />}
+      {currentView === 'dbms_docs' && <DBMSDocsPage />}
       {currentView === 'notifications' && <NotificationsPage />}
       {currentView === 'settings' && <SettingsPage />}
     </AppShell>
