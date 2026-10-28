@@ -31,6 +31,27 @@ import {
 } from 'lucide-react';
 import { generateAcademicReportPDF } from '../utils/generateAcademicPDF';
 
+const ScreenshotFigure: React.FC<{
+  src: string;
+  alt: string;
+  figureNumber: string;
+  caption: string;
+}> = ({ src, alt, figureNumber, caption }) => (
+  <div className="my-6 rounded-2xl bg-[#071112] border border-[rgba(220,255,245,0.15)] overflow-hidden shadow-2xl">
+    <div className="p-2.5 bg-[#0B0F12] border-b border-[rgba(220,255,245,0.08)] flex items-center justify-between text-[11px] font-mono text-[#8E9F9B] px-4">
+      <div className="flex items-center gap-2">
+        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block animate-pulse" />
+        <span className="text-[#F1F5F0] font-semibold">{alt}</span>
+      </div>
+      <span className="text-[#8DFFCB] text-[10px] uppercase font-bold tracking-wider">Live System Verification</span>
+    </div>
+    <img src={src} alt={alt} className="w-full object-cover max-h-[600px] border-b border-[rgba(220,255,245,0.06)]" />
+    <div className="p-3.5 bg-[#0D1919] text-center text-xs font-mono text-[#8E9F9B]">
+      <strong className="text-[#8DFFCB]">{figureNumber}:</strong> {caption}
+    </div>
+  </div>
+);
+
 export const DBMSDocsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('all');
   const [copiedQuery, setCopiedQuery] = useState<string | null>(null);
@@ -81,13 +102,14 @@ export const DBMSDocsPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => generateAcademicReportPDF()}
+            <a
+              href="/NEXUS_MNNIT_DBMS_Project_Report.pdf"
+              download="NEXUS_MNNIT_DBMS_Project_Report.pdf"
               className="px-4 py-2.5 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
-              <span>Download Official Report PDF</span>
-            </button>
+              <span>Download Official Report PDF (2.5 MB)</span>
+            </a>
             <button
               onClick={() => window.print()}
               className="px-4 py-2.5 rounded-xl glass-card text-xs font-mono text-[#F1F5F0] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all flex items-center gap-2"
@@ -302,6 +324,13 @@ export const DBMSDocsPage: React.FC = () => {
               </ul>
             </div>
           </div>
+
+          <ScreenshotFigure
+            src="/screenshots/01_landing_page.png"
+            alt="Public Landing Showcase"
+            figureNumber="Figure 5.1"
+            caption="Public Landing Showcase featuring live platform statistics, 3-card single-row value propositions, and interactive blueprint visualizer."
+          />
         </div>
       )}
 
@@ -443,6 +472,12 @@ export const DBMSDocsPage: React.FC = () => {
               </tbody>
             </table>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/13_dbms_studio.png"
+            alt="DBMS Studio — ER Schema Explorer"
+            figureNumber="Figure 6.1"
+            caption="DBMS Studio Live ER Schema Explorer — interactive table inspector, column types, and foreign key relationships visualised in-browser"
+          />
         </div>
       )}
 
@@ -559,6 +594,12 @@ GROUP BY sp.name
 HAVING COUNT(ps.id) > 0
 ORDER BY normalized_monthly_expenditure DESC;`}</pre>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/09_admin_billing_invoices.png"
+            alt="Admin — Invoices & Billing Ledger"
+            figureNumber="Figure 8.1"
+            caption="Invoices & Billing ledger: settled receipts, invoice IDs, amounts, and status — data populated by DML INSERT via ACID transaction RPCs"
+          />
         </div>
       )}
 
@@ -615,6 +656,12 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               </ul>
             </div>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/10_admin_renewal_radar.png"
+            alt="Admin — Renewal Radar"
+            figureNumber="Figure 9.1"
+            caption="Renewal Radar page powered by the view_expiring_soon materialized view — surfaces subscribers with renewals within 7 days for proactive retention"
+          />
         </div>
       )}
 
@@ -642,6 +689,18 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               <p className="text-[#8E9F9B]">Embedded client-side PostgreSQL engine executing in WebAssembly, allowing evaluators to run live SQL commands and inspect schemas offline.</p>
             </div>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/06_admin_executive_dashboard.png"
+            alt="Admin — Executive Dashboard"
+            figureNumber="Figure 10.1"
+            caption="Admin Executive Dashboard — live KPI cards, revenue summaries, and churn metrics delivered via Supabase PostgREST REST layer with React context"
+          />
+          <ScreenshotFigure
+            src="/screenshots/07_admin_members_directory.png"
+            alt="Admin — Members Directory"
+            figureNumber="Figure 10.2"
+            caption="Admin Members Directory — full member roster with role badges, RBAC-enforced row visibility, and Supabase RLS policies applied server-side"
+          />
         </div>
       )}
 
@@ -773,6 +832,36 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               </div>
             </div>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/02_member_dashboard.png"
+            alt="Member Dashboard Hub"
+            figureNumber="Figure 11.1"
+            caption="Member Dashboard Hub — high-level overview of active subscriptions, normalized monthly burn rate, upcoming renewals, and quick actions"
+          />
+          <ScreenshotFigure
+            src="/screenshots/03_my_subscriptions_hub.png"
+            alt="My Subscriptions Hub"
+            figureNumber="Figure 11.2"
+            caption="My Subscriptions Hub — real-time subscription cards with category tags, billing cycle indicators, and direct edit/pause controls"
+          />
+          <ScreenshotFigure
+            src="/screenshots/04_member_portal.png"
+            alt="Member Portal"
+            figureNumber="Figure 11.3"
+            caption="Member Portal — active plan entitlements, security credentials, API keys, and notification preference configurations"
+          />
+          <ScreenshotFigure
+            src="/screenshots/05_plans_pricing.png"
+            alt="Membership Plans & Demo Card Checkout"
+            figureNumber="Figure 11.4"
+            caption="Membership Plans & Pricing — member view showing active tier, feature checklists, and the holographic Demo Card checkout flow"
+          />
+          <ScreenshotFigure
+            src="/screenshots/08_admin_all_subscriptions.png"
+            alt="Admin All Subscriptions Roster"
+            figureNumber="Figure 11.5"
+            caption="Admin All Subscriptions Roster — system-wide multi-tenant subscription ledger with member IDs, provider links, and status filters"
+          />
         </div>
       )}
 
@@ -805,6 +894,18 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               <p className="text-[#8E9F9B]">Evaluated on held-out test splits: <strong>ROC-AUC = 0.912</strong>, <strong>Precision = 88.4%</strong>, <strong>Recall = 92.1%</strong>, <strong>F1-Score = 0.902</strong>. Calibrated probabilities output Low, Medium, and High risk classifications.</p>
             </div>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/12_admin_retention_intelligence.png"
+            alt="Retention Intelligence"
+            figureNumber="Figure 12.1"
+            caption="Retention Intelligence — churn risk scoring, cohort breakdown, and targeted retention intervention workflows based on ML output"
+          />
+          <ScreenshotFigure
+            src="/screenshots/11_admin_analytics_revenue.png"
+            alt="Revenue & Subscriber Analytics"
+            figureNumber="Figure 12.2"
+            caption="Revenue & Subscriber Analytics — historical MRR trends, provider concentration distributions, and forecast trajectory"
+          />
         </div>
       )}
 
@@ -838,6 +939,12 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
             <div className="text-emerald-400 font-bold">[PASS 09] Views Performance: v_subscription_overview, v_monthly_revenue, v_expiring_soon</div>
             <div className="text-emerald-400 font-bold">[PASS 10] Realtime Retention ML Inference Pipeline Persisting to churn_predictions</div>
           </div>
+          <ScreenshotFigure
+            src="/screenshots/14_dbms_documentation.png"
+            alt="In-App DBMS Documentation Viewer"
+            figureNumber="Figure 13.1"
+            caption="In-App DBMS Documentation & Comprehensive Verification Suite — full academic report with real-time test suite telemetry"
+          />
         </div>
       )}
 
