@@ -11,7 +11,7 @@ const ARTIFACT_PDF = path.join(ARTIFACT_DIR, 'NEXUS_MNNIT_DBMS_Project_Report.pd
 
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
-console.log('--- Generating Publication-Grade Academic DBMS Report ---');
+console.log('--- Generating Structured MNNIT Academic DBMS Report ---');
 
 // Load MNNIT Logo
 const mnnitLogoPath = path.join(ROOT_DIR, 'public', 'mnnit_logo.png');
@@ -28,7 +28,7 @@ function getScreenshotB64(filename) {
   return '';
 }
 
-// Screenshot component helper
+// Screenshot component helper - optimized for tight A4 layout (two per page)
 function renderBrowserMockup(filename, figNum, caption, url = 'https://nexus-subscription.io') {
   const b64 = getScreenshotB64(filename);
   if (!b64) return '';
@@ -44,7 +44,7 @@ function renderBrowserMockup(filename, figNum, caption, url = 'https://nexus-sub
         <span class="lock-icon">🔒</span>
         <span class="url-text">${url}</span>
       </div>
-      <div class="chrome-badge">LIVE SYSTEM VERIFICATION</div>
+      <div class="chrome-badge">LIVE VERIFICATION</div>
     </div>
     <div class="browser-body">
       <img src="data:image/png;base64,${b64}" alt="${caption}" class="mockup-img" />
@@ -62,7 +62,7 @@ function renderDiagramContainer(figNum, title, mermaidCode) {
     <div class="diagram-header">
       <div class="diagram-header-left">
         <span class="diagram-dot"></span>
-        <span class="diagram-tag">RELATIONAL ARCHITECTURE SPECIFICATION</span>
+        <span class="diagram-tag">SYSTEM ARCHITECTURE SPECIFICATION</span>
       </div>
       <span class="diagram-format">VECTOR RENDER (SVG)</span>
     </div>
@@ -75,17 +75,17 @@ ${mermaidCode}
   </div>`;
 }
 
-// The complete document HTML
+// The complete document HTML matching the exact 15 sections
 const reportHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NEXUS - Relational Subscription Intelligence & Lifecycle Management Platform</title>
+  <title>NEXUS: Subscription Management & DBMS Lab Platform - MNNIT Project Report</title>
   
   <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <!-- KaTeX for Mathematics -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -123,7 +123,7 @@ const reportHtml = `<!DOCTYPE html>
   <style>
     @page {
       size: A4 portrait;
-      margin: 18mm 16mm 20mm 16mm;
+      margin: 14mm 15mm 16mm 15mm;
       @top-left {
         content: "MNNIT ALLAHABAD | CSE DEPARTMENT";
         font-family: 'Inter', sans-serif;
@@ -133,7 +133,7 @@ const reportHtml = `<!DOCTYPE html>
         letter-spacing: 0.5px;
       }
       @top-right {
-        content: "NEXUS DBMS PROJECT REPORT";
+        content: "NEXUS: SUBSCRIPTION MANAGEMENT & DBMS LAB";
         font-family: 'Inter', sans-serif;
         font-size: 7.5pt;
         color: #64748B;
@@ -154,6 +154,14 @@ const reportHtml = `<!DOCTYPE html>
       }
     }
 
+    @page :first {
+      margin: 10mm 15mm 10mm 15mm;
+      @top-left { content: none; }
+      @top-right { content: none; }
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
+
     * {
       box-sizing: border-box;
       -webkit-print-color-adjust: exact !important;
@@ -162,8 +170,8 @@ const reportHtml = `<!DOCTYPE html>
 
     body {
       font-family: 'Inter', sans-serif;
-      font-size: 9.5pt;
-      line-height: 1.6;
+      font-size: 9.2pt;
+      line-height: 1.5;
       color: #0F172A;
       background: #FFFFFF;
       margin: 0;
@@ -174,63 +182,64 @@ const reportHtml = `<!DOCTYPE html>
     h1, h2, h3, h4 {
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: #042F2E;
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
+      margin-top: 1.3em;
+      margin-bottom: 0.35em;
       break-after: avoid;
       page-break-after: avoid;
     }
 
     h1 {
-      font-size: 18pt;
+      font-size: 16pt;
       font-weight: 800;
       color: #064E3B;
       letter-spacing: -0.3px;
     }
 
     h2 {
-      font-size: 13pt;
+      font-size: 12.5pt;
       font-weight: 700;
       color: #0F766E;
       border-bottom: 1.5px solid #CCFBF1;
-      padding-bottom: 5px;
-      margin-top: 1.8em;
+      padding-bottom: 4px;
+      margin-top: 1.4em;
     }
 
     h3 {
-      font-size: 11pt;
+      font-size: 10.5pt;
       font-weight: 600;
       color: #134E4A;
-      margin-top: 1.2em;
+      margin-top: 1.1em;
     }
 
     h4 {
-      font-size: 9.8pt;
+      font-size: 9.5pt;
       font-weight: 600;
       color: #334155;
+      margin-top: 0.8em;
     }
 
     p {
-      margin: 0.6em 0;
+      margin: 0.45em 0;
       text-align: justify;
       color: #334155;
     }
 
     ul, ol {
-      margin: 0.5em 0;
-      padding-left: 1.6em;
+      margin: 0.4em 0;
+      padding-left: 1.5em;
       color: #334155;
     }
 
     li {
-      margin: 0.3em 0;
+      margin: 0.25em 0;
     }
 
     code {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 8.5pt;
+      font-size: 8.2pt;
       background: #F1F5F9;
       color: #0F766E;
-      padding: 1.5px 4.5px;
+      padding: 1px 4px;
       border-radius: 4px;
       border: 1px solid #E2E8F0;
     }
@@ -238,14 +247,14 @@ const reportHtml = `<!DOCTYPE html>
     pre {
       background: #071112;
       color: #8DFFCB;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 8px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 8pt;
-      line-height: 1.45;
+      font-size: 7.8pt;
+      line-height: 1.4;
       overflow-x: auto;
       border: 1px solid #134E4A;
-      margin: 12px 0;
+      margin: 10px 0;
       break-inside: avoid;
       page-break-inside: avoid;
     }
@@ -261,15 +270,15 @@ const reportHtml = `<!DOCTYPE html>
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 14px 0;
-      font-size: 8.5pt;
+      margin: 10px 0;
+      font-size: 8.2pt;
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
     th, td {
       border: 1px solid #CBD5E1;
-      padding: 7px 10px;
+      padding: 6px 8px;
       text-align: left;
     }
 
@@ -290,11 +299,11 @@ const reportHtml = `<!DOCTYPE html>
     .callout-box {
       border-left: 3.5px solid #0F766E;
       background: #F0FDFA;
-      padding: 10px 14px;
-      border-radius: 0 8px 8px 0;
-      margin: 12px 0;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      margin: 10px 0;
       color: #0F172A;
-      font-size: 9pt;
+      font-size: 8.8pt;
       break-inside: avoid;
       page-break-inside: avoid;
     }
@@ -302,16 +311,16 @@ const reportHtml = `<!DOCTYPE html>
     .callout-title {
       font-weight: 700;
       color: #0F766E;
-      margin-bottom: 4px;
-      font-size: 9.5pt;
+      margin-bottom: 3px;
+      font-size: 9.2pt;
     }
 
     /* Metric Badges Grid */
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 16px 0;
+      gap: 8px;
+      margin: 12px 0;
       break-inside: avoid;
       page-break-inside: avoid;
     }
@@ -320,48 +329,54 @@ const reportHtml = `<!DOCTYPE html>
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
       border-top: 2.5px solid #0F766E;
-      border-radius: 8px;
-      padding: 10px;
+      border-radius: 6px;
+      padding: 8px;
       text-align: center;
     }
 
     .metric-value {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 15pt;
+      font-size: 14pt;
       font-weight: 800;
       color: #042F2E;
-      line-height: 1.2;
+      line-height: 1.1;
     }
 
     .metric-label {
-      font-size: 7.5pt;
-      color: #0F766E;
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-top: 3px;
-    }
-
-    .metric-desc {
       font-size: 7pt;
-      color: #64748B;
+      color: #0F766E;
+      font-weight: 700;
+      text-transform: uppercase;
       margin-top: 2px;
     }
 
-    /* Browser Mockup Figure */
+    .metric-desc {
+      font-size: 6.8pt;
+      color: #64748B;
+      margin-top: 1px;
+    }
+
+    /* Page Breaks and Clean Section Flow */
+    .section-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    /* Browser Mockup Figure (Compact for tight placement in Section 13) */
     .mockup-figure-container {
-      margin: 16px 0 10px 0;
-      border: 1.5px solid #CBD5E1;
-      border-radius: 10px;
+      margin: 8px 0 6px 0;
+      border: 1.2px solid #CBD5E1;
+      border-radius: 6px;
       overflow: hidden;
       background: #0B0F12;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
     .browser-chrome {
       background: #0B0F12;
-      padding: 6px 12px;
+      padding: 4px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -370,12 +385,12 @@ const reportHtml = `<!DOCTYPE html>
 
     .chrome-dots {
       display: flex;
-      gap: 5px;
+      gap: 4px;
     }
 
     .dot {
-      width: 9px;
-      height: 9px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
     }
 
@@ -386,21 +401,21 @@ const reportHtml = `<!DOCTYPE html>
     .chrome-address-bar {
       background: #151D24;
       border: 1px solid #283542;
-      border-radius: 5px;
-      padding: 2px 12px;
+      border-radius: 4px;
+      padding: 2px 8px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 7.5pt;
+      font-size: 7pt;
       color: #94A3B8;
       display: flex;
       align-items: center;
-      gap: 6px;
-      width: 45%;
+      gap: 5px;
+      width: 46%;
       justify-content: center;
     }
 
     .chrome-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 7pt;
+      font-size: 6.5pt;
       color: #8DFFCB;
       font-weight: 700;
       letter-spacing: 0.5px;
@@ -408,22 +423,24 @@ const reportHtml = `<!DOCTYPE html>
 
     .browser-body {
       background: #000000;
+      text-align: center;
     }
 
     .mockup-img {
       width: 100%;
-      height: auto;
+      max-height: 250px;
+      object-fit: cover;
+      object-position: top;
       display: block;
     }
 
     .figure-caption {
       background: #F8FAFC;
       border-top: 1px solid #E2E8F0;
-      padding: 6px 12px;
-      font-size: 8pt;
+      padding: 5px 10px;
+      font-size: 7.8pt;
       color: #475569;
       text-align: center;
-      font-style: normal;
     }
 
     .figure-caption strong {
@@ -432,9 +449,9 @@ const reportHtml = `<!DOCTYPE html>
 
     /* Diagram Figure Container */
     .diagram-figure-container {
-      margin: 16px 0 10px 0;
-      border: 1.5px solid #CBD5E1;
-      border-radius: 10px;
+      margin: 12px 0 8px 0;
+      border: 1.2px solid #CBD5E1;
+      border-radius: 8px;
       overflow: hidden;
       background: #FAFDFA;
       break-inside: avoid;
@@ -444,7 +461,7 @@ const reportHtml = `<!DOCTYPE html>
     .diagram-header {
       background: #F0FDFA;
       border-bottom: 1px solid #CCFBF1;
-      padding: 6px 12px;
+      padding: 5px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -454,31 +471,31 @@ const reportHtml = `<!DOCTYPE html>
     .diagram-header-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .diagram-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #0F766E;
     }
 
     .diagram-tag {
-      font-size: 7.5pt;
+      font-size: 7.2pt;
       font-weight: 700;
       color: #0F766E;
       letter-spacing: 0.5px;
     }
 
     .diagram-format {
-      font-size: 7pt;
+      font-size: 6.8pt;
       color: #64748B;
       font-weight: 600;
     }
 
     .diagram-figure-container .mermaid {
-      padding: 16px 10px;
+      padding: 12px 8px;
       display: flex;
       justify-content: center;
       background: #FFFFFF;
@@ -490,13 +507,14 @@ const reportHtml = `<!DOCTYPE html>
       height: auto !important;
     }
 
-    /* Cover Page matching Official MNNIT Template */
+    /* Cover Page matching Official MNNIT Template EXACTLY */
     .cover-page {
       border: 2px solid #000000;
-      padding: 38px 28px 30px 28px;
+      padding: 24px 22px 20px 22px;
       text-align: center;
       background: #FFFFFF;
       page-break-after: always;
+      break-after: page;
       min-height: 94vh;
       display: flex;
       flex-direction: column;
@@ -506,7 +524,7 @@ const reportHtml = `<!DOCTYPE html>
     }
 
     .cover-inst-title {
-      font-size: 14.5pt;
+      font-size: 13.5pt;
       font-weight: bold;
       color: #000000;
       margin: 0;
@@ -516,7 +534,7 @@ const reportHtml = `<!DOCTYPE html>
     }
 
     .cover-inst-sub {
-      font-size: 11.5pt;
+      font-size: 11pt;
       font-weight: bold;
       color: #000000;
       margin: 4px 0 0 0;
@@ -524,129 +542,125 @@ const reportHtml = `<!DOCTYPE html>
     }
 
     .cover-logo-wrapper {
-      margin: 18px auto 20px auto;
+      margin: 12px auto 14px auto;
       text-align: center;
     }
 
     .cover-logo-img {
-      width: 125px;
-      height: auto;
+      width: 215px;
+      max-height: 185px;
+      object-fit: contain;
       display: inline-block;
     }
 
     .cover-report-lead {
-      font-size: 12.5pt;
+      font-size: 11.5pt;
       font-weight: bold;
       color: #000000;
       letter-spacing: 0.5px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       text-transform: uppercase;
     }
 
     .cover-project-title {
-      font-size: 20pt;
+      font-size: 19pt;
       font-weight: bold;
       color: #DC2626; /* Official red highlight from template */
-      margin: 0 0 18px 0;
+      margin: 0 0 12px 0;
       line-height: 1.25;
     }
 
     .cover-shaded-box {
       background: #F1F5F9;
-      padding: 10px 18px;
+      padding: 8px 16px;
       border-radius: 4px;
-      margin: 10px auto;
-      width: 88%;
+      margin: 8px auto;
+      width: 90%;
       box-sizing: border-box;
     }
 
     .cover-box-label {
-      font-size: 11.5pt;
+      font-size: 11pt;
       font-weight: bold;
       color: #000000;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .cover-box-value {
-      font-size: 13.5pt;
+      font-size: 13pt;
       font-weight: bold;
       color: #DC2626; /* Red as in template */
     }
 
     .cover-students-box {
       background: #F1F5F9;
-      padding: 14px 20px;
+      padding: 10px 18px;
       border-radius: 4px;
-      margin: 12px auto;
-      width: 88%;
+      margin: 8px auto;
+      width: 90%;
       box-sizing: border-box;
     }
 
     .cover-students-label {
-      font-size: 11.5pt;
+      font-size: 11pt;
       font-weight: bold;
       color: #000000;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .cover-students-list {
-      font-size: 11pt;
+      font-size: 10.5pt;
       font-weight: bold;
       color: #DC2626; /* Red as in template */
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
     .cover-bottom-block {
-      margin-top: 15px;
+      margin-top: 10px;
       color: #000000;
     }
 
     .cover-submitted-lead {
-      font-size: 11.5pt;
+      font-size: 11pt;
       font-weight: bold;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .cover-degree-name {
-      font-size: 12pt;
+      font-size: 11.5pt;
       font-weight: bold;
       margin-bottom: 2px;
     }
 
     .cover-dept-name {
-      font-size: 10.5pt;
-      margin-bottom: 14px;
+      font-size: 10pt;
+      margin-bottom: 8px;
     }
 
     .cover-inst-bottom {
-      font-size: 11.5pt;
+      font-size: 11pt;
       font-weight: bold;
       text-transform: uppercase;
       margin-bottom: 2px;
     }
 
     .cover-city-bottom {
-      font-size: 9.5pt;
+      font-size: 9pt;
       font-weight: bold;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .cover-session-year {
-      font-size: 12.5pt;
+      font-size: 12pt;
       font-weight: bold;
-    }
-
-    /* Section Page Breaks */
-    .page-break {
-      page-break-before: always;
     }
   </style>
 </head>
 <body>
 
   <!-- ========================================================================= -->
-  <!-- COVER PAGE (EXACT MNNIT TEMPLATE REPLICA) -->
+  <!-- 1. TITLE PAGE (EXACT MNNIT TEMPLATE REPLICA) -->
   <!-- ========================================================================= -->
   <div class="cover-page">
     <div>
@@ -688,26 +702,22 @@ const reportHtml = `<!DOCTYPE html>
     </div>
   </div>
 
-    <div class="cover-footer">
-      Motilal Nehru National Institute of Technology Allahabad • Prayagraj, UP — 211004 • October 2026
-    </div>
-  </div>
-
   <!-- ========================================================================= -->
-  <!-- EXECUTIVE SUMMARY & METRIC SCORECARD -->
+  <!-- 2. ABSTRACT -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>Executive Summary & System Scorecard</h2>
-  
+  <h2>2. Abstract</h2>
   <p>
-    The modern software economy has transitioned overwhelmingly from perpetual licensing to recurring subscription models. This shift delivers predictable recurring revenue to software vendors, but generates severe financial fragmentation for consumers and acute retention blindspots for providers. <strong>NEXUS</strong> is an enterprise-grade relational subscription management and intelligence system designed, normalized, and deployed for the CSE Department DBMS evaluation at MNNIT Allahabad.
+    The recurring digital economy has introduced profound operational complexities for both individual consumers and software enterprises. Consumers face "subscription fatigue," creeping liabilities, and financial waste from unmanaged overlapping services. Concurrently, SaaS platforms suffer from unmonitored customer churn, fragmented database schemas, and broken dunning lifecycles. <strong>NEXUS</strong> is an enterprise-grade relational subscription management and intelligence ecosystem engineered upon an ACID-compliant PostgreSQL relational architecture via Supabase, coupled with an interactive high-performance front-end (React 18, Vite, TypeScript, and Tailwind CSS) styled with modern glassmorphism aesthetics.
+  </p>
+  <p>
+    The relational core enforces strict <strong>Boyce-Codd Normal Form (BCNF)</strong> across 12 atomic relations, eliminating update, deletion, and insertion anomalies. Multi-tenant security is strictly enforced at the database layer via PostgreSQL <strong>Row-Level Security (RLS)</strong> and <strong>Role-Based Access Control (RBAC)</strong>, ensuring absolute tenant isolation between administrative operators and individual consumers. To address silent subscriber churn, NEXUS incorporates an automated, calibrated Machine Learning retention engine combining L2-regularized Logistic Regression and Random Forest ensembles ($ROC\text{-}AUC = 0.9124$) with zero temporal target leakage. An embedded WebAssembly PostgreSQL engine (PGLite) enables real-time client-side Relational Algebra execution and offline academic verification.
   </p>
 
   <div class="metric-grid">
     <div class="metric-card">
       <div class="metric-value">12</div>
       <div class="metric-label">Relational Tables</div>
-      <div class="metric-desc">100% 3NF / BCNF Normalized</div>
+      <div class="metric-desc">100% 3NF / BCNF Verified</div>
     </div>
     <div class="metric-card">
       <div class="metric-value">22 / 22</div>
@@ -717,97 +727,172 @@ const reportHtml = `<!DOCTYPE html>
     <div class="metric-card">
       <div class="metric-value">0.9124</div>
       <div class="metric-label">Retention ROC-AUC</div>
-      <div class="metric-desc">Calibrated RF + Logistic Ensemble</div>
+      <div class="metric-desc">Calibrated Ensemble Classifier</div>
     </div>
     <div class="metric-card">
       <div class="metric-value">Dual-RBAC</div>
       <div class="metric-label">Tenant Isolation</div>
-      <div class="metric-desc">Strict Postgres RLS Enforcement</div>
+      <div class="metric-desc">PostgreSQL RLS Enforcement</div>
     </div>
   </div>
 
-  <div class="callout-box">
-    <div class="callout-title">Database Normalization Guarantee (Boyce-Codd Normal Form)</div>
-    Every relation in NEXUS satisfies the rigorous BCNF superkey condition: $\forall (X \to Y) \in F^+, X$ is a superkey of relation $R$. Transitive functional dependencies ($X \to Y \to Z$) and partial key dependencies have been eliminated by decomposing plans, pricing schedules, features, invoices, telemetry events, and coupon redemptions into dedicated atomic relations.
-  </div>
-
-  <!-- TABLE OF CONTENTS -->
-  <h2 style="margin-top: 1.6em;">Table of Contents</h2>
-  <table style="font-size: 8.5pt;">
-    <thead>
-      <tr>
-        <th style="width: 12%;">Section</th>
-        <th style="width: 70%;">Chapter Title & Architectural Focus</th>
-        <th style="width: 18%; text-align: right;">Page Focus</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>1.0</strong></td><td>Project Overview, Industry Problem & System Scope</td><td style="text-align: right;">Overview</td></tr>
-      <tr><td><strong>2.0</strong></td><td>System Analysis, Hardware/Software Stack & Functional Requirements</td><td style="text-align: right;">Analysis</td></tr>
-      <tr><td><strong>3.0</strong></td><td>Entity-Relationship (ER) & Enhanced ER (EER) Architecture</td><td style="text-align: right;">Schema Design</td></tr>
-      <tr><td><strong>4.0</strong></td><td>Relational Functional Dependencies & Normalization Proofs (1NF to BCNF)</td><td style="text-align: right;">Theory</td></tr>
-      <tr><td><strong>5.0</strong></td><td>PostgreSQL Implementation: DDL Constraints, Joins & Aggregations</td><td style="text-align: right;">SQL DDL/DML</td></tr>
-      <tr><td><strong>6.0</strong></td><td>Views, Indexes, Triggers & ACID Concurrency Control</td><td style="text-align: right;">Transactions</td></tr>
-      <tr><td><strong>7.0</strong></td><td>Front-End System Architecture, RBAC & Security Isolation</td><td style="text-align: right;">Architecture</td></tr>
-      <tr><td><strong>8.0</strong></td><td>Core CRUD Operations, User Flow & Practical Value Propositions</td><td style="text-align: right;">Workflows</td></tr>
-      <tr><td><strong>9.0</strong></td><td>Calibrated Machine Learning Retention Model & Evaluation Metrics</td><td style="text-align: right;">ML Pipeline</td></tr>
-      <tr><td><strong>10.0</strong></td><td>Verification Test Suite, 22 Invariant Assertions & Live Deployment</td><td style="text-align: right;">Testing</td></tr>
-      <tr><td><strong>11.0</strong></td><td>Conclusion, Future Scope & Academic Bibliography</td><td style="text-align: right;">Conclusion</td></tr>
-    </tbody>
-  </table>
-
   <!-- ========================================================================= -->
-  <!-- SECTION 1 & 2: INTRODUCTION & SYSTEM REQUIREMENTS -->
+  <!-- 3. INTRODUCTION AND PROBLEM STATEMENT -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>1. Project Overview & Problem Statement</h2>
+  <h2>3. Introduction and Problem Statement</h2>
+  <h3>3.1 Background of Subscription Economy</h3>
   <p>
-    The exponential rise of digital subscription services has introduced critical operational friction for both individual subscribers and platform administrators:
+    Modern consumer and enterprise software consumption has fundamentally shifted from perpetual license purchases to recurring SaaS commitments. From cloud infrastructure (AWS, GCP) and productivity suites (GitHub, Notion) to consumer media (Netflix, Spotify), billing is now fragmented across disparate providers, arbitrary frequencies (monthly, annually, quarterly, weekly), and varied currency standards.
+  </p>
+  <h3>3.2 Problem Statement</h3>
+  <p>
+    Existing subscription management tools either function as trivial static to-do lists without database integrity, or as bloated, opaque enterprise billing engines that hide operational insights. Specifically, three critical problems exist:
   </p>
   <ul>
-    <li><strong>Consumer Blindspot:</strong> Individuals subscribe to dozens of overlapping services (streaming, AI developer APIs, productivity tools, cloud storage). Without a centralized ledger that normalizes varying billing cadences (annual, quarterly, monthly, weekly), consumers incur substantial silent financial leakage.</li>
-    <li><strong>Provider Retention Deficit:</strong> SaaS platforms suffer from unmonitored customer churn. Conventional analytics tools identify churn reactively after cancellation occurs. NEXUS introduces predictive behavioral telemetry to identify early signs of disengagement before churn occurs.</li>
-    <li><strong>Data Isolation & Integrity:</strong> Traditional subscription trackers lack formal relational integrity and allow unauthorized cross-tenant data leakage. NEXUS enforces strict PostgreSQL Row-Level Security (RLS) guaranteeing that regular members can never access corporate MRR, provider churn metrics, or other subscribers' records.</li>
+    <li><strong>Silent Financial Waste:</strong> Consumers incur unmonitored recurring charges, miss free trial cancellation deadlines, and pay for redundant, overlapping tools within identical categories.</li>
+    <li><strong>Data Concurrency & ACID Violations:</strong> Inadequate transaction boundaries allow race conditions during checkout, double redemptions of discount coupons, and unsynchronized invoice-to-subscription state machines.</li>
+    <li><strong>Absence of Proactive Churn Intelligence:</strong> Enterprise administrators discover churn reactively after cancellation occurs, when retention intervention is impossible.</li>
   </ul>
 
-  ${renderBrowserMockup('01_landing_page.png', 'Figure 1.1', 'NEXUS Live Production Landing Page — value proposition, live CTA, and dual-persona navigation portal', 'https://nexus-subscription.io/')}
-
-  <h2>2. System Analysis & Hardware / Software Specifications</h2>
+  <!-- ========================================================================= -->
+  <!-- 4. PROJECT OBJECTIVES AND SCOPE -->
+  <!-- ========================================================================= -->
+  <h2>4. Project Objectives and Scope</h2>
+  <h3>4.1 Project Objectives</h3>
+  <ul>
+    <li><strong>Architectural Normalization:</strong> Decompose multi-valued subscription configurations into a mathematically verified BCNF schema.</li>
+    <li><strong>ACID Concurrency Enforcement:</strong> Implement PL/pgSQL stored procedures with explicit row-level locks (<code>FOR UPDATE</code>) to guarantee atomic multi-table inserts.</li>
+    <li><strong>Multi-Tenant Data Isolation:</strong> Guarantee that non-admin members can never inspect corporate MRR, provider churn rates, or other users' records.</li>
+    <li><strong>Cadence Normalization & Redundancy Detection:</strong> Mathematically normalize diverse billing frequencies into a unified monthly expenditure and flag category overlaps.</li>
+    <li><strong>Calibrated Predictive Intelligence:</strong> Train and deploy a calibrated retention ML model using non-leaking behavioral telemetry.</li>
+  </ul>
+  <h3>4.2 System Scope & Operational Boundaries</h3>
   <p>
-    NEXUS is engineered as a zero-compromise multi-tier cloud platform. The architecture separates the transactional persistence layer from the reactive presentation tier:
+    NEXUS encompasses the entire subscription lifecycle: customer acquisition, multi-tier plan assignment, holographic card simulation, automated invoice ledgering, temporal renewal alerting via materialized views, and append-only audit logging. External banking gateways are simulated using high-fidelity cryptographic hashes and deterministic status machines.
   </p>
+
+  <!-- ========================================================================= -->
+  <!-- 5. SYSTEM ANALYSIS AND REQUIREMENTS (COMPREHENSIVE SRS) -->
+  <!-- ========================================================================= -->
+  <h2>5. System Analysis and Requirements (Software Requirements Specification - SRS)</h2>
+  <p>
+    This section specifies the formal Software Requirements Specification (SRS) for the NEXUS platform in compliance with IEEE 830 standards.
+  </p>
+  
+  <h3>5.1 Overall Description & User Classes</h3>
+  <p>
+    The system identifies two distinct operational user classes:
+  </p>
+  <ul>
+    <li><strong>Administrator:</strong> Executive operators managing platform plans, multi-tenant subscription states, corporate MRR analytics, and ML retention intelligence.</li>
+    <li><strong>Member / Subscriber:</strong> End-users tracking personal external subscriptions, monitoring recurring expenses, and upgrading membership tiers via simulated payment checkout.</li>
+  </ul>
+
+  <h3>5.2 Functional Requirements (FR) Matrix</h3>
   <table>
     <thead>
       <tr>
-        <th>Subsystem Layer</th>
-        <th>Technology Component</th>
-        <th>Version / Configuration</th>
-        <th>Architectural Function</th>
+        <th style="width: 12%;">Req ID</th>
+        <th style="width: 25%;">Requirement Name</th>
+        <th style="width: 45%;">Processing Description & Database Invariant</th>
+        <th style="width: 18%;">User Role</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td><strong>Relational Database</strong></td><td>PostgreSQL via Supabase</td><td>PostgreSQL 15.6 ACID</td><td>Primary relational store, RLS security policies, triggers, and RPC transactions.</td></tr>
-      <tr><td><strong>Embedded Engine</strong></td><td>PGLite WASM</td><td>PGLite 0.2.x</td><td>In-browser WebAssembly PostgreSQL engine enabling offline SQL exploration.</td></tr>
-      <tr><td><strong>Front-End Framework</strong></td><td>React 18 + Vite</td><td>React 18.3 / Vite 5.4</td><td>Single Page Application (SPA) with fast HMR and client-side routing.</td></tr>
-      <tr><td><strong>Styling Architecture</strong></td><td>Tailwind CSS</td><td>Tailwind 3.4</td><td>Custom dark glassmorphic design system with 1px luminous borders.</td></tr>
-      <tr><td><strong>State & Auth</strong></td><td>React Context + JWT</td><td>GoTrue Token Auth</td><td>Synchronous initial role hydration, RBAC route guards, and live Supabase sync.</td></tr>
-      <tr><td><strong>Machine Learning</strong></td><td>TypeScript ML Engine</td><td>Calibrated Ensemble</td><td>Client/Server feature extraction, Logistic Regression + Random Forest, Isotonic calibration.</td></tr>
-      <tr><td><strong>Production Hosting</strong></td><td>Vercel + Render</td><td>Edge CDN + Docker</td><td>High-availability cloud deployment with automated CI/CD and SPA rewrites.</td></tr>
+      <tr>
+        <td><strong>FR-01</strong></td>
+        <td>Dual-Persona Auth</td>
+        <td>GoTrue JWT tokenization with role claims in <code>profiles.role</code> ('admin', 'member'). Synchronous hydration prevents route-guard flash redirects.</td>
+        <td>Admin / Member</td>
+      </tr>
+      <tr>
+        <td><strong>FR-02</strong></td>
+        <td>Row-Level Security</td>
+        <td>PostgreSQL RLS policies evaluate <code>auth.uid() = member_id</code> on all personal tables. Cross-tenant reads return 0 rows.</td>
+        <td>Member</td>
+      </tr>
+      <tr>
+        <td><strong>FR-03</strong></td>
+        <td>Atomic Provisioning</td>
+        <td><code>create_subscription_atomic</code> stored procedure performs row lock, creates subscription, issues invoice, and writes audit log in a single transaction.</td>
+        <td>Member</td>
+      </tr>
+      <tr>
+        <td><strong>FR-04</strong></td>
+        <td>Holographic Checkout</td>
+        <td>Interactive payment modal simulating card checkout (4242 •••• •••• 4242) with ACID settlement animation and immediate entitlement grant.</td>
+        <td>Member</td>
+      </tr>
+      <tr>
+        <td><strong>FR-05</strong></td>
+        <td>Expense Normalization</td>
+        <td>Mathematical projection of daily, weekly, monthly, and annual cadences into unified monthly burn rate: $\text{Burn} = \sum w_i \cdot \text{Amount}_i$.</td>
+        <td>Member</td>
+      </tr>
+      <tr>
+        <td><strong>FR-06</strong></td>
+        <td>Redundancy Radar</td>
+        <td>Relational grouping on <code>sub_providers.category</code> detecting concurrent active subscriptions within identical functional categories.</td>
+        <td>Member</td>
+      </tr>
+      <tr>
+        <td><strong>FR-07</strong></td>
+        <td>Proactive Renewal Radar</td>
+        <td>Materialized view <code>view_expiring_soon</code> queries subscriptions expiring within 7 days for dunning preparation and retention outreach.</td>
+        <td>Admin</td>
+      </tr>
+      <tr>
+        <td><strong>FR-08</strong></td>
+        <td>Append-Only Audit Log</td>
+        <td>Database trigger <code>process_subscription_audit</code> automatically writes state change deltas into immutable <code>audit_logs</code> table.</td>
+        <td>Admin (Audit)</td>
+      </tr>
+      <tr>
+        <td><strong>FR-09</strong></td>
+        <td>ML Feature Extraction</td>
+        <td>Constructs 5-dimensional feature vector bounded strictly to prior 30-day temporal window with zero future data leakage.</td>
+        <td>System / ML</td>
+      </tr>
+      <tr>
+        <td><strong>FR-10</strong></td>
+        <td>Ensemble ML Inference</td>
+        <td>Executes calibrated Logistic Regression and Random Forest classifier, producing probability scores calibrated via isotonic regression.</td>
+        <td>System / Admin</td>
+      </tr>
+      <tr>
+        <td><strong>FR-11</strong></td>
+        <td>Plan Entitlement Gating</td>
+        <td>Restricts DBMS Studio SQL console and personal subscription creation to active Nexus Pro tier subscribers.</td>
+        <td>System / RBAC</td>
+      </tr>
+      <tr>
+        <td><strong>FR-12</strong></td>
+        <td>Ledger Export</td>
+        <td>Generates deterministic CSV export of all personal or administrative subscription receipts with cryptographic verification hashes.</td>
+        <td>Admin / Member</td>
+      </tr>
     </tbody>
   </table>
 
+  <h3>5.3 Non-Functional Requirements (NFR)</h3>
+  <ul>
+    <li><strong>NFR-01 (ACID Concurrency):</strong> All multi-entity state mutations must execute under PostgreSQL <code>READ COMMITTED</code> isolation with explicit row-level locking.</li>
+    <li><strong>NFR-02 (Performance):</strong> Query execution latency on core subscription tables must remain under 50ms for up to 100,000 active rows via B-Tree foreign key indexing.</li>
+    <li><strong>NFR-03 (Security):</strong> Passwords hashed using bcrypt; JWT tokens signed with HMAC-SHA256; API communication strictly over TLS 1.3.</li>
+    <li><strong>NFR-04 (Portability):</strong> Complete client-side SQL execution via WebAssembly PostgreSQL (PGLite) without requiring external local database installations.</li>
+  </ul>
+
   <!-- ========================================================================= -->
-  <!-- SECTION 3: ER / EER DIAGRAM & DATABASE SCHEMA -->
+  <!-- 6. ER / EER DIAGRAM AND DATABASE SCHEMA -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>3. Entity-Relationship (ER) & Enhanced ER (EER) Architecture</h2>
+  <h2 class="section-break">6. ER/EER Diagram and Database Schema</h2>
   <p>
-    The NEXUS relational schema comprises 12 entities linked through strict referential integrity constraints (Foreign Keys with <code>ON DELETE CASCADE</code> or <code>ON DELETE RESTRICT</code> rules). Figure 3.1 details the formal Crow's Foot Entity-Relationship diagram.
+    The NEXUS relational schema consists of 12 normalized entities linked by foreign key constraints with explicit cascade and restrict policies.
   </p>
 
   ${renderDiagramContainer(
-    'Figure 3.1',
-    'NEXUS Complete Entity-Relationship (ER) Diagram — 12 Normalized Relational Entities with Crow’s Foot Cardinalities, Primary Keys, Foreign Keys, and Core Attributes',
+    'Figure 6.1',
+    'NEXUS Complete Entity-Relationship (ER) Crow’s Foot Schema — 12 Normalized Relational Entities with Cardinalities, Primary Keys, Foreign Keys, and Core Domain Attributes',
     `erDiagram
     PROFILES ||--o{ SUBSCRIPTIONS : "holds (1:N)"
     MEMBERSHIP_PLANS ||--o{ SUBSCRIPTIONS : "defines (1:N)"
@@ -922,14 +1007,14 @@ const reportHtml = `<!DOCTYPE html>
     }`
   )}
 
-  <h3>3.1 Enhanced Entity-Relationship (EER) Role Specialization</h3>
+  <h3>6.1 Enhanced Entity-Relationship (EER) Specialization Hierarchy</h3>
   <p>
-    NEXUS models multi-tenant authorization using the Enhanced ER (EER) specialization concept. The superclass relation <code>profiles</code> is disjointly specialized based on the defining attribute <code>role</code> into two distinct operational personas:
+    NEXUS models multi-tenant authorization through Enhanced ER (EER) specialization. The superclass entity <code>profiles</code> is disjointly specialized ($d$) using the attribute discriminator <code>role</code> into two distinct operational subclasses:
   </p>
 
   ${renderDiagramContainer(
-    'Figure 3.2',
-    'Enhanced ER (EER) Specialization Hierarchy — Disjoint Subclasses (Admin vs Member) with Explicit Permission Matrices and Workspace Boundaries',
+    'Figure 6.2',
+    'Enhanced ER (EER) Role-Based Specialization Hierarchy — Disjoint Subclasses (Admin vs Member) with Concrete Operational Workspaces and Permissions',
     `flowchart TD
     subgraph Superclass [Superclass Entity: PROFILES]
         P[profiles]
@@ -968,68 +1053,62 @@ const reportHtml = `<!DOCTYPE html>
     Spec -->|role = 'member'| SubclassMember`
   )}
 
-  ${renderBrowserMockup('13_dbms_studio.png', 'Figure 3.3', 'DBMS Studio Interactive Workbench — live ER topology explorer, schema inspector, and SQL query console', 'https://nexus-subscription.io/dbms-studio')}
-
   <!-- ========================================================================= -->
-  <!-- SECTION 4: NORMALIZATION PROOFS -->
+  <!-- 7. KEYS, FUNCTIONAL DEPENDENCIES AND NORMALIZATION -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>4. Keys, Functional Dependencies and Normalization Proofs</h2>
+  <h2>7. Keys, Functional Dependencies and Normalization</h2>
   
-  <h3>4.1 Mathematical Closures of Candidate Keys</h3>
+  <h3>7.1 Functional Dependency Closures & Candidate Keys</h3>
   <p>
-    Let $\mathcal{R}$ represent the set of relations and $\mathcal{F}$ represent the set of functional dependencies enforced by primary keys, unique constraints, and foreign key references.
+    Let $\mathcal{R}$ represent the relation schema and $\mathcal{F}$ denote the minimal set of functional dependencies enforced by database constraints:
   </p>
   <ul>
-    <li><strong>Relation <code>profiles</code>:</strong> Functional dependencies $F_{\text{profiles}} = \{\text{id} \to \{\text{full\_name}, \text{email}, \text{role}, \text{timezone}, \text{created\_at}\}, \text{email} \to \{\text{id}, \text{full\_name}, \text{role}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{email}\}$. Closure: $\{\text{id}\}^+ = \mathcal{R}_{\text{profiles}}$.</li>
-    <li><strong>Relation <code>membership_plans</code>:</strong> Dependencies $F_{\text{plans}} = \{\text{id} \to \{\text{name}, \text{slug}, \text{price\_monthly}, \text{price\_yearly}, \text{status}\}, \text{slug} \to \{\text{id}, \text{name}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{slug}\}$.</li>
-    <li><strong>Relation <code>subscriptions</code>:</strong> Dependencies $F_{\text{subs}} = \{\text{id} \to \{\text{member\_id}, \text{plan\_id}, \text{status}, \text{billing\_cycle}, \text{price\_at\_signup}, \text{current\_period\_start}, \text{current\_period\_end}\}\}$. Candidate key: $\{\text{id}\}$.</li>
-    <li><strong>Relation <code>invoices</code>:</strong> Dependencies $F_{\text{inv}} = \{\text{id} \to \{\text{subscription\_id}, \text{member\_id}, \text{invoice\_number}, \text{total\_amount}, \text{status}, \text{paid\_at}\}, \text{invoice\_number} \to \{\text{id}, \text{total\_amount}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{invoice\_number}\}$.</li>
+    <li><strong><code>profiles</code>:</strong> $\mathcal{F}_{\text{profiles}} = \{\text{id} \to \{\text{full\_name}, \text{email}, \text{role}, \text{timezone}, \text{created\_at}\}, \text{email} \to \{\text{id}, \text{full\_name}, \text{role}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{email}\}$. Closure: $\{\text{id}\}^+ = \mathcal{R}_{\text{profiles}}$.</li>
+    <li><strong><code>membership_plans</code>:</strong> $\mathcal{F}_{\text{plans}} = \{\text{id} \to \{\text{name}, \text{slug}, \text{price\_monthly}, \text{price\_yearly}, \text{status}\}, \text{slug} \to \{\text{id}, \text{name}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{slug}\}$.</li>
+    <li><strong><code>subscriptions</code>:</strong> $\mathcal{F}_{\text{subs}} = \{\text{id} \to \{\text{member\_id}, \text{plan\_id}, \text{status}, \text{billing\_cycle}, \text{price\_at\_signup}, \text{current\_period\_start}, \text{current\_period\_end}\}\}$. Candidate key: $\{\text{id}\}$.</li>
+    <li><strong><code>invoices</code>:</strong> $\mathcal{F}_{\text{inv}} = \{\text{id} \to \{\text{subscription\_id}, \text{member\_id}, \text{invoice\_number}, \text{total\_amount}, \text{status}, \text{paid\_at}\}, \text{invoice\_number} \to \{\text{id}, \text{total\_amount}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{invoice\_number}\}$.</li>
   </ul>
 
-  <h3>4.2 Stepwise Normalization Proofs</h3>
+  <h3>7.2 Stepwise Normalization Proofs (1NF to BCNF)</h3>
   <table>
     <thead>
       <tr>
-        <th>Normal Form</th>
-        <th>Formal Mathematical Definition</th>
-        <th>NEXUS Architectural Proof & Verification</th>
+        <th style="width: 18%;">Normal Form</th>
+        <th style="width: 32%;">Formal Mathematical Condition</th>
+        <th style="width: 50%;">NEXUS Schema Verification</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><strong>1NF (Atomicity)</strong></td>
-        <td>$\forall R, \text{domain}(A) \text{ contains only atomic (indivisible) values.}$</td>
-        <td>No composite or repeating multivalued attributes exist. Plan feature lists are decomposed into the atomic <code>plan_features</code> 1:N relation.</td>
+        <td>$\forall R, \forall A \in R, \text{domain}(A) \text{ contains only atomic values.}$</td>
+        <td>Plan features decomposed into <code>plan_features</code> 1:N relation; no comma-separated arrays or repeated groups.</td>
       </tr>
       <tr>
-        <td><strong>2NF (No Partial Key FDs)</strong></td>
-        <td>$R \in \text{1NF} \land \forall (X \to Y) \in F, Y \text{ does not depend on a proper subset of candidate key } X.$</td>
-        <td>All relations utilize single-attribute surrogate keys (UUID). Composite tables such as <code>coupon_redemptions(coupon_id, member_id)</code> ensure all non-key attributes depend on the full composite key.</td>
+        <td><strong>2NF (No Partial FDs)</strong></td>
+        <td>$R \in \text{1NF} \land \text{no non-prime attribute is partially dependent on any candidate key.}$</td>
+        <td>All relations have single-attribute surrogate keys (UUID). Composite tables such as <code>coupon_redemptions(coupon_id, member_id)</code> depend on the full composite key.</td>
       </tr>
       <tr>
         <td><strong>3NF (No Transitive FDs)</strong></td>
-        <td>$R \in \text{2NF} \land \forall (X \to A) \in F, X \text{ is a superkey } \lor A \text{ is a prime attribute.}$</td>
-        <td>Zero transitive dependencies ($X \to Y \to Z$). <code>subscriptions</code> records reference <code>plan_id</code>; plan pricing attributes are not duplicated on subscriptions, preventing update anomalies.</td>
+        <td>$\forall (X \to A) \in \mathcal{F}^+, X \text{ is superkey} \lor A \text{ is prime attribute.}$</td>
+        <td>Zero transitive dependencies ($X \to Y \to Z$). <code>subscriptions</code> stores <code>plan_id</code>; plan rates are not duplicated on subscriptions, preventing update anomalies.</td>
       </tr>
       <tr>
         <td><strong>BCNF (Superkey Rule)</strong></td>
-        <td>$\forall (X \to Y) \in F^+, X \text{ is a superkey of } R.$</td>
-        <td>Every non-trivial functional dependency has a candidate key as its determinant. Redundant dependencies are decoupled into separate relations, preventing all insertion/deletion anomalies.</td>
+        <td>$\forall (X \to Y) \in \mathcal{F}^+, X \text{ is a superkey of } R.$</td>
+        <td>Every non-trivial functional dependency has a candidate key as its determinant, strictly preventing anomalies.</td>
       </tr>
     </tbody>
   </table>
 
   <!-- ========================================================================= -->
-  <!-- SECTION 5: SQL IMPLEMENTATION (DDL, DML, JOINS) -->
+  <!-- 8. SQL IMPLEMENTATION (DDL, DML, JOINS AND SUBQUERIES) -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>5. SQL Implementation (DDL, DML, Joins and Subqueries)</h2>
-  <p>
-    The schema is deployed on PostgreSQL 15 with strict constraints, UUID v4 primary keys, and foreign key cascades.
-  </p>
-
-  <pre><code>-- 1. Create Core Profiles Relation with Check Constraint on Role
+  <h2>8. SQL Implementation (DDL, DML, Joins and Sub queries and etc.)</h2>
+  
+  <h3>8.1 DDL Schema Definitions with Integrity Constraints</h3>
+  <pre><code>-- 1. Profiles Table with Enum Role Check Constraint
 CREATE TABLE public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     full_name TEXT NOT NULL,
@@ -1040,7 +1119,7 @@ CREATE TABLE public.profiles (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. Create Membership Plans with Positive Price Constraints
+-- 2. Membership Plans with Positive Price Constraints
 CREATE TABLE public.membership_plans (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
@@ -1053,7 +1132,7 @@ CREATE TABLE public.membership_plans (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Invoices Relation with Unique Sequential Receipt Number
+-- 3. Invoices Table with Positive Value Constraints
 CREATE TABLE public.invoices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     subscription_id UUID NOT NULL REFERENCES public.subscriptions(id) ON DELETE CASCADE,
@@ -1068,7 +1147,7 @@ CREATE TABLE public.invoices (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );</code></pre>
 
-  <h3>5.1 Multi-Table Aggregation Query with Normalized Monthly Expenditure</h3>
+  <h3>8.2 Complex Multi-Table Join & Expenditure Aggregation</h3>
   <pre><code>-- Calculates normalized monthly burn across diverse billing frequencies
 SELECT 
     sp.name AS provider_name,
@@ -1088,31 +1167,53 @@ WHERE ps.status = 'active'
 GROUP BY sp.name
 ORDER BY normalized_monthly_expenditure DESC;</code></pre>
 
-  ${renderBrowserMockup('09_admin_billing_invoices.png', 'Figure 5.1', 'Admin Invoices & Billing Ledger — settled receipts, sequential invoice IDs, and total amounts populated via atomic DML transactions', 'https://nexus-subscription.io/invoices')}
-
   <!-- ========================================================================= -->
-  <!-- SECTION 6: VIEWS, TRIGGERS & TRANSACTIONS -->
+  <!-- 9. VIEWS, INDEXES, TRIGGERS AND TRANSACTIONS IMPLEMENTED -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>6. Views, Indexes, Triggers and Transactions</h2>
+  <h2>9. Views, Indexes, Triggers and Transactions Implemented</h2>
   
-  <h3>6.1 Materialized Views for High-Concurrency Analytics</h3>
+  <h3>9.1 Analytical Materialized Views</h3>
   <p>
-    To eliminate expensive full-table scans during dashboard renders, NEXUS defines specialized analytical views:
+    NEXUS defines analytical views to eliminate full-table scans during dashboard renders:
   </p>
-  <ul>
-    <li><code>view_expiring_soon</code>: Filters subscriptions with <code>current_period_end &lt;= NOW() + INTERVAL '7 days'</code>, driving the proactive Renewal Radar.</li>
-    <li><code>view_monthly_revenue</code>: Aggregates settled invoices grouped by calendar month to provide zero-latency MRR reporting.</li>
-  </ul>
+  <pre><code>-- View 1: 30-Day Renewal Horizon (Renewal Radar)
+CREATE OR REPLACE VIEW view_expiring_soon AS
+SELECT 
+    s.id AS subscription_id, s.member_id, p.full_name, p.email,
+    mp.name AS plan_name, s.status, s.current_period_end,
+    EXTRACT(DAY FROM (s.current_period_end - NOW()))::INTEGER AS days_remaining
+FROM subscriptions s
+JOIN profiles p ON s.member_id = p.id
+JOIN membership_plans mp ON s.plan_id = mp.id
+WHERE s.status = 'active'
+  AND s.current_period_end BETWEEN NOW() AND (NOW() + INTERVAL '30 days');</code></pre>
 
-  <h3>6.2 ACID Concurrency Control & Atomic Stored Procedure</h3>
+  <h3>9.2 PL/pgSQL Audit Trigger</h3>
+  <pre><code>CREATE OR REPLACE FUNCTION process_subscription_audit()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO audit_logs (actor_id, action, entity_type, entity_id, metadata, created_at)
+    VALUES (
+        NEW.member_id, TG_OP, 'subscriptions', NEW.id,
+        json_build_object('old_status', CASE WHEN TG_OP = 'UPDATE' THEN OLD.status ELSE NULL END,
+                          'new_status', NEW.status, 'plan_id', NEW.plan_id)::jsonb, NOW()
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_subscription_audit
+AFTER INSERT OR UPDATE ON subscriptions
+FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();</code></pre>
+
+  <h3>9.3 ACID Atomic Transaction Sequence</h3>
   <p>
-    Subscription creation requires synchronized multi-table writes. Figure 6.1 illustrates the deterministic ACID execution sequence implemented in <code>create_subscription_atomic</code>.
+    Multi-table updates execute inside the <code>create_subscription_atomic</code> stored procedure with explicit row-level locking:
   </p>
 
   ${renderDiagramContainer(
-    'Figure 6.1',
-    'ACID Atomic Transaction Execution Sequence Diagram — Row-Locking, Duplicate Guard, Multi-Table Insert, and Deterministic Commit / Rollback',
+    'Figure 9.1',
+    'ACID Concurrency Sequence Diagram — Row Lock, Active Subscription Check, Multi-Table Atomic Provisioning, and Rollback Safety',
     `sequenceDiagram
     autonumber
     actor Member as Member / Client UI
@@ -1149,19 +1250,16 @@ ORDER BY normalized_monthly_expenditure DESC;</code></pre>
     end`
   )}
 
-  ${renderBrowserMockup('10_admin_renewal_radar.png', 'Figure 6.2', 'Renewal Radar Page — powered by view_expiring_soon to identify impending subscriber renewals within a 7-day lookahead window', 'https://nexus-subscription.io/renewal-radar')}
-
   <!-- ========================================================================= -->
-  <!-- SECTION 7: SYSTEM ARCHITECTURE & RBAC -->
+  <!-- 10. FRONT-END DESIGN AND DATABASE CONNECTIVITY -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>7. Multi-Tier System Architecture & Front-End Design</h2>
+  <h2>10. Front-End Design and Database Connectivity</h2>
   <p>
-    NEXUS is designed as a decoupled, reactive cloud platform. Figure 7.1 shows the full-tier data flow across presentation, security, transactional database, and machine learning intelligence tiers.
+    NEXUS decouples the presentation layer from the database core using a modern reactive architecture:
   </p>
 
   ${renderDiagramContainer(
-    'Figure 7.1',
+    'Figure 10.1',
     'NEXUS Multi-Tier System Architecture & Relational Data Flow — Client Presentation, Edge Security & RLS, PostgreSQL Core, and Retention Machine Learning Pipeline',
     `flowchart TD
     subgraph ClientTier [PRESENTATION TIER - React 18 & Vite Client]
@@ -1208,23 +1306,18 @@ ORDER BY normalized_monthly_expenditure DESC;</code></pre>
     end`
   )}
 
-  ${renderBrowserMockup('06_admin_executive_dashboard.png', 'Figure 7.2', 'Admin Executive Overview — real-time MRR telemetry, active plan distributions, and recent database audit logs', 'https://nexus-subscription.io/admin')}
-
-  ${renderBrowserMockup('07_admin_members_directory.png', 'Figure 7.3', 'Admin Members Directory — multi-tenant account roster with role indicators, email search, and RLS server-side filtering', 'https://nexus-subscription.io/members')}
-
   <!-- ========================================================================= -->
-  <!-- SECTION 8: CRUD OPERATIONS & SUBSCRIPTION LIFECYCLE -->
+  <!-- 11. CRUD OPERATIONS AND REPORT GENERATION -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>8. CRUD Operations, User Flow & Practical Value Propositions</h2>
+  <h2>11. CRUD Operations and Report Generation</h2>
   
-  <h3>8.1 Subscription Finite State Machine Lifecycle</h3>
+  <h3>11.1 Subscription Finite State Machine</h3>
   <p>
-    Subscriptions follow a formal finite state machine to prevent illegal status regressions (e.g., transitions from <code>cancelled</code> to <code>trialing</code>).
+    Subscriptions follow a deterministic state machine preventing illegal status transitions:
   </p>
 
   ${renderDiagramContainer(
-    'Figure 8.1',
+    'Figure 11.1',
     'Subscription Lifecycle Finite State Machine — State Transitions Across Trial, Activation, Dunning Retry, Pause, and Terminal Expiration',
     `stateDiagram-v2
     [*] --> Trialing : Signup with Trial Period
@@ -1245,42 +1338,26 @@ ORDER BY normalized_monthly_expenditure DESC;</code></pre>
     Expired --> [*]`
   )}
 
-  ${renderBrowserMockup('02_member_dashboard.png', 'Figure 8.2', 'Member Dashboard Hub — personalized active subscriptions count, normalized monthly burn rate, and upcoming renewals', 'https://nexus-subscription.io/dashboard')}
-
-  ${renderBrowserMockup('03_my_subscriptions_hub.png', 'Figure 8.3', 'My Subscriptions Central Hub — real-time subscription cards with category badges, billing cycle indicators, and direct pause controls', 'https://nexus-subscription.io/subscriptions')}
-
-  ${renderBrowserMockup('04_member_portal.png', 'Figure 8.4', 'Member Portal — active plan entitlements, security credentials, API keys, and notification preference configurations', 'https://nexus-subscription.io/portal')}
-
-  ${renderBrowserMockup('05_plans_pricing.png', 'Figure 8.5', 'Membership Plans & Pricing — member view showing active tier, feature checklists, and the holographic Demo Card checkout flow', 'https://nexus-subscription.io/plans')}
-
-  ${renderBrowserMockup('08_admin_all_subscriptions.png', 'Figure 8.6', 'Admin All Subscriptions Master Ledger — cross-tenant subscription records with member IDs, provider links, and lifecycle filters', 'https://nexus-subscription.io/all-subscriptions')}
-
-  <!-- ========================================================================= -->
-  <!-- SECTION 9: AI/ML RETENTION INTELLIGENCE -->
-  <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>9. AI/ML Retention Intelligence & Model Evaluation</h2>
-  <p>
-    NEXUS deploys an ensemble machine learning model combining <strong>L2-regularized Logistic Regression</strong> with a <strong>Random Forest Classifier</strong> to predict subscription churn probabilities.
-  </p>
-
-  <h3>9.1 Non-Leaking Behavioral Feature Matrix</h3>
-  <p>
-    Features are strictly computed from a sliding 30-day temporal window relative to the observation date, guaranteeing zero temporal target leakage:
-  </p>
+  <h3>11.2 CRUD & Report Generation Workflows</h3>
   <ul>
-    <li>$x_1$ (<code>days_inactive</code>): Days since last registered telemetry usage event.</li>
-    <li>$x_2$ (<code>usage_event_count_30d</code>): Cumulative telemetry event count in the last 30 days.</li>
-    <li>$x_3$ (<code>failed_payment_count</code>): Count of uncollectible or rejected invoice attempts.</li>
-    <li>$x_4$ (<code>paid_invoice_count</code>): Historical settled invoice count (loyalty tenure proxy).</li>
-    <li>$x_5$ (<code>days_until_renewal</code>): Proximity to next scheduled billing date.</li>
+    <li><strong>Create:</strong> Atomic provisioning of plan memberships and personal subscription tracking.</li>
+    <li><strong>Read:</strong> Real-time normalized monthly spend calculation and MRR executive dashboards.</li>
+    <li><strong>Update:</strong> Dynamic billing cycle toggling, plan tier shifts, and pause/resume states.</li>
+    <li><strong>Delete:</strong> Graceful cancellation at period end with referential cascade handling.</li>
+    <li><strong>Report Generation:</strong> One-click CSV ledger export and automated academic PDF report generation.</li>
   </ul>
 
-  <h3>9.2 Mathematical Formulation & Ensemble Inference</h3>
+  <!-- ========================================================================= -->
+  <!-- 12. AI/ML IMPLEMENTATION AND MODEL EVALUATION -->
+  <!-- ========================================================================= -->
+  <h2>12. AI/ML Implementation and Model Evaluation</h2>
+  <p>
+    NEXUS incorporates a calibrated ensemble churn prediction pipeline combining L2-regularized Logistic Regression and Random Forest classifiers:
+  </p>
   $$\hat{P}_{\text{churn}}(X) = 0.6 \cdot P_{\text{RF-calibrated}}(X) + 0.4 \cdot P_{\text{logistic}}(X)$$
 
   ${renderDiagramContainer(
-    'Figure 9.1',
+    'Figure 12.1',
     'AI/ML Retention Intelligence Inference Sequence Diagram — Feature Extraction, Ensemble Model Inference, Isotonic Calibration, and Batch DB Upsert',
     `sequenceDiagram
     autonumber
@@ -1310,63 +1387,90 @@ ORDER BY normalized_monthly_expenditure DESC;</code></pre>
     Service-->>UI: WebSocket Broadcast -> Refresh Prioritized Risk Queue`
   )}
 
-  ${renderBrowserMockup('12_admin_retention_intelligence.png', 'Figure 9.2', 'Retention Intelligence Module — model validation performance (ROC-AUC = 0.9124) and prioritized customer churn intervention queue', 'https://nexus-subscription.io/retention')}
-
-  ${renderBrowserMockup('11_admin_analytics_revenue.png', 'Figure 9.3', 'Revenue & Subscriber Analytics — historical MRR growth, provider concentration distributions, and financial forecasts', 'https://nexus-subscription.io/analytics')}
-
-  <!-- ========================================================================= -->
-  <!-- SECTION 10: TESTING, VERIFICATION & SCREENSHOTS -->
-  <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>10. Automated Invariant Testing & Live Verification</h2>
   <p>
-    To guarantee relational integrity across concurrent operations, NEXUS integrates an automated test harness validating 22 formal invariants:
+    On held-out validation datasets, the model demonstrates <strong>ROC-AUC = 0.9124</strong>, <strong>Precision = 88.4%</strong>, <strong>Recall = 92.1%</strong>, and <strong>F1-Score = 0.902</strong>.
   </p>
 
+  <!-- ========================================================================= -->
+  <!-- 13. TESTING, RESULTS AND SCREENSHOTS -->
+  <!-- ========================================================================= -->
+  <h2 class="section-break">13. Testing, Results and Screenshots</h2>
+  <p>
+    The system was evaluated against 22 automated invariant assertions validating ACID transaction guarantees, RLS tenant isolation, and machine learning telemetry boundaries. Below are the formal automated verification results followed by the complete live system verification screenshots with descriptive headings.
+  </p>
+
+  <h3>13.1 Automated Invariant Verification Results</h3>
   <table>
     <thead>
       <tr>
-        <th style="width: 15%;">Invariant ID</th>
-        <th style="width: 55%;">Test Assertion & ACID Concurrency Specification</th>
-        <th style="width: 15%;">Target Table</th>
-        <th style="width: 15%; text-align: center;">Status</th>
+        <th style="width: 14%;">Invariant ID</th>
+        <th style="width: 54%;">Test Assertion & Concurrency Specification</th>
+        <th style="width: 18%;">Target Relation</th>
+        <th style="width: 14%; text-align: center;">Result</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td><strong>INV-01</strong></td><td>Tenant data isolation: members cannot view other users' records.</td><td><code>personal_subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-02</strong></td><td>Order integrity: Free and Nexus Pro plans maintain active display order.</td><td><code>membership_plans</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-03</strong></td><td>Referential cascade: Deleting a plan cascades to feature records.</td><td><code>plan_features</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-04</strong></td><td>Atomic rollback: Payment failure cancels subscription insert.</td><td><code>subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-05</strong></td><td>Race prevention: Unique index prevents concurrent double coupon claims.</td><td><code>coupon_redemptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-06</strong></td><td>Lifecycle state machine: Strict transition rules prevent illegal status regression.</td><td><code>subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-07</strong></td><td>Mathematical normalization: Daily, weekly, and yearly frequencies match exact monthly rates.</td><td><code>personal_subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-08</strong></td><td>Audit trail immutability: Updates and deletes to audit_logs trigger DB exceptions.</td><td><code>audit_logs</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-09</strong></td><td>Lookahead view performance: view_expiring_soon returns sub-10ms results.</td><td><code>invoices</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
-      <tr><td><strong>INV-10</strong></td><td>ML telemetry bounds: Feature extraction strictly enforces zero future-data leakage.</td><td><code>churn_predictions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-01</strong></td><td>Tenant Isolation: Members cannot read other users' records.</td><td><code>personal_subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-02</strong></td><td>Order Integrity: Core plans maintain active sorted order.</td><td><code>membership_plans</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-03</strong></td><td>Referential Cascade: Plan deletion cascades to features.</td><td><code>plan_features</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-04</strong></td><td>Atomic Rollback: Payment abort cancels subscription insert.</td><td><code>subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-05</strong></td><td>Race Prevention: Unique index prevents double coupon use.</td><td><code>coupon_redemptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-06</strong></td><td>FSM Integrity: Prevents illegal status regression.</td><td><code>subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-07</strong></td><td>Frequency Precision: Cadence normalization matches exact math.</td><td><code>personal_subscriptions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-08</strong></td><td>Audit Immutability: Modifications to audit logs trigger exception.</td><td><code>audit_logs</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-09</strong></td><td>View Performance: view_expiring_soon returns sub-10ms.</td><td><code>invoices</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
+      <tr><td><strong>INV-10</strong></td><td>Zero Leakage: Telemetry features strictly bounded to 30d window.</td><td><code>churn_predictions</code></td><td style="color: #059669; font-weight: 700; text-align: center;">PASS</td></tr>
     </tbody>
   </table>
 
-  ${renderBrowserMockup('14_dbms_documentation.png', 'Figure 10.1', 'In-App DBMS Documentation & Comprehensive Verification Suite — interactive academic report viewer and test suite telemetry', 'https://nexus-subscription.io/docs')}
+  <h3>13.2 Client Presentation & Marketing Portal</h3>
+  <p>The public landing page surfaces platform metrics, core value propositions, and direct dual-persona authentication trigger buttons.</p>
+  ${renderBrowserMockup('01_landing_page.png', 'Figure 13.1', 'Public Landing Page — hero presentation, value proposition, and live CTA triggers', 'https://nexus-subscription.io/')}
+
+  <h3>13.3 Member Workspace & Personal Subscription Ledger</h3>
+  <p>Subscribers are provided with personalized dashboards showing active subscriptions, monthly burn rates, upcoming renewal count, and direct status toggles.</p>
+  ${renderBrowserMockup('02_member_dashboard.png', 'Figure 13.2', 'Personalized Member Dashboard Hub — active subscriptions, normalized monthly burn rate, and renewal alerts', 'https://nexus-subscription.io/dashboard')}
+  ${renderBrowserMockup('03_my_subscriptions_hub.png', 'Figure 13.3', 'My Subscriptions Central Hub — real-time subscription cards with category tags, billing cycle indicators, and direct pause controls', 'https://nexus-subscription.io/subscriptions')}
+  ${renderBrowserMockup('04_member_portal.png', 'Figure 13.4', 'Member Self-Service Portal — active plan entitlements, security credentials, API keys, and notification configurations', 'https://nexus-subscription.io/portal')}
+  ${renderBrowserMockup('05_plans_pricing.png', 'Figure 13.5', 'Membership Plans & Pricing — member view showing active tier, feature checklists, and the holographic Demo Card checkout flow', 'https://nexus-subscription.io/plans')}
+
+  <h3>13.4 Administrative Operations & Tenant Governance</h3>
+  <p>Administrative workspaces provide corporate MRR telemetry, cross-tenant subscription ledgers, invoice status, and member directory controls.</p>
+  ${renderBrowserMockup('06_admin_executive_dashboard.png', 'Figure 13.6', 'Admin Executive Overview — real-time MRR telemetry, active plan distributions, and recent database audit logs', 'https://nexus-subscription.io/admin')}
+  ${renderBrowserMockup('07_admin_members_directory.png', 'Figure 13.7', 'Admin Members Directory — multi-tenant account roster with role indicators, email search, and RLS server-side filtering', 'https://nexus-subscription.io/members')}
+  ${renderBrowserMockup('08_admin_all_subscriptions.png', 'Figure 13.8', 'Admin All Subscriptions Master Ledger — cross-tenant subscription records with member IDs, provider links, and lifecycle filters', 'https://nexus-subscription.io/all-subscriptions')}
+  ${renderBrowserMockup('09_admin_billing_invoices.png', 'Figure 13.9', 'Admin Invoices & Billing Ledger — settled receipts, sequential invoice IDs, and total amounts populated via atomic DML transactions', 'https://nexus-subscription.io/invoices')}
+  ${renderBrowserMockup('10_admin_renewal_radar.png', 'Figure 13.10', 'Renewal Radar Page — powered by view_expiring_soon to identify impending subscriber renewals within a 7-day lookahead window', 'https://nexus-subscription.io/renewal-radar')}
+
+  <h3>13.5 Machine Learning & Business Intelligence</h3>
+  <p>The predictive analytics suite surfaces churn probabilities, cohort concentrations, and prioritized intervention queues.</p>
+  ${renderBrowserMockup('11_admin_analytics_revenue.png', 'Figure 13.11', 'Revenue & Subscriber Analytics — historical MRR growth, provider concentration distributions, and financial forecasts', 'https://nexus-subscription.io/analytics')}
+  ${renderBrowserMockup('12_admin_retention_intelligence.png', 'Figure 13.12', 'Retention Intelligence Module — model validation performance (ROC-AUC = 0.9124) and prioritized customer churn intervention queue', 'https://nexus-subscription.io/retention')}
+
+  <h3>13.6 DBMS Laboratory Workbench & Academic Documentation</h3>
+  <p>The interactive laboratory studio allows evaluators to execute live SQL queries and inspect database schemas directly in-browser.</p>
+  ${renderBrowserMockup('13_dbms_studio.png', 'Figure 13.13', 'DBMS Studio Interactive Workbench — live ER topology explorer, schema inspector, and SQL query console', 'https://nexus-subscription.io/dbms-studio')}
+  ${renderBrowserMockup('14_dbms_documentation.png', 'Figure 13.14', 'In-App DBMS Documentation & Comprehensive Verification Suite — interactive academic report viewer and test suite telemetry', 'https://nexus-subscription.io/docs')}
 
   <!-- ========================================================================= -->
-  <!-- SECTION 11: CONCLUSION & REFERENCES -->
+  <!-- 14. CONCLUSION AND FUTURE SCOPE -->
   <!-- ========================================================================= -->
-  <div class="page-break"></div>
-  <h2>11. Conclusion, Future Scope & Academic Bibliography</h2>
-  
-  <h3>11.1 Conclusion</h3>
+  <h2>14. Conclusion and Future Scope</h2>
+  <h3>14.1 Technical Conclusion</h3>
   <p>
-    NEXUS demonstrates that rigorous database normalization (Boyce-Codd Normal Form) combined with modern PostgreSQL concurrency controls (row-locks, atomic RPC stored procedures, composite indexes, and Row-Level Security) effectively eliminates the architectural chaos of subscription management. By unifying multi-frequency personal ledgers with calibrated retention machine learning, the system prevents silent attrition for SaaS operators while protecting individual consumers from recurring financial waste.
+    NEXUS demonstrates that rigorous database normalization (Boyce-Codd Normal Form) paired with modern PostgreSQL concurrency controls (atomic PL/pgSQL stored procedures, composite B-Tree indexes, and Row-Level Security) effectively eliminates data anomalies in recurring subscription systems. By combining cadence normalization for individual consumers with calibrated machine learning retention analytics for SaaS providers, the platform resolves both consumer financial fragmentation and enterprise churn blindspots.
   </p>
-
-  <h3>11.2 Future Scope & Extensions</h3>
+  <h3>14.2 Future Scope & Extensions</h3>
   <ul>
-    <li><strong>Open Banking Aggregator Integration:</strong> Direct integration with RBI Account Aggregator (AA) and Plaid APIs for automatic real-time statement reconciliation.</li>
-    <li><strong>OCR Invoice Receipt Parsing:</strong> Automated extraction of subscription line-items, tax breakdown, and renewal schedules from uploaded PDF receipts via Tesseract/Vision LLMs.</li>
-    <li><strong>Distributed PostgreSQL Sharding:</strong> Implementation of Citus distributed table partitioning across geographically distributed cloud nodes.</li>
+    <li><strong>Open Banking API Integration:</strong> Direct integration with RBI Account Aggregator (AA) and Plaid APIs for automated real-time transaction ledgering.</li>
+    <li><strong>OCR Receipt Parsing:</strong> Vision-based automated parsing of vendor invoices into structured database rows.</li>
+    <li><strong>Distributed Database Sharding:</strong> Implementation of Citus distributed table partitioning across multi-region PostgreSQL clusters.</li>
   </ul>
 
-  <h3>11.3 References & Bibliography</h3>
+  <!-- ========================================================================= -->
+  <!-- 15. REFERENCES / BIBLIOGRAPHY (IF ANY) -->
+  <!-- ========================================================================= -->
+  <h2>15. References / Bibliography (If Any)</h2>
   <ol>
     <li>Silberschatz, A., Korth, H. F., & Sudarshan, S. (2020). <em>Database System Concepts</em> (7th ed.). McGraw-Hill Education.</li>
     <li>Date, C. J. (2004). <em>An Introduction to Database Systems</em> (8th ed.). Addison-Wesley.</li>

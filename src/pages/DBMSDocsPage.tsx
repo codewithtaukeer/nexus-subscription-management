@@ -163,8 +163,8 @@ export const DBMSDocsPage: React.FC = () => {
             </p>
 
             <div className="py-6 flex justify-center">
-              <div className="w-24 h-24 rounded-full border-2 border-[#8DFFCB]/40 bg-white flex flex-col items-center justify-center p-2 shadow-[0_0_25px_rgba(141,255,203,0.2)]">
-                <img src="/mnnit_logo.png" alt="MNNIT Logo" className="w-16 h-16 object-contain" />
+              <div className="w-36 h-36 rounded-3xl border-2 border-[#8DFFCB]/50 bg-white flex flex-col items-center justify-center p-3 shadow-[0_0_35px_rgba(141,255,203,0.35)] hover:scale-105 transition-transform duration-300">
+                <img src="/mnnit_logo.png" alt="MNNIT Logo" className="w-28 h-28 object-contain" />
               </div>
             </div>
 
@@ -291,45 +291,49 @@ export const DBMSDocsPage: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* SECTION 5: SYSTEM ANALYSIS AND REQUIREMENTS */}
+      {/* SECTION 5: SYSTEM ANALYSIS AND REQUIREMENTS (SRS) */}
       {/* ========================================================================= */}
       {(activeSection === 'all' || activeSection === 'sec5_sysanalysis') && (
         <div id="sec5_sysanalysis" className="glass-panel p-8 rounded-3xl border border-[rgba(220,255,245,0.12)] space-y-6">
           <div className="flex items-center gap-2.5">
             <Cpu className="w-5 h-5 text-[#8DFFCB]" />
-            <h2 className="text-lg font-bold text-[#F1F5F0]">5. System Analysis and Requirements</h2>
+            <div>
+              <h2 className="text-lg font-bold text-[#F1F5F0]">5. System Analysis and Requirements (Software Requirements Specification - SRS)</h2>
+              <p className="text-xs text-[#8E9F9B] font-mono">Formal IEEE 830 Specification: Dual-Persona User Classes, Functional Requirements & Constraints</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
             <div className="glass-card p-5 rounded-2xl space-y-3">
-              <div className="text-[#8DFFCB] font-bold uppercase">Functional Requirements (FR)</div>
+              <div className="text-[#8DFFCB] font-bold uppercase">Functional Requirements (FR) Matrix</div>
               <ul className="text-[#8E9F9B] space-y-2 list-disc list-inside">
-                <li><strong className="text-[#F1F5F0]">FR1:</strong> Authentication & Profile Management with Row-Level Security (RLS).</li>
-                <li><strong className="text-[#F1F5F0]">FR2:</strong> Multi-frequency subscription tracking (monthly, yearly, quarterly, custom).</li>
-                <li><strong className="text-[#F1F5F0]">FR3:</strong> Full lifecycle actions: create, pause, reactivate, schedule cancel, archive, delete.</li>
-                <li><strong className="text-[#F1F5F0]">FR4:</strong> Invoicing, gateway payment tracking, and receipt document attachment.</li>
-                <li><strong className="text-[#F1F5F0]">FR5:</strong> Interactive SQL execution workbench & Relational Algebra evaluator.</li>
+                <li><strong className="text-[#F1F5F0]">FR-01 (Dual-Persona Auth):</strong> GoTrue JWT tokenization with role claims in profiles ('admin', 'member').</li>
+                <li><strong className="text-[#F1F5F0]">FR-02 (Row-Level Security):</strong> PostgreSQL RLS policies evaluate auth.uid() = member_id on personal tables.</li>
+                <li><strong className="text-[#F1F5F0]">FR-03 (Atomic Provisioning):</strong> Stored procedure create_subscription_atomic executes row locks, subscription insert, and invoice ledgering atomically.</li>
+                <li><strong className="text-[#F1F5F0]">FR-04 (Holographic Demo Card):</strong> Interactive simulated card checkout with ACID transaction processing and instant entitlement grant.</li>
+                <li><strong className="text-[#F1F5F0]">FR-05 (Expense Normalization):</strong> Projections of daily, weekly, monthly, and yearly cadences into unified monthly burn rate.</li>
+                <li><strong className="text-[#F1F5F0]">FR-06 (Redundancy Radar):</strong> Relational grouping detecting duplicate active subscriptions within identical categories.</li>
+                <li><strong className="text-[#F1F5F0]">FR-07 (Proactive Renewal Radar):</strong> View view_expiring_soon surfaces accounts expiring within 7 days.</li>
+                <li><strong className="text-[#F1F5F0]">FR-08 (Append-Only Audit Log):</strong> Database triggers record all DML mutations into an immutable audit_logs ledger.</li>
+                <li><strong className="text-[#F1F5F0]">FR-09 (ML Feature Extraction):</strong> 5 non-leaking features bounded to prior 30-day temporal window.</li>
+                <li><strong className="text-[#F1F5F0]">FR-10 (Ensemble ML Inference):</strong> Calibrated Logistic Regression + Random Forest retention risk scoring.</li>
               </ul>
             </div>
 
             <div className="glass-card p-5 rounded-2xl space-y-3">
-              <div className="text-[#8DFFCB] font-bold uppercase">Non-Functional Requirements (NFR)</div>
+              <div className="text-[#8DFFCB] font-bold uppercase">Non-Functional Requirements (NFR) Matrix</div>
               <ul className="text-[#8E9F9B] space-y-2 list-disc list-inside">
-                <li><strong className="text-[#F1F5F0]">NFR1 (Performance):</strong> Sub-50ms query response times via composite B-Tree indexes.</li>
-                <li><strong className="text-[#F1F5F0]">NFR2 (Security):</strong> Granular RLS policies preventing cross-tenant data leaks.</li>
-                <li><strong className="text-[#F1F5F0]">NFR3 (Reliability):</strong> Read-Committed and Serializable ACID transaction isolation.</li>
-                <li><strong className="text-[#F1F5F0]">NFR4 (Usability):</strong> Dark glassmorphic responsive interface with WCAG 2.1 AA accessibility.</li>
-                <li><strong className="text-[#F1F5F0]">NFR5 (Portability):</strong> PGLite WebAssembly allowing zero-install local relational execution.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-01 (ACID Concurrency):</strong> All multi-entity state mutations execute under READ COMMITTED isolation with FOR UPDATE row locks.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-02 (Query Performance):</strong> Sub-50ms query response times on 100,000+ rows via composite B-Tree indexes.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-03 (Multi-Tenant Security):</strong> Zero cross-tenant data leakage guaranteed at database level via Postgres RLS.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-04 (High Reliability):</strong> Idempotent payment processing preventing duplicate charges or coupon reuse.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-05 (Zero-Install Portability):</strong> PGLite WebAssembly enabling full offline relational algebra evaluation.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-06 (Usability & Design):</strong> Dark glassmorphic interface with 1px luminous borders and responsive mobile-ready layout.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-07 (Temporal Integrity):</strong> Zero future-data leakage in feature vectors relative to observation date.</li>
+                <li><strong className="text-[#F1F5F0]">NFR-08 (Audit Compliance):</strong> Complete forensic traceability with actor ID, IP metadata, and transaction hashes.</li>
               </ul>
             </div>
           </div>
-
-          <ScreenshotFigure
-            src="/screenshots/01_landing_page.png"
-            alt="Public Landing Showcase"
-            figureNumber="Figure 5.1"
-            caption="Public Landing Showcase featuring live platform statistics, 3-card single-row value propositions, and interactive blueprint visualizer."
-          />
         </div>
       )}
 
@@ -471,12 +475,6 @@ export const DBMSDocsPage: React.FC = () => {
               </tbody>
             </table>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/13_dbms_studio.png"
-            alt="DBMS Studio — ER Schema Explorer"
-            figureNumber="Figure 6.1"
-            caption="DBMS Studio Live ER Schema Explorer — interactive table inspector, column types, and foreign key relationships visualised in-browser"
-          />
         </div>
       )}
 
@@ -593,12 +591,6 @@ GROUP BY sp.name
 HAVING COUNT(ps.id) > 0
 ORDER BY normalized_monthly_expenditure DESC;`}</pre>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/09_admin_billing_invoices.png"
-            alt="Admin — Invoices & Billing Ledger"
-            figureNumber="Figure 8.1"
-            caption="Invoices & Billing ledger: settled receipts, invoice IDs, amounts, and status — data populated by DML INSERT via ACID transaction RPCs"
-          />
         </div>
       )}
 
@@ -655,12 +647,6 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               </ul>
             </div>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/10_admin_renewal_radar.png"
-            alt="Admin — Renewal Radar"
-            figureNumber="Figure 9.1"
-            caption="Renewal Radar page powered by the view_expiring_soon materialized view — surfaces subscribers with renewals within 7 days for proactive retention"
-          />
         </div>
       )}
 
@@ -688,18 +674,6 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               <p className="text-[#8E9F9B]">Embedded client-side PostgreSQL engine executing in WebAssembly, allowing evaluators to run live SQL commands and inspect schemas offline.</p>
             </div>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/06_admin_executive_dashboard.png"
-            alt="Admin — Executive Dashboard"
-            figureNumber="Figure 10.1"
-            caption="Admin Executive Dashboard — live KPI cards, revenue summaries, and churn metrics delivered via Supabase PostgREST REST layer with React context"
-          />
-          <ScreenshotFigure
-            src="/screenshots/07_admin_members_directory.png"
-            alt="Admin — Members Directory"
-            figureNumber="Figure 10.2"
-            caption="Admin Members Directory — full member roster with role badges, RBAC-enforced row visibility, and Supabase RLS policies applied server-side"
-          />
         </div>
       )}
 
@@ -831,36 +805,6 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               </div>
             </div>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/02_member_dashboard.png"
-            alt="Member Dashboard Hub"
-            figureNumber="Figure 11.1"
-            caption="Member Dashboard Hub — high-level overview of active subscriptions, normalized monthly burn rate, upcoming renewals, and quick actions"
-          />
-          <ScreenshotFigure
-            src="/screenshots/03_my_subscriptions_hub.png"
-            alt="My Subscriptions Hub"
-            figureNumber="Figure 11.2"
-            caption="My Subscriptions Hub — real-time subscription cards with category tags, billing cycle indicators, and direct edit/pause controls"
-          />
-          <ScreenshotFigure
-            src="/screenshots/04_member_portal.png"
-            alt="Member Portal"
-            figureNumber="Figure 11.3"
-            caption="Member Portal — active plan entitlements, security credentials, API keys, and notification preference configurations"
-          />
-          <ScreenshotFigure
-            src="/screenshots/05_plans_pricing.png"
-            alt="Membership Plans & Demo Card Checkout"
-            figureNumber="Figure 11.4"
-            caption="Membership Plans & Pricing — member view showing active tier, feature checklists, and the holographic Demo Card checkout flow"
-          />
-          <ScreenshotFigure
-            src="/screenshots/08_admin_all_subscriptions.png"
-            alt="Admin All Subscriptions Roster"
-            figureNumber="Figure 11.5"
-            caption="Admin All Subscriptions Roster — system-wide multi-tenant subscription ledger with member IDs, provider links, and status filters"
-          />
         </div>
       )}
 
@@ -893,18 +837,6 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               <p className="text-[#8E9F9B]">Evaluated on held-out test splits: <strong>ROC-AUC = 0.912</strong>, <strong>Precision = 88.4%</strong>, <strong>Recall = 92.1%</strong>, <strong>F1-Score = 0.902</strong>. Calibrated probabilities output Low, Medium, and High risk classifications.</p>
             </div>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/12_admin_retention_intelligence.png"
-            alt="Retention Intelligence"
-            figureNumber="Figure 12.1"
-            caption="Retention Intelligence — churn risk scoring, cohort breakdown, and targeted retention intervention workflows based on ML output"
-          />
-          <ScreenshotFigure
-            src="/screenshots/11_admin_analytics_revenue.png"
-            alt="Revenue & Subscriber Analytics"
-            figureNumber="Figure 12.2"
-            caption="Revenue & Subscriber Analytics — historical MRR trends, provider concentration distributions, and forecast trajectory"
-          />
         </div>
       )}
 
@@ -938,12 +870,160 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
             <div className="text-emerald-400 font-bold">[PASS 09] Views Performance: v_subscription_overview, v_monthly_revenue, v_expiring_soon</div>
             <div className="text-emerald-400 font-bold">[PASS 10] Realtime Retention ML Inference Pipeline Persisting to churn_predictions</div>
           </div>
-          <ScreenshotFigure
-            src="/screenshots/14_dbms_documentation.png"
-            alt="In-App DBMS Documentation Viewer"
-            figureNumber="Figure 13.1"
-            caption="In-App DBMS Documentation & Comprehensive Verification Suite — full academic report with real-time test suite telemetry"
-          />
+          {/* Categorized Live System Verification Screenshots */}
+          <div className="space-y-8 pt-4">
+            {/* 13.2 Client Presentation */}
+            <div className="space-y-4">
+              <div className="border-b border-[#8DFFCB]/20 pb-2">
+                <h3 className="text-sm font-bold text-[#8DFFCB] uppercase font-mono tracking-wider">
+                  13.2 Client Presentation &amp; Marketing Portal
+                </h3>
+                <p className="text-xs text-[#8E9F9B] font-mono mt-0.5">
+                  Public interface displaying system metrics, value proposition, and persona entry points
+                </p>
+              </div>
+              <ScreenshotFigure
+                src="/screenshots/01_landing_page.png"
+                alt="Public Landing Page"
+                figureNumber="Figure 13.1"
+                caption="Public Landing Page — hero presentation, value proposition, and dual-persona authentication trigger buttons"
+              />
+            </div>
+
+            {/* 13.3 Member Workspace */}
+            <div className="space-y-4">
+              <div className="border-b border-[#8DFFCB]/20 pb-2">
+                <h3 className="text-sm font-bold text-[#8DFFCB] uppercase font-mono tracking-wider">
+                  13.3 Member Workspace &amp; Personal Subscription Ledger
+                </h3>
+                <p className="text-xs text-[#8E9F9B] font-mono mt-0.5">
+                  Subscriber dashboard, personal ledger, self-service portal, and card checkout flows
+                </p>
+              </div>
+              <div className="space-y-6">
+                <ScreenshotFigure
+                  src="/screenshots/02_member_dashboard.png"
+                  alt="Member Dashboard Hub"
+                  figureNumber="Figure 13.2"
+                  caption="Personalized Member Dashboard Hub — active subscriptions, normalized monthly burn rate, upcoming renewals, and quick actions"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/03_my_subscriptions_hub.png"
+                  alt="My Subscriptions Hub"
+                  figureNumber="Figure 13.3"
+                  caption="My Subscriptions Central Hub — real-time subscription cards with category tags, billing cycle indicators, and direct pause controls"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/04_member_portal.png"
+                  alt="Member Portal"
+                  figureNumber="Figure 13.4"
+                  caption="Member Self-Service Portal — active plan entitlements, security credentials, API keys, and notification configurations"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/05_plans_pricing.png"
+                  alt="Membership Plans & Pricing"
+                  figureNumber="Figure 13.5"
+                  caption="Membership Plans & Pricing — member view showing active tier, feature checklists, and holographic Demo Card checkout flow"
+                />
+              </div>
+            </div>
+
+            {/* 13.4 Administrative Operations */}
+            <div className="space-y-4">
+              <div className="border-b border-[#8DFFCB]/20 pb-2">
+                <h3 className="text-sm font-bold text-[#8DFFCB] uppercase font-mono tracking-wider">
+                  13.4 Administrative Operations &amp; Tenant Governance
+                </h3>
+                <p className="text-xs text-[#8E9F9B] font-mono mt-0.5">
+                  Executive KPIs, tenant roster, master ledger, billing invoices, and expiring renewal radar
+                </p>
+              </div>
+              <div className="space-y-6">
+                <ScreenshotFigure
+                  src="/screenshots/06_admin_executive_dashboard.png"
+                  alt="Admin Executive Overview"
+                  figureNumber="Figure 13.6"
+                  caption="Admin Executive Overview — real-time MRR telemetry, active plan distributions, and recent database audit logs"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/07_admin_members_directory.png"
+                  alt="Admin Members Directory"
+                  figureNumber="Figure 13.7"
+                  caption="Admin Members Directory — multi-tenant account roster with role indicators, email search, and RLS server-side filtering"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/08_admin_all_subscriptions.png"
+                  alt="Admin All Subscriptions Roster"
+                  figureNumber="Figure 13.8"
+                  caption="Admin All Subscriptions Master Ledger — cross-tenant subscription records with member IDs, provider links, and lifecycle filters"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/09_admin_billing_invoices.png"
+                  alt="Admin Invoices & Billing Ledger"
+                  figureNumber="Figure 13.9"
+                  caption="Admin Invoices & Billing Ledger — settled receipts, sequential invoice IDs, and total amounts populated via atomic DML transactions"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/10_admin_renewal_radar.png"
+                  alt="Renewal Radar Page"
+                  figureNumber="Figure 13.10"
+                  caption="Renewal Radar Page — powered by view_expiring_soon to identify impending subscriber renewals within a 7-day lookahead window"
+                />
+              </div>
+            </div>
+
+            {/* 13.5 Machine Learning */}
+            <div className="space-y-4">
+              <div className="border-b border-[#8DFFCB]/20 pb-2">
+                <h3 className="text-sm font-bold text-[#8DFFCB] uppercase font-mono tracking-wider">
+                  13.5 Machine Learning &amp; Business Intelligence
+                </h3>
+                <p className="text-xs text-[#8E9F9B] font-mono mt-0.5">
+                  Predictive retention classifier, ROC-AUC validation, and cohort analytics
+                </p>
+              </div>
+              <div className="space-y-6">
+                <ScreenshotFigure
+                  src="/screenshots/11_admin_analytics_revenue.png"
+                  alt="Revenue & Subscriber Analytics"
+                  figureNumber="Figure 13.11"
+                  caption="Revenue & Subscriber Analytics — historical MRR growth, provider concentration distributions, and financial forecasts"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/12_admin_retention_intelligence.png"
+                  alt="Retention Intelligence Module"
+                  figureNumber="Figure 13.12"
+                  caption="Retention Intelligence Module — model validation performance (ROC-AUC = 0.9124) and prioritized customer churn intervention queue"
+                />
+              </div>
+            </div>
+
+            {/* 13.6 DBMS Laboratory Workbench */}
+            <div className="space-y-4">
+              <div className="border-b border-[#8DFFCB]/20 pb-2">
+                <h3 className="text-sm font-bold text-[#8DFFCB] uppercase font-mono tracking-wider">
+                  13.6 DBMS Laboratory Workbench &amp; Academic Documentation
+                </h3>
+                <p className="text-xs text-[#8E9F9B] font-mono mt-0.5">
+                  Interactive schema explorer, live WebAssembly SQL console, and academic documentation viewer
+                </p>
+              </div>
+              <div className="space-y-6">
+                <ScreenshotFigure
+                  src="/screenshots/13_dbms_studio.png"
+                  alt="DBMS Studio Interactive Workbench"
+                  figureNumber="Figure 13.13"
+                  caption="DBMS Studio Interactive Workbench — live ER topology explorer, schema inspector, and SQL query console"
+                />
+                <ScreenshotFigure
+                  src="/screenshots/14_dbms_documentation.png"
+                  alt="In-App DBMS Documentation Viewer"
+                  figureNumber="Figure 13.14"
+                  caption="In-App DBMS Documentation & Comprehensive Verification Suite — interactive academic report viewer and test suite telemetry"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
