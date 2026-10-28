@@ -710,7 +710,7 @@ const reportHtml = `<!DOCTYPE html>
     The recurring digital economy has introduced profound operational complexities for both individual consumers and software enterprises. Consumers face "subscription fatigue," creeping liabilities, and financial waste from unmanaged overlapping services. Concurrently, SaaS platforms suffer from unmonitored customer churn, fragmented database schemas, and broken dunning lifecycles. <strong>NEXUS</strong> is an enterprise-grade relational subscription management and intelligence ecosystem engineered upon an ACID-compliant PostgreSQL relational architecture via Supabase, coupled with an interactive high-performance front-end (React 18, Vite, TypeScript, and Tailwind CSS) styled with modern glassmorphism aesthetics.
   </p>
   <p>
-    The relational core enforces strict <strong>Boyce-Codd Normal Form (BCNF)</strong> across 12 atomic relations, eliminating update, deletion, and insertion anomalies. Multi-tenant security is strictly enforced at the database layer via PostgreSQL <strong>Row-Level Security (RLS)</strong> and <strong>Role-Based Access Control (RBAC)</strong>, ensuring absolute tenant isolation between administrative operators and individual consumers. To address silent subscriber churn, NEXUS incorporates an automated, calibrated Machine Learning retention engine combining L2-regularized Logistic Regression and Random Forest ensembles ($ROC\text{-}AUC = 0.9124$) with zero temporal target leakage. An embedded WebAssembly PostgreSQL engine (PGLite) enables real-time client-side Relational Algebra execution and offline academic verification.
+    The relational core enforces strict <strong>Boyce-Codd Normal Form (BCNF)</strong> across 12 atomic relations, eliminating update, deletion, and insertion anomalies. Multi-tenant security is strictly enforced at the database layer via PostgreSQL <strong>Row-Level Security (RLS)</strong> and <strong>Role-Based Access Control (RBAC)</strong>, ensuring absolute tenant isolation between administrative operators and individual consumers. To address silent subscriber churn, NEXUS incorporates an automated, calibrated Machine Learning retention engine combining L2-regularized Logistic Regression and Random Forest ensembles (ROC-AUC = 0.9124) with zero temporal target leakage. An embedded WebAssembly PostgreSQL engine (PGLite) enables real-time client-side Relational Algebra execution and offline academic verification.
   </p>
 
   <div class="metric-grid">
@@ -826,7 +826,7 @@ const reportHtml = `<!DOCTYPE html>
       <tr>
         <td><strong>FR-05</strong></td>
         <td>Expense Normalization</td>
-        <td>Mathematical projection of daily, weekly, monthly, and annual cadences into unified monthly burn rate: $\text{Burn} = \sum w_i \cdot \text{Amount}_i$.</td>
+        <td>Mathematical projection of daily, weekly, monthly, and annual cadences into unified monthly burn rate: Monthly Burn = &sum; (w<sub>i</sub> &times; Amount<sub>i</sub>).</td>
         <td>Member</td>
       </tr>
       <tr>
@@ -885,131 +885,159 @@ const reportHtml = `<!DOCTYPE html>
   <!-- ========================================================================= -->
   <!-- 6. ER / EER DIAGRAM AND DATABASE SCHEMA -->
   <!-- ========================================================================= -->
-  <h2 class="section-break">6. ER/EER Diagram and Database Schema</h2>
+    <h2 class="section-break">6. ER/EER Diagram and Database Schema</h2>
   <p>
-    The NEXUS relational schema consists of 12 normalized entities linked by foreign key constraints with explicit cascade and restrict policies.
+    The NEXUS relational schema consists of 12 normalized entities linked by foreign key constraints with explicit cascade and restrict policies. Below is the complete structural Entity-Relationship (ER) model organized by functional clusters, followed by the complete relational data dictionary:
   </p>
 
   ${renderDiagramContainer(
     'Figure 6.1',
-    'NEXUS Complete Entity-Relationship (ER) Crow’s Foot Schema — 12 Normalized Relational Entities with Cardinalities, Primary Keys, Foreign Keys, and Core Domain Attributes',
-    `erDiagram
-    PROFILES ||--o{ SUBSCRIPTIONS : "holds (1:N)"
-    MEMBERSHIP_PLANS ||--o{ SUBSCRIPTIONS : "defines (1:N)"
-    MEMBERSHIP_PLANS ||--o{ PLAN_FEATURES : "specifies (1:N)"
-    SUBSCRIPTIONS ||--o{ INVOICES : "generates (1:N)"
-    INVOICES ||--o{ PAYMENT_TRANSACTIONS : "settles (1:N)"
-    SUBSCRIPTIONS ||--o{ USAGE_EVENTS : "emits (1:N)"
-    SUBSCRIPTIONS ||--|| CHURN_PREDICTIONS : "evaluated by (1:1)"
-    PROFILES ||--o{ AUDIT_LOGS : "triggers (1:N)"
-    PROFILES ||--o{ PERSONAL_SUBSCRIPTIONS : "tracks (1:N)"
-    SUB_PROVIDERS ||--o{ PERSONAL_SUBSCRIPTIONS : "provides (1:N)"
-    PERSONAL_SUBSCRIPTIONS ||--o{ PERSONAL_SUB_PAYMENTS : "logs (1:N)"
-    COUPONS ||--o{ COUPON_REDEMPTIONS : "redeems (1:N)"
-    PROFILES ||--o{ COUPON_REDEMPTIONS : "claims (1:N)"
+    'NEXUS Complete Entity-Relationship (ER) Relational Topology — 12 Normalized Relational Entities with Cardinalities, Primary Keys (PK), Foreign Keys (FK), and Domain Attributes',
+    `flowchart TD
+    classDef core fill:#F0FDFA,stroke:#0F766E,stroke-width:2.5px,color:#042F2E;
+    classDef personal fill:#F8FAFC,stroke:#0284C7,stroke-width:2.5px,color:#0C4A6E;
+    classDef intel fill:#FDF4FF,stroke:#7E22CE,stroke-width:2.5px,color:#581C87;
 
-    PROFILES {
-        uuid id PK
-        string email UK
-        string role "admin | member"
-        string full_name
-        timestamp created_at
-    }
-    MEMBERSHIP_PLANS {
-        uuid id PK
-        string slug UK
-        string name
-        numeric price_monthly
-        numeric price_yearly
-        string status
-    }
-    PLAN_FEATURES {
-        uuid id PK
-        uuid plan_id FK
-        string feature_key
-        string label
-        numeric limit_value
-    }
-    SUBSCRIPTIONS {
-        uuid id PK
-        uuid member_id FK
-        uuid plan_id FK
-        string status "active | paused | cancelled"
-        string billing_cycle "monthly | yearly"
-        numeric price_at_signup
-        timestamp current_period_end
-    }
-    INVOICES {
-        uuid id PK
-        uuid subscription_id FK
-        uuid member_id FK
-        string invoice_number UK
-        numeric total_amount
-        string status "paid | open | void"
-        timestamp paid_at
-    }
-    PAYMENT_TRANSACTIONS {
-        uuid id PK
-        uuid invoice_id FK
-        string provider_reference
-        numeric amount
-        string status "settled | failed"
-    }
-    CHURN_PREDICTIONS {
-        uuid id PK
-        uuid subscription_id FK
-        float risk_score
-        string risk_level "low | medium | high"
-        jsonb top_factors
-    }
-    AUDIT_LOGS {
-        uuid id PK
-        uuid actor_id FK
-        string action
-        string entity_type
-        jsonb metadata
-        timestamp created_at
-    }
-    PERSONAL_SUBSCRIPTIONS {
-        uuid id PK
-        uuid user_id FK
-        uuid provider_id FK
-        string plan_name
-        numeric amount
-        string billing_frequency
-        date next_billing_date
-        string status
-    }
-    SUB_PROVIDERS {
-        uuid id PK
-        string name UK
-        string category
-        string website_url
-    }
-    PERSONAL_SUB_PAYMENTS {
-        uuid id PK
-        uuid subscription_id FK
-        numeric amount
-        date payment_date
-        string receipt_url
-    }
-    COUPONS {
-        uuid id PK
-        string code UK
-        numeric discount_percent
-        date expires_at
-    }
-    COUPON_REDEMPTIONS {
-        uuid id PK
-        uuid coupon_id FK
-        uuid member_id FK
-        timestamp redeemed_at
-    }`
+    %% Level 1: Master Anchors
+    PROFILES["<b>PROFILES (User Accounts)</b><br/>• id: UUID [PK]<br/>• email: TEXT [UK]<br/>• role: 'admin' | 'member'<br/>• full_name: TEXT"]:::core
+    PLANS["<b>MEMBERSHIP_PLANS (Tiers)</b><br/>• id: UUID [PK]<br/>• slug: TEXT [UK]<br/>• price_monthly: NUMERIC<br/>• status: 'active'"]:::core
+    PROVIDERS["<b>SUB_PROVIDERS (Catalog)</b><br/>• id: UUID [PK]<br/>• name: TEXT [UK]<br/>• category: TEXT<br/>• website_url: TEXT"]:::personal
+
+    %% Level 2: Core Associations
+    SUBS["<b>SUBSCRIPTIONS (Platform)</b><br/>• id: UUID [PK]<br/>• member_id: UUID [FK]<br/>• plan_id: UUID [FK]<br/>• status: 'active'|'paused'|'cancelled'"]:::core
+    PERSONAL_SUBS["<b>PERSONAL_SUBSCRIPTIONS (Tracker)</b><br/>• id: UUID [PK]<br/>• user_id: UUID [FK]<br/>• provider_id: UUID [FK]<br/>• amount: NUMERIC | cadence: TEXT"]:::personal
+    FEATURES["<b>PLAN_FEATURES</b><br/>• id: UUID [PK]<br/>• plan_id: UUID [FK]<br/>• feature_key, limit_value"]:::core
+
+    %% Level 3: Transactional & Analytical Modules
+    INVOICES["<b>INVOICES (Ledger)</b><br/>• id: UUID [PK]<br/>• subscription_id: UUID [FK]<br/>• invoice_number: TEXT [UK]<br/>• total_amount: NUMERIC | status: 'paid'"]:::core
+    PAYMENTS["<b>PERSONAL_SUB_PAYMENTS</b><br/>• id: UUID [PK]<br/>• subscription_id: UUID [FK]<br/>• amount: NUMERIC, date: DATE"]:::personal
+    CHURN["<b>CHURN_PREDICTIONS (ML Engine)</b><br/>• id: UUID [PK]<br/>• subscription_id: UUID [FK]<br/>• risk_score: FLOAT, level: TEXT"]:::intel
+    EVENTS["<b>USAGE_EVENTS (Telemetry)</b><br/>• id: UUID [PK]<br/>• subscription_id: UUID [FK]<br/>• event_type: TEXT"]:::intel
+    AUDIT["<b>AUDIT_LOGS (Forensics)</b><br/>• id: UUID [PK]<br/>• actor_id: UUID [FK]<br/>• action: TEXT, timestamp: TIMESTAMPTZ"]:::intel
+
+    %% Level 4: Settlement
+    TXNS["<b>PAYMENT_TRANSACTIONS</b><br/>• id: UUID [PK]<br/>• invoice_id: UUID [FK]<br/>• provider_ref, status: 'settled'"]:::core
+
+    %% Strict Top-Down Hierarchical Connectors
+    PROFILES -->|1 : N holds| SUBS
+    PROFILES -->|1 : N tracks| PERSONAL_SUBS
+    PROFILES -->|1 : N triggers| AUDIT
+
+    PLANS -->|1 : N defines| SUBS
+    PLANS -->|1 : N specifies| FEATURES
+
+    PROVIDERS -->|1 : N provides| PERSONAL_SUBS
+
+    SUBS -->|1 : N bills| INVOICES
+    SUBS -->|1 : 1 evaluates| CHURN
+    SUBS -->|1 : N emits| EVENTS
+
+    PERSONAL_SUBS -->|1 : N logs| PAYMENTS
+    INVOICES -->|1 : N settles| TXNS`
   )}
+
+  <h3>Table 6.1: Comprehensive Relational Schema Data Dictionary</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 18%;">Entity Table</th>
+        <th style="width: 14%;">Primary Key</th>
+        <th style="width: 20%;">Foreign Keys (FK)</th>
+        <th style="width: 16%;">Cardinality</th>
+        <th style="width: 32%;">Domain Constraints &amp; Invariants</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>profiles</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>auth.users(id)</code></td>
+        <td>1 : N (subs)</td>
+        <td>CHECK (role IN ('admin','member')), email UNIQUE, full_name NOT NULL</td>
+      </tr>
+      <tr>
+        <td><strong>membership_plans</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td>&mdash;</td>
+        <td>1 : N (subs, feat)</td>
+        <td>slug UNIQUE, price_monthly &ge; 0, price_yearly &ge; 0, status ('active','archived')</td>
+      </tr>
+      <tr>
+        <td><strong>plan_features</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>plan_id &rarr; plans</code></td>
+        <td>N : 1 (plans)</td>
+        <td>ON DELETE CASCADE, feature_key NOT NULL, limit_value &ge; 0</td>
+      </tr>
+      <tr>
+        <td><strong>subscriptions</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>member_id, plan_id</code></td>
+        <td>N : 1 (both)</td>
+        <td>status IN ('active','trialing','paused','cancelled','expired'), FSM transitions enforced</td>
+      </tr>
+      <tr>
+        <td><strong>invoices</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>sub_id, member_id</code></td>
+        <td>N : 1 (both)</td>
+        <td>invoice_number UNIQUE, total_amount &ge; 0, status ('paid','open','void')</td>
+      </tr>
+      <tr>
+        <td><strong>payment_transactions</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>invoice_id &rarr; inv</code></td>
+        <td>N : 1 (invoices)</td>
+        <td>provider_reference NOT NULL, status ('settled','failed'), amount &gt; 0</td>
+      </tr>
+      <tr>
+        <td><strong>personal_subscriptions</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>user_id, provider_id</code></td>
+        <td>N : 1 (both)</td>
+        <td>category IN ('entertainment','software','cloud','education','utilities'), amount &ge; 0</td>
+      </tr>
+      <tr>
+        <td><strong>sub_providers</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td>&mdash;</td>
+        <td>1 : N (personal)</td>
+        <td>name UNIQUE, category NOT NULL, website_url format validated</td>
+      </tr>
+      <tr>
+        <td><strong>personal_sub_payments</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>subscription_id</code></td>
+        <td>N : 1 (personal)</td>
+        <td>payment_date NOT NULL, amount &ge; 0, receipt_url optional file reference</td>
+      </tr>
+      <tr>
+        <td><strong>audit_logs</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>actor_id &rarr; profiles</code></td>
+        <td>Append-Only</td>
+        <td>Immutable trace of state transitions, cancellations, and administrative mutations</td>
+      </tr>
+      <tr>
+        <td><strong>churn_predictions</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>subscription_id</code></td>
+        <td>1 : 1 (sub)</td>
+        <td>risk_score &isin; [0, 1], risk_level IN ('low','medium','high'), top_factors JSONB</td>
+      </tr>
+      <tr>
+        <td><strong>coupon_redemptions</strong></td>
+        <td><code>id (UUID)</code></td>
+        <td><code>coupon_id, member_id</code></td>
+        <td>N : 1 (both)</td>
+        <td>UNIQUE (coupon_id, member_id) preventing duplicate redemptions, redeemed_at NOT NULL</td>
+      </tr>
+    </tbody>
+  </table>
 
   <h3>6.1 Enhanced Entity-Relationship (EER) Specialization Hierarchy</h3>
   <p>
-    NEXUS models multi-tenant authorization through Enhanced ER (EER) specialization. The superclass entity <code>profiles</code> is disjointly specialized ($d$) using the attribute discriminator <code>role</code> into two distinct operational subclasses:
+    NEXUS models multi-tenant authorization through Enhanced ER (EER) specialization. The superclass entity <code>profiles</code> is disjointly specialized (<em>d</em>) using the attribute discriminator <code>role</code> into two distinct operational subclasses:
   </p>
 
   ${renderDiagramContainer(
@@ -1053,20 +1081,36 @@ const reportHtml = `<!DOCTYPE html>
     Spec -->|role = 'member'| SubclassMember`
   )}
 
-  <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
   <!-- 7. KEYS, FUNCTIONAL DEPENDENCIES AND NORMALIZATION -->
   <!-- ========================================================================= -->
   <h2>7. Keys, Functional Dependencies and Normalization</h2>
   
-  <h3>7.1 Functional Dependency Closures & Candidate Keys</h3>
+  <h3>7.1 Functional Dependency Closures &amp; Candidate Keys</h3>
   <p>
-    Let $\mathcal{R}$ represent the relation schema and $\mathcal{F}$ denote the minimal set of functional dependencies enforced by database constraints:
+    Let <em>R</em> represent the relation schema and <em>F</em> denote the minimal set of functional dependencies enforced by database constraints:
   </p>
   <ul>
-    <li><strong><code>profiles</code>:</strong> $\mathcal{F}_{\text{profiles}} = \{\text{id} \to \{\text{full\_name}, \text{email}, \text{role}, \text{timezone}, \text{created\_at}\}, \text{email} \to \{\text{id}, \text{full\_name}, \text{role}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{email}\}$. Closure: $\{\text{id}\}^+ = \mathcal{R}_{\text{profiles}}$.</li>
-    <li><strong><code>membership_plans</code>:</strong> $\mathcal{F}_{\text{plans}} = \{\text{id} \to \{\text{name}, \text{slug}, \text{price\_monthly}, \text{price\_yearly}, \text{status}\}, \text{slug} \to \{\text{id}, \text{name}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{slug}\}$.</li>
-    <li><strong><code>subscriptions</code>:</strong> $\mathcal{F}_{\text{subs}} = \{\text{id} \to \{\text{member\_id}, \text{plan\_id}, \text{status}, \text{billing\_cycle}, \text{price\_at\_signup}, \text{current\_period\_start}, \text{current\_period\_end}\}\}$. Candidate key: $\{\text{id}\}$.</li>
-    <li><strong><code>invoices</code>:</strong> $\mathcal{F}_{\text{inv}} = \{\text{id} \to \{\text{subscription\_id}, \text{member\_id}, \text{invoice\_number}, \text{total\_amount}, \text{status}, \text{paid\_at}\}, \text{invoice\_number} \to \{\text{id}, \text{total\_amount}\}\}$. Candidate keys: $\{\text{id}\}$, $\{\text{invoice\_number}\}$.</li>
+    <li>
+      <strong><code>profiles</code>:</strong>
+      <em>F</em><sub>profiles</sub> = { id &rarr; {full_name, email, role, timezone, created_at}, email &rarr; {id, full_name, role} }.<br>
+      <strong>Candidate Keys:</strong> {id}, {email} &nbsp;|&nbsp; <strong>Closure:</strong> {id}<sup>+</sup> = <em>R</em><sub>profiles</sub>
+    </li>
+    <li>
+      <strong><code>membership_plans</code>:</strong>
+      <em>F</em><sub>plans</sub> = { id &rarr; {name, slug, price_monthly, price_yearly, status}, slug &rarr; {id, name} }.<br>
+      <strong>Candidate Keys:</strong> {id}, {slug} &nbsp;|&nbsp; <strong>Closure:</strong> {id}<sup>+</sup> = <em>R</em><sub>plans</sub>
+    </li>
+    <li>
+      <strong><code>subscriptions</code>:</strong>
+      <em>F</em><sub>subs</sub> = { id &rarr; {member_id, plan_id, status, billing_cycle, price_at_signup, current_period_start, current_period_end} }.<br>
+      <strong>Candidate Key:</strong> {id} &nbsp;|&nbsp; <strong>Closure:</strong> {id}<sup>+</sup> = <em>R</em><sub>subs</sub>
+    </li>
+    <li>
+      <strong><code>invoices</code>:</strong>
+      <em>F</em><sub>inv</sub> = { id &rarr; {subscription_id, member_id, invoice_number, total_amount, status, paid_at}, invoice_number &rarr; {id, total_amount} }.<br>
+      <strong>Candidate Keys:</strong> {id}, {invoice_number} &nbsp;|&nbsp; <strong>Closure:</strong> {id}<sup>+</sup> = <em>R</em><sub>inv</sub>
+    </li>
   </ul>
 
   <h3>7.2 Stepwise Normalization Proofs (1NF to BCNF)</h3>
@@ -1074,29 +1118,29 @@ const reportHtml = `<!DOCTYPE html>
     <thead>
       <tr>
         <th style="width: 18%;">Normal Form</th>
-        <th style="width: 32%;">Formal Mathematical Condition</th>
-        <th style="width: 50%;">NEXUS Schema Verification</th>
+        <th style="width: 34%;">Formal Relational Condition</th>
+        <th style="width: 48%;">NEXUS Schema Verification</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><strong>1NF (Atomicity)</strong></td>
-        <td>$\forall R, \forall A \in R, \text{domain}(A) \text{ contains only atomic values.}$</td>
+        <td>&forall; <em>R</em>, &forall; <em>A</em> &isin; <em>R</em>: domain(<em>A</em>) contains only atomic (indivisible) values. No repeating groups or nested arrays.</td>
         <td>Plan features decomposed into <code>plan_features</code> 1:N relation; no comma-separated arrays or repeated groups.</td>
       </tr>
       <tr>
         <td><strong>2NF (No Partial FDs)</strong></td>
-        <td>$R \in \text{1NF} \land \text{no non-prime attribute is partially dependent on any candidate key.}$</td>
+        <td>Relation is in 1NF and every non-prime attribute is fully functionally dependent on the entire candidate key (no partial dependency <em>X</em> &rarr; <em>Y</em> where <em>X</em> &sub; Candidate Key).</td>
         <td>All relations have single-attribute surrogate keys (UUID). Composite tables such as <code>coupon_redemptions(coupon_id, member_id)</code> depend on the full composite key.</td>
       </tr>
       <tr>
         <td><strong>3NF (No Transitive FDs)</strong></td>
-        <td>$\forall (X \to A) \in \mathcal{F}^+, X \text{ is superkey} \lor A \text{ is prime attribute.}$</td>
-        <td>Zero transitive dependencies ($X \to Y \to Z$). <code>subscriptions</code> stores <code>plan_id</code>; plan rates are not duplicated on subscriptions, preventing update anomalies.</td>
+        <td>Relation is in 2NF and for every non-trivial FD <em>X</em> &rarr; <em>A</em>, either <em>X</em> is a superkey &or; <em>A</em> is a prime attribute. Zero transitive dependencies (<em>X</em> &rarr; <em>Y</em> &rarr; <em>Z</em>).</td>
+        <td>Zero transitive dependencies (<em>X</em> &rarr; <em>Y</em> &rarr; <em>Z</em>). <code>subscriptions</code> stores <code>plan_id</code>; plan rates are not duplicated on subscriptions, preventing update anomalies.</td>
       </tr>
       <tr>
         <td><strong>BCNF (Superkey Rule)</strong></td>
-        <td>$\forall (X \to Y) \in \mathcal{F}^+, X \text{ is a superkey of } R.$</td>
+        <td>&forall; (<em>X</em> &rarr; <em>Y</em>) &isin; <em>F</em><sup>+</sup>: <em>X</em> is strictly a superkey of relation <em>R</em>.</td>
         <td>Every non-trivial functional dependency has a candidate key as its determinant, strictly preventing anomalies.</td>
       </tr>
     </tbody>
@@ -1367,7 +1411,7 @@ FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();</code></pre>
         <td><strong>Machine Learning</strong></td>
         <td><strong>Scikit-Learn, Pandas & NumPy</strong></td>
         <td>Python 3.11</td>
-        <td>5-feature temporal non-leaking pipeline, calibrated Logistic Regression, Random Forest classifier ($ROC\text{-}AUC = 0.9124$).</td>
+        <td>5-feature temporal non-leaking pipeline, calibrated Logistic Regression, Random Forest classifier (ROC-AUC = 0.9124).</td>
       </tr>
       <tr>
         <td><strong>Math & Formulas</strong></td>
@@ -1438,7 +1482,7 @@ FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();</code></pre>
   <p>
     NEXUS incorporates a calibrated ensemble churn prediction pipeline combining L2-regularized Logistic Regression and Random Forest classifiers:
   </p>
-  $$\hat{P}_{\text{churn}}(X) = 0.6 \cdot P_{\text{RF-calibrated}}(X) + 0.4 \cdot P_{\text{logistic}}(X)$$
+  <div style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 9.5pt; color: #0F766E; margin: 8px 0; background: #F0FDFA; padding: 8px; border-radius: 6px; border: 1px solid #CCFBF1;"><strong>Final Ensemble Probability:</strong> P<sub>churn</sub>(X) = 0.6 &times; P<sub>RF-calibrated</sub>(X) + 0.4 &times; P<sub>logistic</sub>(X)</div>
 
   ${renderDiagramContainer(
     'Figure 12.1',
