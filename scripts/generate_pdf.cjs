@@ -1255,9 +1255,10 @@ FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();</code></pre>
   <!-- ========================================================================= -->
   <h2>10. Front-End Design and Database Connectivity</h2>
   <p>
-    NEXUS decouples the presentation layer from the database core using a modern reactive architecture:
+    NEXUS decouples the presentation layer from the database core using a modern reactive architecture, combining client-side WebAssembly evaluation with high-throughput cloud PostgreSQL instances:
   </p>
 
+  <h3>10.1 Multi-Tier System Architecture</h3>
   ${renderDiagramContainer(
     'Figure 10.1',
     'NEXUS Multi-Tier System Architecture & Relational Data Flow — Client Presentation, Edge Security & RLS, PostgreSQL Core, and Retention Machine Learning Pipeline',
@@ -1305,6 +1306,89 @@ FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();</code></pre>
         ChurnTable -. Realtime Notification .-> SDK
     end`
   )}
+
+  <h3>10.2 Comprehensive Technologies Used & System Stack Matrix</h3>
+  <p>
+    The project leverages an enterprise-grade technology stack spanning relational database engines, WebAssembly runtimes, reactive web frameworks, and calibrated statistical classifiers:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 17%;">Layer / Domain</th>
+        <th style="width: 23%;">Technology / Library</th>
+        <th style="width: 15%;">Version / Spec</th>
+        <th style="width: 45%;">Functional Responsibility & Architectural Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Primary Database</strong></td>
+        <td><strong>PostgreSQL / Supabase</strong></td>
+        <td>v15.6 / v16</td>
+        <td>ACID relational datastore, BCNF relations, composite B-Tree indexes, PL/pgSQL stored procedures, and triggers.</td>
+      </tr>
+      <tr>
+        <td><strong>In-Browser DBMS</strong></td>
+        <td><strong>PGLite (WebAssembly)</strong></td>
+        <td>WASM / OPFS</td>
+        <td>Embedded client-side PostgreSQL instance executing in WebAssembly for offline sandbox testing and live DBMS Studio queries.</td>
+      </tr>
+      <tr>
+        <td><strong>Data API & Realtime</strong></td>
+        <td><strong>PostgREST & WebSocket CDC</strong></td>
+        <td>v12+ / RFC 6455</td>
+        <td>Instant OpenAPI REST layer directly over PostgreSQL schema; bidirectional WebSocket subscriptions for live state synchronization.</td>
+      </tr>
+      <tr>
+        <td><strong>Authentication & Security</strong></td>
+        <td><strong>Supabase GoTrue & RLS</strong></td>
+        <td>JWT / HMAC-256</td>
+        <td>Role-based access control (RBAC), bcrypt credential hashing, and Row-Level Security (RLS) policies enforcing multi-tenant isolation.</td>
+      </tr>
+      <tr>
+        <td><strong>Frontend Framework</strong></td>
+        <td><strong>React 18 & TypeScript</strong></td>
+        <td>18.3 / TS 5.6</td>
+        <td>Strictly typed component hierarchy, reactive UI state machines, custom hooks, and deterministic DOM rendering.</td>
+      </tr>
+      <tr>
+        <td><strong>Build & Bundling</strong></td>
+        <td><strong>Vite & Rolldown</strong></td>
+        <td>v8.3 / ESNext</td>
+        <td>Sub-second Hot Module Replacement (HMR), static chunk tree-shaking, and optimized browser asset production builds.</td>
+      </tr>
+      <tr>
+        <td><strong>UI Design System</strong></td>
+        <td><strong>Tailwind CSS & Lucide Icons</strong></td>
+        <td>Modern CSS / SVG</td>
+        <td>Glassmorphic visual aesthetic (16px backdrop-blur, 1px luminous teal borders), responsive grid layouts, and unified icon tokens.</td>
+      </tr>
+      <tr>
+        <td><strong>Machine Learning</strong></td>
+        <td><strong>Scikit-Learn, Pandas & NumPy</strong></td>
+        <td>Python 3.11</td>
+        <td>5-feature temporal non-leaking pipeline, calibrated Logistic Regression, Random Forest classifier ($ROC\text{-}AUC = 0.9124$).</td>
+      </tr>
+      <tr>
+        <td><strong>Math & Formulas</strong></td>
+        <td><strong>KaTeX (LaTeX Engine)</strong></td>
+        <td>v0.16.8</td>
+        <td>In-browser mathematical typography for functional dependency closures, BCNF normalization proofs, and financial metrics.</td>
+      </tr>
+      <tr>
+        <td><strong>Diagram Rendering</strong></td>
+        <td><strong>Mermaid.js</strong></td>
+        <td>v10.x</td>
+        <td>Declarative vector SVG generation for Crow’s Foot ER schemas, EER specialization hierarchy, and ACID sequence transactions.</td>
+      </tr>
+      <tr>
+        <td><strong>Hosting & CI/CD</strong></td>
+        <td><strong>Vercel & Render Cloud</strong></td>
+        <td>Edge CDN & Node</td>
+        <td>Multi-cloud production deployment with continuous automated GitHub Actions integration and zero-downtime rollouts.</td>
+      </tr>
+    </tbody>
+  </table>
 
   <!-- ========================================================================= -->
   <!-- 11. CRUD OPERATIONS AND REPORT GENERATION -->

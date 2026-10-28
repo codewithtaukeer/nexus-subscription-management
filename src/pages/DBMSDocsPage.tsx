@@ -674,6 +674,87 @@ ORDER BY normalized_monthly_expenditure DESC;`}</pre>
               <p className="text-[#8E9F9B]">Embedded client-side PostgreSQL engine executing in WebAssembly, allowing evaluators to run live SQL commands and inspect schemas offline.</p>
             </div>
           </div>
+
+          {/* Full Technologies Used Specifications Matrix */}
+          <div className="space-y-3 pt-2">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#8DFFCB]">
+              Technologies Used &amp; Architectural Stack Specifications
+            </h3>
+            <div className="overflow-x-auto rounded-2xl border border-[rgba(220,255,245,0.12)] bg-[#040909]">
+              <table className="w-full text-left text-xs font-mono">
+                <thead>
+                  <tr className="border-b border-[rgba(220,255,245,0.12)] text-[#8DFFCB] bg-[#071112]">
+                    <th className="py-2.5 px-3 uppercase text-[10px] tracking-wider">Layer / Domain</th>
+                    <th className="py-2.5 px-3 uppercase text-[10px] tracking-wider">Technology / Library</th>
+                    <th className="py-2.5 px-3 uppercase text-[10px] tracking-wider">Version / Spec</th>
+                    <th className="py-2.5 px-3 uppercase text-[10px] tracking-wider">Architectural Role &amp; Responsibility</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[rgba(220,255,245,0.08)] text-[#8E9F9B]">
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Primary Database</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">PostgreSQL (Supabase)</td>
+                    <td className="py-2 px-3 text-cyan-300">v15.6 / v16</td>
+                    <td className="py-2 px-3">ACID datastore, 12 BCNF normalized tables, PL/pgSQL stored procedures, and event triggers.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">In-Browser DBMS</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">PGLite (WebAssembly)</td>
+                    <td className="py-2 px-3 text-cyan-300">WASM / OPFS</td>
+                    <td className="py-2 px-3">Embedded client-side PostgreSQL instance for offline evaluation and live interactive SQL consoles.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Data API &amp; Realtime</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">PostgREST &amp; WebSockets</td>
+                    <td className="py-2 px-3 text-cyan-300">v12+ / WSS</td>
+                    <td className="py-2 px-3">Instant OpenAPI REST endpoints directly over database relations; live WebSocket CDC telemetry.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Auth &amp; Security</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">Supabase GoTrue &amp; RLS</td>
+                    <td className="py-2 px-3 text-cyan-300">JWT / HMAC-256</td>
+                    <td className="py-2 px-3">Tenant data isolation via Row-Level Security (RLS) policies and bcrypt password hashing.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Frontend Framework</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">React 18 &amp; TypeScript</td>
+                    <td className="py-2 px-3 text-cyan-300">18.3 / TS 5.6</td>
+                    <td className="py-2 px-3">Type-safe component hierarchy, deterministic state machines, and reactive hooks.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Build &amp; Bundling</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">Vite &amp; Rolldown</td>
+                    <td className="py-2 px-3 text-cyan-300">v8.3 / ESNext</td>
+                    <td className="py-2 px-3">Sub-second Hot Module Replacement (HMR) and optimized static asset production bundling.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">UI Design System</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">Tailwind CSS &amp; Lucide</td>
+                    <td className="py-2 px-3 text-cyan-300">v4 Alpha / SVG</td>
+                    <td className="py-2 px-3">Glassmorphic backdrop-blur aesthetics, luminous teal borders, responsive grids, and icons.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Machine Learning</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">Scikit-Learn, Pandas &amp; NumPy</td>
+                    <td className="py-2 px-3 text-cyan-300">Python 3.11</td>
+                    <td className="py-2 px-3">Non-leaking 30-day feature pipeline, calibrated Logistic Regression &amp; Random Forest (ROC-AUC 0.912).</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Math &amp; Diagrams</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">KaTeX &amp; Mermaid.js</td>
+                    <td className="py-2 px-3 text-cyan-300">v0.16 / v10</td>
+                    <td className="py-2 px-3">KaTeX LaTeX mathematical formatting and declarative vector SVG diagrams for ER and ACID sequence flows.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-3 font-bold text-[#F1F5F0]">Cloud Deployment</td>
+                    <td className="py-2 px-3 text-[#8DFFCB]">Vercel &amp; Render Cloud</td>
+                    <td className="py-2 px-3 text-cyan-300">Edge &amp; Node.js</td>
+                    <td className="py-2 px-3">Multi-cloud high-availability hosting with automated GitHub continuous deployment (CI/CD).</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
