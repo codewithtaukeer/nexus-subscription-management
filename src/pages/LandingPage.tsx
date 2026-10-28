@@ -19,6 +19,8 @@ import {
   BookOpen
 } from 'lucide-react';
 import { QuantumDotMesh } from '../components/common/QuantumDotMesh';
+import { TechBlueprintVisualizer } from '../components/common/TechBlueprintVisualizer';
+import { DownwardCyberStream } from '../components/common/DownwardCyberStream';
 import { fetchPlans } from '../lib/supabase';
 import type { MembershipPlan } from '../types/database';
 import { AuthModal } from '../components/auth/AuthModal';
@@ -34,6 +36,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const [heroMode, setHeroMode] = useState<number>(1); // Default to aerospace / aircraft CAD!
 
   useEffect(() => {
     fetchPlans()
@@ -106,131 +109,197 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   return (
     <div className="min-h-screen bg-[#071112] text-[#F1F5F0] selection:bg-[#8DFFCB] selection:text-[#071112]">
       {/* HERO SECTION */}
-      <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-16 overflow-hidden">
+      <section className="relative min-h-[92vh] flex flex-col justify-center pt-24 pb-12 overflow-hidden">
         {/* Background Dot Wave Canvas */}
         <div className="absolute inset-0 pointer-events-none z-0">
-          <QuantumDotMesh density={24} />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#071112]/50 to-[#071112]" />
+          <QuantumDotMesh density={28} />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#071112]/60 to-[#071112]" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-3xl space-y-6"
-          >
-            {/* Eyebrow badge with Logo */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left Column: Headlines & Actions */}
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0D1919]/90 border border-[#8DFFCB]/30 text-[#8DFFCB] text-xs font-mono tracking-wider shadow-[0_0_20px_rgba(141,255,203,0.2)] backdrop-blur-md"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="lg:col-span-7 space-y-6 text-center lg:text-left"
             >
-              <img src="/nexus-logo.png" alt="NEXUS Logo" className="w-5 h-5 object-contain" />
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB] animate-ping" />
-              <span>MEMBERSHIP OPERATIONS, REIMAGINED • TOPIC 34</span>
+              {/* Eyebrow badge with Logo */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0D1919]/90 border border-[#8DFFCB]/30 text-[#8DFFCB] text-xs font-mono tracking-wider shadow-[0_0_20px_rgba(141,255,203,0.2)] backdrop-blur-md"
+              >
+                <img src="/nexus-logo.png" alt="NEXUS Logo" className="w-5 h-5 object-contain" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB] animate-ping" />
+                <span>MEMBERSHIP OPERATIONS, REIMAGINED • TOPIC 34</span>
+              </motion.div>
+
+              {/* Main Headline */}
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.7 }}
+                className="text-4xl sm:text-6xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-[#F1F5F0] leading-[1.08]"
+              >
+                Every membership.
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8DFFCB] via-[#D9FF72] to-[#8DFFCB]">
+                  One clear signal.
+                </span>
+              </motion.h1>
+
+              {/* Body */}
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45, duration: 0.7 }}
+                className="text-base sm:text-lg text-[#8E9F9B] max-w-2xl leading-relaxed mx-auto lg:mx-0"
+              >
+                A high-precision subscription and billing system with PostgreSQL at its core.
+                Complete with 3NF relational modeling, ACID transactional RPCs, renewal intelligence,
+                and live DBMS query transparency.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.7 }}
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2"
+              >
+                <button
+                  onClick={() => onNavigate('plans')}
+                  className="px-6 py-3 rounded-xl bg-[#8DFFCB] text-[#071112] text-sm font-semibold hover:bg-[#A6FFD8] hover:shadow-[0_0_25px_rgba(141,255,203,0.35)] hover:-translate-y-0.5 transition-all font-mono flex items-center gap-2"
+                >
+                  <span>Explore Plans</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    setAuthMode('signup');
+                    setAuthModalOpen(true);
+                  }}
+                  className="px-6 py-3 rounded-xl bg-[#8DFFCB]/15 border border-[#8DFFCB]/40 text-[#8DFFCB] text-sm font-mono font-semibold hover:bg-[#8DFFCB]/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Create Free Account</span>
+                </button>
+
+                <button
+                  onClick={() => onNavigate('dbms')}
+                  className="px-5 py-3 rounded-xl bg-[#0D1919] border border-[rgba(220,255,245,0.2)] text-[#F1F5F0] text-sm font-mono hover:border-[#8DFFCB]/40 hover:bg-[#122222] hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                >
+                  <Database className="w-4 h-4 text-[#8DFFCB]" />
+                  <span>Launch DBMS Lab</span>
+                </button>
+
+                <button
+                  onClick={() => onNavigate('dbms_docs')}
+                  className="px-5 py-3 rounded-xl bg-[#0D1919]/60 border border-[rgba(220,255,245,0.15)] text-[#8E9F9B] text-sm font-mono hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 hover:bg-[#122222] transition-all flex items-center gap-2"
+                >
+                  <BookOpen className="w-4 h-4 text-[#8DFFCB]" />
+                  <span>DBMS Report & ER</span>
+                </button>
+              </motion.div>
+
+              {/* Micro data labels */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.75, duration: 0.8 }}
+                className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs font-mono text-[#8E9F9B]"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
+                  <span>POSTGRESQL 17</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
+                  <span>3NF NORMALIZED</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
+                  <span>ZERO LEAKAGE ML</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
+                  <span>ACID RPC VERIFIED</span>
+                </div>
+              </motion.div>
             </motion.div>
 
-            {/* Main Headline */}
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-              className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#F1F5F0] leading-[1.08]"
+            {/* Right Column: Interactive Technological Blueprint HUD Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="lg:col-span-5"
             >
-              Every membership.
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8DFFCB] via-[#D9FF72] to-[#8DFFCB]">
-                One clear signal.
-              </span>
-            </motion.h1>
+              <div className="rounded-2xl bg-[#0D1919]/90 border border-[#8DFFCB]/30 p-5 shadow-[0_0_40px_rgba(141,255,203,0.15)] relative overflow-hidden backdrop-blur-xl group hover:border-[#8DFFCB]/60 transition-all">
+                {/* HUD Header Bar */}
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-[rgba(220,255,245,0.12)]">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#8DFFCB] animate-ping" />
+                    <span className="text-xs font-mono font-bold text-[#F1F5F0]">LIVE TELEMETRY HUD</span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#8DFFCB]/10 text-[#8DFFCB] border border-[#8DFFCB]/20">
+                    INTERACTIVE VECTOR
+                  </span>
+                </div>
 
-            {/* Body */}
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.7 }}
-              className="text-base sm:text-lg text-[#8E9F9B] max-w-2xl leading-relaxed"
-            >
-              A high-precision subscription and billing system with PostgreSQL at its core.
-              Complete with 3NF relational modeling, ACID transactional RPCs, renewal intelligence,
-              and live DBMS query transparency.
-            </motion.p>
+                {/* Blueprint View Switcher Buttons */}
+                <div className="grid grid-cols-4 gap-1.5 mb-3">
+                  {[
+                    { label: 'SCHEMA', id: 0 },
+                    { label: 'AEROSPACE', id: 1 },
+                    { label: 'NEURAL', id: 2 },
+                    { label: 'QUANTUM', id: 3 },
+                  ].map((btn) => (
+                    <button
+                      key={btn.id}
+                      onClick={() => setHeroMode(btn.id)}
+                      className={`py-1 px-1.5 rounded-lg text-[10px] font-mono transition-all text-center ${
+                        heroMode === btn.id
+                          ? 'bg-[#8DFFCB] text-[#071112] font-bold shadow-[0_0_12px_rgba(141,255,203,0.4)]'
+                          : 'bg-white/5 text-[#8E9F9B] hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
 
-            {/* CTAs */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.7 }}
-              className="flex flex-wrap items-center gap-4 pt-4"
-            >
-              <button
-                onClick={() => onNavigate('plans')}
-                className="px-6 py-3 rounded-lg bg-[#8DFFCB] text-[#071112] text-sm font-semibold hover:bg-[#A6FFD8] hover:shadow-[0_0_25px_rgba(141,255,203,0.35)] hover:-translate-y-0.5 transition-all font-mono flex items-center gap-2"
-              >
-                <span>Explore Plans</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                {/* The Visualizer Canvas */}
+                <div className="h-64 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.1)] relative overflow-hidden">
+                  <TechBlueprintVisualizer mode={heroMode} className="w-full h-full" />
+                </div>
 
-              <button
-                onClick={() => {
-                  setAuthMode('signup');
-                  setAuthModalOpen(true);
-                }}
-                className="px-6 py-3 rounded-lg bg-[#8DFFCB]/15 border border-[#8DFFCB]/40 text-[#8DFFCB] text-sm font-mono font-semibold hover:bg-[#8DFFCB]/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span>Create Free Account</span>
-              </button>
-
-              <button
-                onClick={() => onNavigate('dbms')}
-                className="px-6 py-3 rounded-lg bg-[#0D1919] border border-[rgba(220,255,245,0.2)] text-[#F1F5F0] text-sm font-mono hover:border-[#8DFFCB]/40 hover:bg-[#122222] hover:-translate-y-0.5 transition-all flex items-center gap-2"
-              >
-                <Database className="w-4 h-4 text-[#8DFFCB]" />
-                <span>Launch DBMS Lab</span>
-              </button>
-
-              <button
-                onClick={() => onNavigate('dbms_docs')}
-                className="px-5 py-3 rounded-lg bg-[#0D1919]/60 border border-[rgba(220,255,245,0.15)] text-[#8E9F9B] text-sm font-mono hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 hover:bg-[#122222] transition-all flex items-center gap-2"
-              >
-                <BookOpen className="w-4 h-4 text-[#8DFFCB]" />
-                <span>DBMS Report & ER</span>
-              </button>
-            </motion.div>
-
-            {/* Micro data labels */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.75, duration: 0.8 }}
-              className="pt-6 flex flex-wrap items-center gap-6 text-xs font-mono text-[#8E9F9B]"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
-                <span>POSTGRESQL 17</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
-                <span>3NF NORMALIZED</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
-                <span>ZERO DATA LEAKAGE ML</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
-                <span>ACID RPC VERIFIED</span>
+                {/* HUD Footer Status */}
+                <div className="pt-3 mt-3 border-t border-[rgba(220,255,245,0.08)] flex items-center justify-between text-[10px] font-mono text-[#8E9F9B]">
+                  <span className="flex items-center gap-1.5 text-[#8DFFCB]">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    ACID GUARANTEE • ROW LOCKS
+                  </span>
+                  <span>100% DETERMINISTIC</span>
+                </div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
+        </div>
+
+        {/* Downward Stream & Scroll Guide */}
+        <div className="mt-8">
+          <DownwardCyberStream targetId="metric-trust-strip" label="SCROLL TO EXPLORE ARCHITECTURE" />
         </div>
       </section>
 
       {/* METRIC TRUST STRIP */}
       <motion.section 
+        id="metric-trust-strip"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
@@ -277,46 +346,51 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8">
+        <div id="core-modules-section" className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto gap-6">
           {/* Card 1: /001 */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="group relative rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] hover:border-[#8DFFCB]/60 transition-all p-6 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-[0_0_30px_rgba(141,255,203,0.12)]"
+            whileHover={{ y: -8, transition: { duration: 0.25 } }}
+            className="group relative rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] hover:border-[#8DFFCB] transition-all p-6 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-[0_0_35px_rgba(141,255,203,0.2)] cursor-pointer"
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-mono text-[#8E9F9B]">/ 001</span>
-              <div className="w-12 h-6 rounded bg-[#8DFFCB]/10 flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#8DFFCB]/5 rounded-full blur-2xl group-hover:bg-[#8DFFCB]/15 transition-all pointer-events-none" />
+
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-mono text-[#8DFFCB] font-bold">/ 001</span>
+                <div className="px-2.5 py-1 rounded-full bg-[#8DFFCB]/10 border border-[#8DFFCB]/20 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB] animate-ping" />
+                  <span className="text-[10px] font-mono text-[#8DFFCB]">3NF RELATIONAL</span>
+                </div>
+              </div>
+
+              <div className="h-32 mb-6 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] relative overflow-hidden flex items-center justify-center group-hover:border-[#8DFFCB]/40 transition-colors">
+                <div className="absolute inset-0 dot-grid-dense opacity-40 group-hover:opacity-70 transition-opacity" />
+                <div className="relative z-10 w-16 h-16 rounded-2xl border border-[#8DFFCB]/30 flex items-center justify-center bg-[#0D1919]/80 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-[0_0_20px_rgba(141,255,203,0.15)]">
+                  <Database className="w-7 h-7 text-[#8DFFCB]" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-[#F1F5F0] group-hover:text-[#8DFFCB] transition-colors">
+                    Relational Ledger
+                  </h3>
+                  <ArrowRight className="w-4 h-4 text-[#8E9F9B] group-hover:text-[#8DFFCB] group-hover:translate-x-1.5 transition-all" />
+                </div>
+                <p className="text-xs text-[#8E9F9B] leading-relaxed">
+                  Multi-table subscriptions, invoices, and payments linked via foreign keys with check constraints and triggers.
+                </p>
               </div>
             </div>
 
-            <div className="h-32 mb-6 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] relative overflow-hidden flex items-center justify-center">
-              <div className="absolute inset-0 dot-grid-dense opacity-40" />
-              <div className="relative z-10 w-16 h-16 rounded-full border border-[#8DFFCB]/30 flex items-center justify-center bg-[#0D1919]/60 group-hover:scale-110 transition-transform">
-                <Database className="w-7 h-7 text-[#8DFFCB]" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#F1F5F0] group-hover:text-[#8DFFCB] transition-colors">
-                  Relational Ledger
-                </h3>
-                <ArrowRight className="w-4 h-4 text-[#8E9F9B] group-hover:translate-x-1 transition-transform" />
-              </div>
-              <p className="text-xs text-[#8E9F9B] leading-relaxed">
-                Multi-table subscriptions, invoices, and payments linked via foreign keys with check constraints and triggers.
-              </p>
-            </div>
-
-            <div className="pt-6 border-t border-[rgba(220,255,245,0.08)] mt-6 flex items-center justify-between text-xs font-mono">
+            <div className="pt-5 border-t border-[rgba(220,255,245,0.08)] mt-6 flex items-center justify-between text-xs font-mono">
               <button
                 onClick={() => onNavigate('dbms')}
-                className="text-[#8DFFCB] hover:underline flex items-center gap-1"
+                className="text-[#8DFFCB] hover:underline flex items-center gap-1.5 group-hover:translate-x-0.5 transition-transform"
               >
                 Inspect Schema <ChevronRight className="w-3.5 h-3.5" />
               </button>
@@ -329,41 +403,44 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="group relative rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] hover:border-[#8DFFCB]/60 transition-all p-6 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-[0_0_30px_rgba(141,255,203,0.12)]"
+            whileHover={{ y: -8, transition: { duration: 0.25 } }}
+            className="group relative rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] hover:border-[#D9FF72] transition-all p-6 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-[0_0_35px_rgba(217,255,114,0.2)] cursor-pointer"
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-mono text-[#8E9F9B]">/ 002</span>
-              <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]/40" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]/20" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#D9FF72]/5 rounded-full blur-2xl group-hover:bg-[#D9FF72]/15 transition-all pointer-events-none" />
+
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-mono text-[#D9FF72] font-bold">/ 002</span>
+                <div className="px-2.5 py-1 rounded-full bg-[#D9FF72]/10 border border-[#D9FF72]/20 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D9FF72] animate-ping" />
+                  <span className="text-[10px] font-mono text-[#D9FF72]">ML ENSEMBLE</span>
+                </div>
+              </div>
+
+              <div className="h-32 mb-6 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] relative overflow-hidden flex items-center justify-center group-hover:border-[#D9FF72]/40 transition-colors">
+                <div className="absolute inset-0 dot-grid-pattern opacity-40 group-hover:opacity-70 transition-opacity" />
+                <div className="relative z-10 w-16 h-16 rounded-2xl border border-[#D9FF72]/30 flex items-center justify-center bg-[#0D1919]/80 group-hover:scale-110 group-hover:-rotate-3 transition-all shadow-[0_0_20px_rgba(217,255,114,0.15)]">
+                  <Sparkles className="w-7 h-7 text-[#D9FF72]" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-[#F1F5F0] group-hover:text-[#D9FF72] transition-colors">
+                    Retention Intelligence
+                  </h3>
+                  <ArrowRight className="w-4 h-4 text-[#8E9F9B] group-hover:text-[#D9FF72] group-hover:translate-x-1.5 transition-all" />
+                </div>
+                <p className="text-xs text-[#8E9F9B] leading-relaxed">
+                  Reproducible Random Forest model scoring subscriber churn probability without data leakage. Full model card & metrics.
+                </p>
               </div>
             </div>
 
-            <div className="h-32 mb-6 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] relative overflow-hidden flex items-center justify-center">
-              <div className="absolute inset-0 dot-grid-pattern opacity-40" />
-              <div className="relative z-10 w-16 h-16 rounded-full border border-[#D9FF72]/30 flex items-center justify-center bg-[#0D1919]/60 group-hover:scale-110 transition-transform">
-                <Sparkles className="w-7 h-7 text-[#D9FF72]" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#F1F5F0] group-hover:text-[#8DFFCB] transition-colors">
-                  Retention Intelligence
-                </h3>
-                <ArrowRight className="w-4 h-4 text-[#8E9F9B] group-hover:translate-x-1 transition-transform" />
-              </div>
-              <p className="text-xs text-[#8E9F9B] leading-relaxed">
-                Reproducible Random Forest model scoring subscriber churn probability without data leakage. Full model card & metrics.
-              </p>
-            </div>
-
-            <div className="pt-6 border-t border-[rgba(220,255,245,0.08)] mt-6 flex items-center justify-between text-xs font-mono">
+            <div className="pt-5 border-t border-[rgba(220,255,245,0.08)] mt-6 flex items-center justify-between text-xs font-mono">
               <button
                 onClick={() => onNavigate('retention')}
-                className="text-[#8DFFCB] hover:underline flex items-center gap-1"
+                className="text-[#D9FF72] hover:underline flex items-center gap-1.5 group-hover:translate-x-0.5 transition-transform"
               >
                 Model Evaluation <ChevronRight className="w-3.5 h-3.5" />
               </button>
@@ -376,39 +453,44 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="group relative rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] hover:border-[#8DFFCB]/60 transition-all p-6 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-[0_0_30px_rgba(141,255,203,0.12)]"
+            whileHover={{ y: -8, transition: { duration: 0.25 } }}
+            className="group relative rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] hover:border-cyan-400 transition-all p-6 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-[0_0_35px_rgba(34,211,238,0.2)] cursor-pointer"
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-mono text-[#8E9F9B]">/ 003</span>
-              <div className="w-12 h-6 rounded bg-[#8DFFCB]/10 flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB]" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-2xl group-hover:bg-cyan-400/15 transition-all pointer-events-none" />
+
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-mono text-cyan-300 font-bold">/ 003</span>
+                <div className="px-2.5 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/20 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 animate-ping" />
+                  <span className="text-[10px] font-mono text-cyan-300">LIVE WORKBENCH</span>
+                </div>
+              </div>
+
+              <div className="h-32 mb-6 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] relative overflow-hidden flex items-center justify-center group-hover:border-cyan-400/40 transition-colors">
+                <div className="absolute inset-0 dot-grid-dense opacity-40 group-hover:opacity-70 transition-opacity" />
+                <div className="relative z-10 w-16 h-16 rounded-2xl border border-cyan-400/30 flex items-center justify-center bg-[#0D1919]/80 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-[0_0_20px_rgba(34,211,238,0.15)]">
+                  <Terminal className="w-7 h-7 text-cyan-300" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-[#F1F5F0] group-hover:text-cyan-300 transition-colors">
+                    DBMS Live Studio
+                  </h3>
+                  <ArrowRight className="w-4 h-4 text-[#8E9F9B] group-hover:text-cyan-300 group-hover:translate-x-1.5 transition-all" />
+                </div>
+                <p className="text-xs text-[#8E9F9B] leading-relaxed">
+                  Live query proof execution: DDL, DML, multi-table JOINs, correlated EXISTS, aggregate GROUP BY + HAVING, and ACID rollback.
+                </p>
               </div>
             </div>
 
-            <div className="h-32 mb-6 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] relative overflow-hidden flex items-center justify-center">
-              <div className="absolute inset-0 dot-grid-dense opacity-40" />
-              <div className="relative z-10 w-16 h-16 rounded-full border border-[#8DFFCB]/30 flex items-center justify-center bg-[#0D1919]/60 group-hover:scale-110 transition-transform">
-                <Terminal className="w-7 h-7 text-[#8DFFCB]" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#F1F5F0] group-hover:text-[#8DFFCB] transition-colors">
-                  DBMS Live Studio
-                </h3>
-                <ArrowRight className="w-4 h-4 text-[#8E9F9B] group-hover:translate-x-1 transition-transform" />
-              </div>
-              <p className="text-xs text-[#8E9F9B] leading-relaxed">
-                Live query proof execution: DDL, DML, multi-table JOINs, correlated EXISTS, aggregate GROUP BY + HAVING, and ACID rollback.
-              </p>
-            </div>
-
-            <div className="pt-6 border-t border-[rgba(220,255,245,0.08)] mt-6 flex items-center justify-between text-xs font-mono">
+            <div className="pt-5 border-t border-[rgba(220,255,245,0.08)] mt-6 flex items-center justify-between text-xs font-mono">
               <button
                 onClick={() => onNavigate('dbms')}
-                className="text-[#8DFFCB] hover:underline flex items-center gap-1"
+                className="text-cyan-300 hover:underline flex items-center gap-1.5 group-hover:translate-x-0.5 transition-transform"
               >
                 Execute Proofs <ChevronRight className="w-3.5 h-3.5" />
               </button>
@@ -488,11 +570,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   transition={{ duration: 0.35 }}
                   className="rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.18)] p-8 relative overflow-hidden"
                 >
-                  {/* Luminous Canvas Visual */}
-                  <div className="h-56 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.1)] relative overflow-hidden mb-6">
-                    <QuantumDotMesh density={18} />
-                    <div className="absolute top-4 left-4 z-10 text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-[#071112]/80 border border-[#8DFFCB]/30 text-[#8DFFCB]">
-                      {featureTabs[activeFeatureTab].eyebrow}
+                  {/* Luminous Canvas Visual with Dynamic CAD / Blueprint Modes */}
+                  <div className="h-64 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.15)] relative overflow-hidden mb-6 shadow-inner">
+                    <TechBlueprintVisualizer mode={activeFeatureTab} className="w-full h-full" />
+                    <div className="absolute top-3 left-3 z-10 text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-[#071112]/90 border border-[#8DFFCB]/40 text-[#8DFFCB] backdrop-blur-md flex items-center gap-1.5 shadow-[0_0_15px_rgba(141,255,203,0.2)]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#8DFFCB] animate-ping" />
+                      <span>{featureTabs[activeFeatureTab].eyebrow}</span>
+                    </div>
+                    <div className="absolute top-3 right-3 z-10 text-[9px] font-mono uppercase px-2 py-0.5 rounded bg-black/60 border border-white/10 text-[#8E9F9B]">
+                      INTERACTIVE TELEMETRY VECTOR
                     </div>
                   </div>
 
