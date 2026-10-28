@@ -22,9 +22,22 @@ import { NotificationsPage } from './pages/NotificationsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { fetchNotifications } from './lib/supabase';
 
+const ADMIN_ONLY_VIEWS = ['members', 'subscriptions', 'billing', 'renewals', 'analytics', 'retention'];
+
+function getInitialView(): string {
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view');
+    if (viewParam) return viewParam;
+    const hash = window.location.hash.replace('#', '');
+    if (hash) return hash;
+  }
+  return 'landing';
+}
+
 const AppContent: React.FC = () => {
   const { role, currentUser } = useAuth();
-  const [currentView, setCurrentView] = useState<string>('landing');
+  const [currentView, setCurrentView] = useState<string>(getInitialView);
   const [unreadCount, setUnreadCount] = useState<number>(0);
 
   useEffect(() => {
@@ -36,7 +49,18 @@ const AppContent: React.FC = () => {
       .catch((err) => console.error('Notification count error:', err));
   }, [currentView]);
 
+  useEffect(() => {
+    // Role guard: redirect if non-admin is attempting to view an admin-only tab
+    if (role !== 'admin' && ADMIN_ONLY_VIEWS.includes(currentView)) {
+      setCurrentView('personal_subs');
+    }
+  }, [role, currentView]);
+
   const handleNavigate = (view: string) => {
+    if (role !== 'admin' && ADMIN_ONLY_VIEWS.includes(view)) {
+      setCurrentView('personal_subs');
+      return;
+    }
     setCurrentView(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -67,12 +91,12 @@ const AppContent: React.FC = () => {
       {currentView === 'personal_subs' && <PersonalSubsPage />}
       {currentView === 'portal' && <MemberPortalPage onNavigate={handleNavigate} />}
       {currentView === 'plans' && <PlansPage />}
-      {currentView === 'members' && <MembersPage />}
-      {currentView === 'subscriptions' && <SubscriptionsPage />}
-      {currentView === 'billing' && <BillingPage />}
-      {currentView === 'renewals' && <RenewalRadarPage />}
-      {currentView === 'analytics' && <AnalyticsPage onNavigate={handleNavigate} />}
-      {currentView === 'retention' && <RetentionPage />}
+      {currentView === 'members' && (role === 'admin' ? <MembersPage /> : <PersonalSubsPage />)}
+      {currentView === 'subscriptions' && (role === 'admin' ? <SubscriptionsPage /> : <PersonalSubsPage />)}
+      {currentView === 'billing' && (role === 'admin' ? <BillingPage /> : <MemberPortalPage onNavigate={handleNavigate} />)}
+      {currentView === 'renewals' && (role === 'admin' ? <RenewalRadarPage /> : <PersonalSubsPage />)}
+      {currentView === 'analytics' && (role === 'admin' ? <AnalyticsPage onNavigate={handleNavigate} /> : <DashboardPage onNavigate={handleNavigate} />)}
+      {currentView === 'retention' && (role === 'admin' ? <RetentionPage /> : <DashboardPage onNavigate={handleNavigate} />)}
       {currentView === 'dbms' && <DBMSStudioPage />}
       {currentView === 'dbms_docs' && <DBMSDocsPage />}
       {currentView === 'notifications' && <NotificationsPage />}

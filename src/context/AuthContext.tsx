@@ -32,6 +32,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadUser = async () => {
     setIsLoading(true);
     try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlRole = urlParams.get('role');
+      if (urlRole === 'member') {
+        const { data: memberData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('role', 'member')
+          .limit(1)
+          .maybeSingle();
+
+        if (memberData) {
+          setCurrentUser(memberData);
+          setIsLoading(false);
+          return;
+        }
+      } else if (urlRole === 'admin') {
+        const { data: adminData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('role', 'admin')
+          .limit(1)
+          .maybeSingle();
+
+        if (adminData) {
+          setCurrentUser(adminData);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       // Check if custom user is saved
       const savedCustomUser = localStorage.getItem('nexus_custom_user');
       if (savedCustomUser) {

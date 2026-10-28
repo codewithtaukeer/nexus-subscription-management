@@ -11,13 +11,16 @@ import {
   ExternalLink,
   X,
   CreditCard,
-  Repeat
+  Repeat,
+  ShieldAlert
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { supabase, fetchMembers, fetchSubscriptions, fetchInvoices } from '../lib/supabase';
 import type { Profile, Subscription, Invoice } from '../types/database';
 import { Badge } from '../components/common/Badge';
 
 export const MembersPage: React.FC = () => {
+  const { role } = useAuth();
   const [members, setMembers] = useState<Profile[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -29,6 +32,7 @@ export const MembersPage: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<Profile | null>(null);
 
   const loadData = async () => {
+    if (role !== 'admin') return;
     setLoading(true);
     try {
       const [mems, subs, invs] = await Promise.all([
@@ -48,7 +52,17 @@ export const MembersPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [role]);
+
+  if (role !== 'admin') {
+    return (
+      <div className="rounded-2xl glass-panel p-8 text-center max-w-lg mx-auto my-12 border border-rose-500/20">
+        <ShieldAlert className="w-12 h-12 text-rose-400 mx-auto mb-4" />
+        <h2 className="text-xl font-bold text-[#F1F5F0] mb-2">Access Restricted</h2>
+        <p className="text-sm text-[#94A3B8]">The Member Directory is restricted to system administrators. As a member, your personal subscriptions and profile can be managed in My Subscriptions and My Portal.</p>
+      </div>
+    );
+  }
 
   const filteredMembers = members.filter((m) => {
     const matchesSearch = 
