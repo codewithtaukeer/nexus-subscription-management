@@ -85,9 +85,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  const handleQuickDemo = (role: 'member' | 'operator' | 'admin') => {
-    switchPersona(role);
-    setSuccessMsg(`Switched to demo ${role} profile!`);
+  const handleQuickAdmin = () => {
+    switchPersona('admin');
+    setSuccessMsg('Signed in as Administrator (Alex Vance)');
     setTimeout(() => {
       onSuccess?.();
       onClose();
@@ -233,34 +233,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </button>
         </form>
 
-        {/* Demo Fast Switch Divider */}
-        <div className="px-6 pb-6 pt-2 border-t border-[rgba(220,255,245,0.08)] bg-[#071112]/40">
+        {/* Fast Admin Connect for Evaluation */}
+        <div className="px-6 pb-6 pt-3 border-t border-[rgba(220,255,245,0.08)] bg-[#071112]/40">
           <div className="text-[10px] uppercase font-mono text-[#8E9F9B] text-center mb-2.5">
-            Or Quick Connect as Demo Persona
+            Evaluator Quick Access
           </div>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('member')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#0D1919] border border-[rgba(220,255,245,0.15)] text-[11px] font-mono text-[#F1F5F0] hover:border-[#8DFFCB]/40 hover:text-[#8DFFCB] transition-all"
-            >
-              Member
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('operator')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#0D1919] border border-[rgba(220,255,245,0.15)] text-[11px] font-mono text-[#F1F5F0] hover:border-[#8DFFCB]/40 hover:text-[#8DFFCB] transition-all"
-            >
-              Operator
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('admin')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#0D1919] border border-[rgba(220,255,245,0.15)] text-[11px] font-mono text-[#F1F5F0] hover:border-[#8DFFCB]/40 hover:text-[#8DFFCB] transition-all"
-            >
-              Admin
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleQuickAdmin}
+            className="w-full py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs font-mono text-[#F1F5F0] hover:border-[#8DFFCB]/40 hover:text-[#8DFFCB] hover:bg-[#8DFFCB]/5 transition-all flex items-center justify-center gap-2"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-[#8DFFCB]" />
+            <span>Connect as Administrator (Alex Vance)</span>
+          </button>
         </div>
       </div>
     </div>

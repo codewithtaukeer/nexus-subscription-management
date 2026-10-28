@@ -11,11 +11,11 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadCount = 2 }) => {
-  const { currentUser, role, switchPersona } = useAuth();
+  const { currentUser, role, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const isCustomUser = !!localStorage.getItem('nexus_custom_user');
 
   useEffect(() => {
     const onScroll = () => {
@@ -111,68 +111,48 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, unreadC
 
         {/* Right side controls */}
         <div className="flex items-center gap-3">
-          {/* Member Login / Sign Up buttons */}
+          {/* Active Account Pill */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setAuthMode('login');
-                setAuthModalOpen(true);
-              }}
-              className="px-3.5 py-1.5 text-xs font-medium rounded-full text-[#F1F5F0] hover:text-[#8DFFCB] hover:bg-white/[0.04] transition-colors"
-            >
-              Log In
-            </button>
-            <button
-              onClick={() => {
-                setAuthMode('signup');
-                setAuthModalOpen(true);
-              }}
-              className="px-4 py-1.5 text-xs font-semibold rounded-full bg-[#8DFFCB] text-[#071112] hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.35)] transition-all"
-            >
-              Sign Up
-            </button>
-          </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-full bg-white/[0.04] border border-white/[0.08] text-[#94A3B8]">
+              <Shield className={`w-3.5 h-3.5 ${role === 'admin' ? 'text-[#8DFFCB]' : 'text-cyan-300'}`} />
+              <span className="font-semibold text-[#F1F5F0] truncate max-w-[120px]">
+                {currentUser?.full_name?.split(' ')[0] || (role === 'admin' ? 'Admin' : 'Member')}
+              </span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold uppercase ${
+                role === 'admin' ? 'bg-[#8DFFCB]/20 text-[#8DFFCB]' : 'bg-cyan-500/20 text-cyan-300'
+              }`}>
+                {role}
+              </span>
+            </div>
 
-          {/* Testing Persona Pill */}
-          <div className="relative">
-            <button
-              onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-full bg-white/[0.04] border border-white/[0.08] hover:border-[#8DFFCB]/40 transition-all text-[#94A3B8] hover:text-[#F1F5F0]"
-            >
-              <Shield className="w-3.5 h-3.5 text-[#8DFFCB]" />
-              <span className="capitalize text-[#F1F5F0]">{role}</span>
-              <ChevronDown className="w-3 h-3 text-[#94A3B8]" />
-            </button>
-
-            {roleMenuOpen && (
-              <div className="absolute right-0 mt-3 w-64 rounded-2xl glass-panel-elevated p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95">
-                <div className="text-[10px] uppercase font-mono text-[#94A3B8] px-3 py-1.5 border-b border-white/[0.06]">
-                  Switch Testing Persona
-                </div>
-                {(['admin', 'operator', 'member'] as UserRole[]).map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => {
-                      switchPersona(r);
-                      setRoleMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono transition-colors text-left ${
-                      role === r ? 'bg-[#8DFFCB]/15 text-[#8DFFCB]' : 'text-[#F1F5F0] hover:bg-white/5'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-semibold capitalize">{r}</div>
-                      <div className="text-[10px] text-[#94A3B8]">
-                        {r === 'admin'
-                          ? 'Alex Vance (Full DBMS & System Access)'
-                          : r === 'operator'
-                          ? 'Elena Rostova (Operations & Invoicing)'
-                          : 'Marcus Chen (Self-Service Portal)'}
-                      </div>
-                    </div>
-                    {role === r && <Check className="w-3.5 h-3.5 text-[#8DFFCB]" />}
-                  </button>
-                ))}
+            {isCustomUser ? (
+              <button
+                onClick={() => signOut()}
+                className="px-3 py-1.5 text-xs font-medium rounded-full text-[#94A3B8] hover:text-red-400 hover:bg-white/[0.04] transition-colors"
+                title="Sign out of current member account"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => {
+                    setAuthMode('login');
+                    setAuthModalOpen(true);
+                  }}
+                  className="px-3 py-1.5 text-xs font-medium rounded-full text-[#F1F5F0] hover:text-[#8DFFCB] hover:bg-white/[0.04] transition-colors"
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={() => {
+                    setAuthMode('signup');
+                    setAuthModalOpen(true);
+                  }}
+                  className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-[#8DFFCB] text-[#071112] hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.35)] transition-all"
+                >
+                  Sign Up
+                </button>
               </div>
             )}
           </div>

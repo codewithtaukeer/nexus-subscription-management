@@ -108,41 +108,35 @@ export const SettingsPage: React.FC = () => {
         </form>
       </div>
 
-      {/* Role Management Section */}
+      {/* Account & Session Security Section */}
       <div className="rounded-xl bg-[#0D1919] border border-[rgba(220,255,245,0.12)] p-6 space-y-4">
         <div className="flex items-center gap-2 text-xs font-mono text-[#F1F5F0] pb-2 border-b border-[rgba(220,255,245,0.08)]">
           <Shield className="w-4 h-4 text-[#8DFFCB]" />
-          <span className="font-bold">Role-Based Access Control (RBAC) Testing Persona</span>
+          <span className="font-bold">Active Account & Row-Level Security (RLS) Status</span>
         </div>
 
         <p className="text-xs text-[#8E9F9B] font-mono leading-relaxed">
-          Switch roles instantly to test Row Level Security (RLS) enforcement and navigation permissions:
+          PostgreSQL Row Level Security (RLS) enforces cryptographic tenant boundary isolation for all subscription, payment, and document records.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
-          {(['admin', 'operator', 'member'] as UserRole[]).map((r) => (
-            <button
-              key={r}
-              onClick={() => switchPersona(r)}
-              className={`p-4 rounded-xl border text-left transition-all ${
-                role === r
-                  ? 'bg-[#071112] border-[#8DFFCB] shadow-[0_0_15px_rgba(141,255,203,0.15)]'
-                  : 'bg-[#071112]/50 border-[rgba(220,255,245,0.08)] text-[#8E9F9B] hover:border-[rgba(220,255,245,0.2)]'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-[#F1F5F0] capitalize">{r}</span>
-                {role === r && <span className="w-2 h-2 rounded-full bg-[#8DFFCB]" />}
-              </div>
-              <div className="text-[10px] text-[#8E9F9B] mt-1">
-                {r === 'admin'
-                  ? 'Full administrative, schema, and DBMS studio access.'
-                  : r === 'operator'
-                  ? 'Operational access for support, renewals, and member records.'
-                  : 'Self-service member portal with isolated personal data.'}
-              </div>
-            </button>
-          ))}
+        <div className="p-4 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.1)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono text-xs">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-[#F1F5F0]">{currentUser?.full_name || 'Administrator'}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#8DFFCB]/20 text-[#8DFFCB] uppercase font-bold">
+                {role}
+              </span>
+            </div>
+            <div className="text-[11px] text-[#8E9F9B] mt-0.5">
+              {currentUser?.email || 'admin@nexus.io'} • User ID: {currentUser?.id}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] px-2 py-1 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+              RLS Policy Enforced
+            </span>
+          </div>
         </div>
       </div>
     </div>

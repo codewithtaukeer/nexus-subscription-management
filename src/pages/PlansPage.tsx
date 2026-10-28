@@ -19,7 +19,7 @@ export const PlansPage: React.FC = () => {
   const [plans, setPlans] = useState<MembershipPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | PlanStatus>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | PlanStatus>('active');
   
   // Dialog state
   const [modalOpen, setModalOpen] = useState(false);
@@ -222,7 +222,7 @@ export const PlansPage: React.FC = () => {
       </div>
 
       {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={`grid gap-6 ${statusFilter === 'active' && filteredPlans.length <= 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
         {filteredPlans.map((plan) => (
           <div
             key={plan.id}

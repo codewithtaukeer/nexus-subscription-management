@@ -41,22 +41,23 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const isCustomUser = !!localStorage.getItem('nexus_custom_user');
 
   const navItems = [
-    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'operator'] },
-    { id: 'personal_subs', label: 'My Subscriptions', icon: CreditCard, roles: ['admin', 'operator', 'member'], badge: 'Central Hub' },
-    { id: 'portal', label: 'My Portal', icon: UserCheck, roles: ['member'] },
-    { id: 'plans', label: 'Plans & Pricing', icon: Layers, roles: ['admin', 'operator', 'member'] },
-    { id: 'members', label: 'Members Directory', icon: Users, roles: ['admin', 'operator'] },
-    { id: 'subscriptions', label: 'Subscriptions', icon: Repeat, roles: ['admin', 'operator'] },
-    { id: 'billing', label: 'Invoices & Billing', icon: CreditCard, roles: ['admin', 'operator', 'member'] },
-    { id: 'renewals', label: 'Renewal Radar', icon: CalendarClock, roles: ['admin', 'operator'] },
-    { id: 'analytics', label: 'Reports & Revenue', icon: BarChart3, roles: ['admin', 'operator'] },
-    { id: 'retention', label: 'Retention Intelligence', icon: Sparkles, roles: ['admin', 'operator'] },
-    { id: 'dbms', label: 'DBMS Studio', icon: Database, roles: ['admin', 'operator', 'member'], badge: 'Live SQL' },
-    { id: 'dbms_docs', label: 'DBMS Report & Docs', icon: BookOpen, roles: ['admin', 'operator', 'member'], badge: 'MNNIT' },
-    { id: 'notifications', label: 'Notifications', icon: Bell, roles: ['admin', 'operator', 'member'], count: unreadCount },
-    { id: 'settings', label: 'Settings', icon: Settings, roles: ['admin', 'operator', 'member'] },
+    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'member'] },
+    { id: 'personal_subs', label: 'My Subscriptions', icon: CreditCard, roles: ['admin', 'member'], badge: 'Central Hub' },
+    { id: 'portal', label: 'My Portal', icon: UserCheck, roles: ['admin', 'member'] },
+    { id: 'plans', label: 'Plans & Pricing', icon: Layers, roles: ['admin', 'member'] },
+    { id: 'members', label: 'Members Directory', icon: Users, roles: ['admin', 'member'] },
+    { id: 'subscriptions', label: 'Subscriptions', icon: Repeat, roles: ['admin', 'member'] },
+    { id: 'billing', label: 'Invoices & Billing', icon: CreditCard, roles: ['admin', 'member'] },
+    { id: 'renewals', label: 'Renewal Radar', icon: CalendarClock, roles: ['admin', 'member'] },
+    { id: 'analytics', label: 'Reports & Revenue', icon: BarChart3, roles: ['admin', 'member'] },
+    { id: 'retention', label: 'Retention Intelligence', icon: Sparkles, roles: ['admin', 'member'] },
+    { id: 'dbms', label: 'DBMS Studio', icon: Database, roles: ['admin', 'member'], badge: 'Live SQL' },
+    { id: 'dbms_docs', label: 'DBMS Report & Docs', icon: BookOpen, roles: ['admin', 'member'], badge: 'MNNIT' },
+    { id: 'notifications', label: 'Notifications', icon: Bell, roles: ['admin', 'member'], count: unreadCount },
+    { id: 'settings', label: 'Settings', icon: Settings, roles: ['admin', 'member'] },
   ];
 
   const filteredNav = navItems.filter((item) => item.roles.includes(role));
@@ -116,26 +117,28 @@ export const AppShell: React.FC<AppShellProps> = ({
           </button>
         </div>
 
-        {/* Persona Pill */}
-        <div className="px-4 py-3 border-b border-white/[0.06] bg-black/20">
-          <div className="text-[10px] uppercase font-mono text-[#94A3B8] mb-1">Active Role</div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#8DFFCB]" />
-              <span className="text-xs font-semibold capitalize text-[#F1F5F0]">{role}</span>
-            </div>
-            <select
-              value={role}
-              onChange={(e) => switchPersona(e.target.value as UserRole)}
-              className="text-[11px] font-mono bg-white/[0.05] text-[#8DFFCB] border border-white/[0.1] rounded-lg px-2 py-0.5 focus:outline-none"
-            >
-              <option value="admin" className="bg-[#0D1919]">Admin</option>
-              <option value="operator" className="bg-[#0D1919]">Operator</option>
-              <option value="member" className="bg-[#0D1919]">Member</option>
-            </select>
+        {/* User Account Card */}
+        <div className="px-4 py-3.5 border-b border-white/[0.06] bg-black/20">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] uppercase font-mono text-[#94A3B8]">Active Account</span>
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full capitalize font-semibold ${
+              role === 'admin' 
+                ? 'bg-[#8DFFCB]/15 text-[#8DFFCB] border border-[#8DFFCB]/30' 
+                : 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30'
+            }`}>
+              {role}
+            </span>
           </div>
-          <div className="text-[10px] text-[#94A3B8] truncate mt-1">
-            {currentUser?.email || 'authenticated'}
+          <div className="flex items-center gap-2">
+            <ShieldCheck className={`w-4 h-4 shrink-0 ${role === 'admin' ? 'text-[#8DFFCB]' : 'text-cyan-300'}`} />
+            <div className="min-w-0">
+              <div className="text-xs font-semibold text-[#F1F5F0] truncate">
+                {currentUser?.full_name || (role === 'admin' ? 'Alex Vance' : 'User')}
+              </div>
+              <div className="text-[10px] text-[#94A3B8] truncate">
+                {currentUser?.email || 'admin@nexus.io'}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -178,28 +181,38 @@ export const AppShell: React.FC<AppShellProps> = ({
 
         {/* Footer Actions */}
         <div className="p-3 border-t border-white/[0.06] space-y-1.5 text-xs">
-          <div className="grid grid-cols-2 gap-1.5 mb-1">
+          {isCustomUser ? (
             <button
-              onClick={() => {
-                setAuthMode('login');
-                setAuthModalOpen(true);
-              }}
-              className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#94A3B8] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all text-[11px]"
+              onClick={() => signOut()}
+              className="w-full flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/20 transition-all text-[11px] font-mono mb-1"
             >
-              <LogIn className="w-3 h-3" />
-              <span>Login</span>
+              <LogOut className="w-3 h-3" />
+              <span>Sign Out ({currentUser?.full_name?.split(' ')[0]})</span>
             </button>
-            <button
-              onClick={() => {
-                setAuthMode('signup');
-                setAuthModalOpen(true);
-              }}
-              className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 text-[#8DFFCB] hover:bg-[#8DFFCB]/20 transition-all text-[11px] font-semibold"
-            >
-              <UserPlus className="w-3 h-3" />
-              <span>Sign Up</span>
-            </button>
-          </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-1.5 mb-1">
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#94A3B8] hover:text-[#8DFFCB] hover:border-[#8DFFCB]/40 transition-all text-[11px]"
+              >
+                <LogIn className="w-3 h-3" />
+                <span>Login</span>
+              </button>
+              <button
+                onClick={() => {
+                  setAuthMode('signup');
+                  setAuthModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 text-[#8DFFCB] hover:bg-[#8DFFCB]/20 transition-all text-[11px] font-semibold"
+              >
+                <UserPlus className="w-3 h-3" />
+                <span>Sign Up</span>
+              </button>
+            </div>
+          )}
 
           <button
             onClick={() => onNavigate('landing')}

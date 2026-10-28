@@ -13,27 +13,13 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
 }
 
-const DEMO_PERSONAS: Record<UserRole, Partial<Profile>> = {
+const DEMO_PERSONAS: Record<'admin', Partial<Profile>> = {
   admin: {
     id: 'a0000000-0000-0000-0000-000000000001',
     full_name: 'Alex Vance (Admin)',
     email: 'admin@nexus.io',
     role: 'admin',
     timezone: 'Asia/Kolkata',
-  },
-  operator: {
-    id: 'a0000000-0000-0000-0000-000000000002',
-    full_name: 'Elena Rostova (Operator)',
-    email: 'operator@nexus.io',
-    role: 'operator',
-    timezone: 'Asia/Kolkata',
-  },
-  member: {
-    id: 'b0000000-0000-0000-0000-000000000001',
-    full_name: 'Marcus Chen',
-    email: 'marcus.chen@example.com',
-    role: 'member',
-    timezone: 'UTC',
   },
 };
 
@@ -46,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadUser = async () => {
     setIsLoading(true);
     try {
-      // Check if custom member is saved
+      // Check if custom user is saved
       const savedCustomUser = localStorage.getItem('nexus_custom_user');
       if (savedCustomUser) {
         try {
@@ -61,9 +47,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
 
-      // Check saved demo persona in localStorage
-      const savedPersona = localStorage.getItem('nexus_persona') as UserRole || 'admin';
-      const persona = DEMO_PERSONAS[savedPersona] || DEMO_PERSONAS.admin;
+      // Default to Administrator profile
+      const persona = DEMO_PERSONAS.admin;
       
       // Query profile from database
       const { data, error } = await supabase
@@ -80,15 +65,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: persona.id!,
           full_name: persona.full_name!,
           email: persona.email!,
-          role: persona.role as UserRole,
-          timezone: persona.timezone || 'UTC',
+          role: 'admin',
+          timezone: persona.timezone || 'Asia/Kolkata',
           notification_preferences: { email: true, in_app: true },
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
       }
     } catch (err) {
-      console.warn('Could not load profile from database, using cached persona:', err);
+      console.warn('Could not load profile from database, using admin profile:', err);
       setCurrentUser(DEMO_PERSONAS.admin as Profile);
     } finally {
       setIsLoading(false);
@@ -103,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       localStorage.setItem('nexus_persona', role);
-      const targetEmail = customEmail || DEMO_PERSONAS[role]?.email;
+      const targetEmail = customEmail || DEMO_PERSONAS.admin.email;
       
       const { data, error } = await supabase
         .from('profiles')
@@ -114,11 +99,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data && !error) {
         setCurrentUser(data);
       } else {
-        const fallback = DEMO_PERSONAS[role] || DEMO_PERSONAS.member;
         setCurrentUser({
-          id: fallback.id!,
-          full_name: fallback.full_name!,
-          email: fallback.email!,
+          id: DEMO_PERSONAS.admin.id!,
+          full_name: DEMO_PERSONAS.admin.full_name!,
+          email: DEMO_PERSONAS.admin.email!,
           role,
           timezone: 'Asia/Kolkata',
           notification_preferences: { email: true, in_app: true },
@@ -176,13 +160,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const cleanEmail = email.toLowerCase().trim();
 
-      // Check if matches demo persona
-      const matchedDemoRole = (Object.keys(DEMO_PERSONAS) as UserRole[]).find(
-        (r) => DEMO_PERSONAS[r].email?.toLowerCase() === cleanEmail
-      );
-
-      if (matchedDemoRole) {
-        await switchPersona(matchedDemoRole);
+      // Check if matches admin email
+      if (cleanEmail === DEMO_PERSONAS.admin.email?.toLowerCase()) {
+        await switchPersona('admin');
         return { success: true };
       }
 
@@ -214,7 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         full_name: cleanEmail.split('@')[0],
         email: cleanEmail,
         role: 'member',
-        timezone: 'UTC',
+        timezone: 'Asia/Kolkata',
         notification_preferences: { email: true, in_app: true },
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -231,7 +211,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = () => {
     localStorage.removeItem('nexus_custom_user');
-    switchPersona('member');
+    localStorage.removeItem('nexus_persona');
+    setCurrentUser(DEMO_PERSONAS.admin as Profile);
   };
 
   const refreshUser = async () => {

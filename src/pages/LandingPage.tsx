@@ -277,7 +277,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8">
           {/* Card 1: /001 */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
@@ -567,7 +567,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8">
           {plans.map((plan, idx) => {
             const price = billingCycle === 'yearly' && plan.price_yearly
               ? plan.price_yearly
