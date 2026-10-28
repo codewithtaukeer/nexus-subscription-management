@@ -36,7 +36,7 @@
 9. [Front-End Design and Database Connectivity](#9-front-end-design-and-database-connectivity)
 10. [CRUD Operations, User Flow and Business Benefits](#10-crud-operations-and-user-flow)
 11. [AI/ML Implementation and Model Evaluation](#11-aiml-implementation-and-model-evaluation)
-12. [Testing, Results and Screenshots](#12-testing-results-and-screenshots)
+12. [Testing, Results and Verification](#12-testing-results-and-verification)
 13. [Conclusion and Future Scope](#13-conclusion-and-future-scope)
 14. [References and Bibliography](#14-references-and-bibliography)
 
@@ -118,6 +118,12 @@ Existing subscription software either functions merely as basic list-trackers wi
 * **NFR-02 (Data Privacy):** Zero data leakage of non-admin data to regular members enforced through RLS and route guards.
 * **NFR-03 (Query Performance):** Sub-50ms query execution on core subscription and member queries via B-Tree indexing on foreign keys.
 * **NFR-04 (Responsive UI):** Fluid glassmorphic UI responsive from 320px mobile to 2560px 4K displays.
+
+### 4.5 Public Gateway & Landing Showcase
+The public landing interface serves as the primary system entry point, introducing system capabilities, live platform metrics, and interactive aerospace CAD & database topology visualizers before authentication.
+
+![Public Landing Page](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/01_landing_page.png)
+*Figure 4.1: Public Landing Showcase featuring live platform statistics, 3-card single-row value propositions, and interactive blueprint visualizer.*
 
 ---
 
@@ -240,6 +246,12 @@ classDiagram
     profiles "1" --> "*" audit_logs : triggers
     profiles "1" --> "*" personal_subscriptions : tracks
 ```
+
+### 5.3 Live Schema Explorer & Table Inspector in DBMS Studio
+The DBMS Studio workbench provides live entity relationship inspection, schema navigation, and foreign key verification against the deployed PostgreSQL database.
+
+![DBMS Studio Workbench](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/13_dbms_studio.png)
+*Figure 5.1: Live DBMS Studio workbench showing interactive ER schema explorer, foreign key relations, and ACID transaction simulation lab.*
 
 ---
 
@@ -393,8 +405,8 @@ CREATE TABLE audit_logs (
 ```
 
 ### 7.2 Complex SQL Queries & Joins
+The application executes correlated subqueries and aggregations to monitor subscription health and financial exposure.
 
-#### Query 1: Monthly Recurring Revenue (MRR) Normalization & Risk Correlation
 ```sql
 SELECT 
     p.name AS plan_name,
@@ -410,25 +422,11 @@ GROUP BY p.name
 ORDER BY normalized_mrr DESC;
 ```
 
-#### Query 2: Correlated Subquery Identifying Chronic Overdue Dunning
-```sql
-SELECT 
-    pr.full_name,
-    pr.email,
-    s.id AS subscription_id,
-    inv.total_amount AS overdue_amount,
-    inv.due_at
-FROM profiles pr
-JOIN subscriptions s ON s.member_id = pr.id
-JOIN invoices inv ON inv.subscription_id = s.id
-WHERE inv.status = 'overdue'
-  AND inv.due_at < NOW() - INTERVAL '14 days'
-  AND EXISTS (
-      SELECT 1 FROM usage_events ue 
-      WHERE ue.member_id = pr.id 
-        AND ue.event_at > NOW() - INTERVAL '7 days'
-  );
-```
+### 7.3 Invoices & Billing Ledger Implementation
+The invoicing sub-system tracks invoice states (`open`, `paid`, `overdue`) linked directly to subscriptions and profiles.
+
+![Admin Billing Invoices](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/09_admin_billing_invoices.png)
+*Figure 7.1: Consolidated Invoices & Billing ledger displaying settled receipts, payment status, and due dates.*
 
 ---
 
@@ -453,38 +451,16 @@ JOIN profiles p ON s.member_id = p.id
 JOIN membership_plans mp ON s.plan_id = mp.id
 WHERE s.status = 'active'
   AND s.current_period_end BETWEEN NOW() AND (NOW() + INTERVAL '30 days');
-
--- View 2: Financial Revenue Ledger View
-CREATE OR REPLACE VIEW view_monthly_revenue AS
-SELECT 
-    DATE_TRUNC('month', i.paid_at) AS revenue_month,
-    i.status,
-    COUNT(i.id) AS total_invoices_paid,
-    SUM(i.total_amount) AS total_revenue,
-    AVG(i.total_amount) AS avg_invoice_value,
-    COUNT(DISTINCT i.member_id) AS paying_members_count
-FROM invoices i
-WHERE i.status = 'paid'
-GROUP BY DATE_TRUNC('month', i.paid_at), i.status
-ORDER BY revenue_month DESC;
 ```
 
-### 8.2 B-Tree Performance Indexing
+The `view_expiring_soon` view directly powers the **Renewal Radar** module, alerting operators to approaching expiration dates.
+
+![Admin Renewal Radar](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/10_admin_renewal_radar.png)
+*Figure 8.1: Renewal Radar interface fed directly by PostgreSQL `view_expiring_soon` view.*
+
+### 8.2 Database Triggers & Audit Logging
 
 ```sql
--- Optimize foreign key joins and search operations
-CREATE INDEX idx_subscriptions_member_id ON subscriptions(member_id);
-CREATE INDEX idx_subscriptions_status_period ON subscriptions(status, current_period_end);
-CREATE INDEX idx_invoices_subscription_status ON invoices(subscription_id, status);
-CREATE INDEX idx_invoices_due_date ON invoices(due_at) WHERE status = 'open';
-CREATE INDEX idx_churn_predictions_risk ON churn_predictions(subscription_id, risk_score DESC);
-CREATE INDEX idx_usage_events_telemetry ON usage_events(member_id, event_at DESC);
-```
-
-### 8.3 Database Triggers
-
-```sql
--- Trigger Function: Automatic Immutable Audit Logging
 CREATE OR REPLACE FUNCTION process_subscription_audit()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -510,39 +486,15 @@ AFTER INSERT OR UPDATE ON subscriptions
 FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();
 ```
 
-### 8.4 Transactions & ACID Implementation
-To prevent double-billing or orphaned invoice states, payment settlement is executed inside an atomic PostgreSQL transaction block:
+### 8.3 Transactions & ACID Payment Execution
+Payment transactions execute within atomic transaction blocks to enforce consistency:
 
 ```sql
--- ACID Payment Checkout Transaction Block
 BEGIN;
-
--- 1. Lock invoice record for update to prevent concurrent race condition
-SELECT id, total_amount, status 
-FROM invoices 
-WHERE id = 'c1111111-2222-3333-4444-555555555555' 
-FOR UPDATE;
-
--- 2. Mark invoice as settled
-UPDATE invoices 
-SET status = 'paid', paid_at = NOW() 
-WHERE id = 'c1111111-2222-3333-4444-555555555555' AND status = 'open';
-
--- 3. Transition subscription state and extend period
-SAVEPOINT invoice_settled;
-
-UPDATE subscriptions 
-SET status = 'active',
-    current_period_start = NOW(),
-    current_period_end = NOW() + INTERVAL '1 month',
-    updated_at = NOW()
-WHERE id = (SELECT subscription_id FROM invoices WHERE id = 'c1111111-2222-3333-4444-555555555555');
-
--- 4. Record audit entry
-INSERT INTO audit_logs (action, entity_type, entity_id, metadata)
-VALUES ('PAYMENT_SETTLED', 'invoices', 'c1111111-2222-3333-4444-555555555555', '{"amount": 49.99}'::jsonb);
-
--- 5. Commit atomicity
+SELECT id, total_amount, status FROM invoices WHERE id = 'c1111111-2222-3333-4444-555555555555' FOR UPDATE;
+UPDATE invoices SET status = 'paid', paid_at = NOW() WHERE id = 'c1111111-2222-3333-4444-555555555555';
+UPDATE subscriptions SET status = 'active', current_period_end = NOW() + INTERVAL '1 month' WHERE id = (SELECT subscription_id FROM invoices WHERE id = 'c1111111-2222-3333-4444-555555555555');
+INSERT INTO audit_logs (action, entity_type, entity_id, metadata) VALUES ('PAYMENT_SETTLED', 'invoices', 'c1111111-2222-3333-4444-555555555555', '{"amount": 2499}'::jsonb);
 COMMIT;
 ```
 
@@ -550,8 +502,10 @@ COMMIT;
 
 ## **9. Front-End Design and Database Connectivity**
 
-### 9.1 Architecture & Tech Stack
-The client-side application is engineered using **React 18.3**, **TypeScript**, and **Vite**, communicating with Supabase PostgreSQL over PostgREST and WebSockets:
+### 9.1 Architecture & Role-Based Access Control (RBAC)
+The front-end strictly partitions interfaces between `admin` and `member` roles:
+* **Admin Role:** Governs platform MRR, member accounts, renewals, and retention intelligence.
+* **Member Role:** Strictly restricted to personal assets: My Subscriptions Hub, My Portal, Plans & Pricing, and personal notifications.
 
 ```mermaid
 flowchart TD
@@ -577,53 +531,69 @@ flowchart TD
     PgDB -->|Invoke Trigger| Trig
 ```
 
-### 9.2 Strict Role-Based Access Control (RBAC)
-* **Admin Role (`admin`):** Granted access to the Executive Overview, Members Directory, All Platform Subscriptions, Billing & Invoices, Renewal Radar, Reports & Revenue, and Retention Intelligence.
-* **Member Role (`member`):** Strictly restricted to personal assets: My Subscriptions Hub, My Portal, Plans & Pricing, DBMS Studio, and personalized Notifications. Non-admin users are physically blocked from viewing company MRR, other users' accounts, or system churn statistics.
+### 9.2 Admin Executive Overview
+The corporate dashboard provides live PostgreSQL metrics, normalized MRR, active plan distribution, and immutable database audit logs.
+
+![Admin Executive Overview](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/06_admin_executive_dashboard.png)
+*Figure 9.1: Admin Executive Overview displaying live MRR, active subscriber counts, and real-time audit logs.*
+
+### 9.3 Admin Members Directory
+The member directory provides role-segregated user management with profile inspection and subscription linkages.
+
+![Admin Members Directory](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/07_admin_members_directory.png)
+*Figure 9.2: Admin Members Directory table with role filters and subscription status badges.*
+
+### 9.4 Member Overview Hub
+The personalized Member Overview presents individual tracked subscriptions, monthly spend distribution, and active membership tier.
+
+![Member Overview Hub](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/02_member_dashboard.png)
+*Figure 9.3: Personalized Member Hub displaying personal subscriptions, monthly spend, and quick shortcuts.*
 
 ---
 
 ## **10. CRUD Operations, User Flow and Business Benefits**
 
-### 10.1 System Flow & User Journeys
+### 10.1 Central Hub – Personal Subscription Tracking
+The Central Hub provides consumers with multi-category recurring liability management, frequency normalization, and a Smart Redundancy Radar that highlights duplicate services across entertainment, cloud, and productivity tools.
 
-#### 1. Member Lifecycle Flow:
-1. **Onboarding & Plan Selection:** User selects `Free Plan` or upgrades to `Nexus Pro (Paid)`.
-2. **Central Hub Tracking:** Member tracks external subscriptions (Netflix, Spotify, GitHub, AWS), logging price, frequency, and renewal dates.
-3. **Smart Redundancy Radar:** The client-side financial optimizer detects duplicate subscriptions (e.g., overlapping entertainment or cloud tools) and computes annualized expenditure.
-4. **CSV Ledger Export:** Instant download of personal subscription records with status and payment methods.
-5. **Invoice Settlement:** Member settles invoices via simulated payment gateway with automated status transition.
+![My Subscriptions Hub](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/03_my_subscriptions_hub.png)
+*Figure 10.1: Central Hub for personal subscriptions featuring financial redundancy radar and CSV ledger export.*
 
-#### 2. Administrator Governance Flow:
-1. **Executive Monitoring:** Admin tracks live MRR, active subscriber counts, overdue invoice volume, and audit logs.
-2. **State Machine Oversight:** Admin can pause, reactivate, or cancel subscriptions across the system with automated event logging.
-3. **Retention Intelligence Execution:** Admin triggers batch ML inference to identify at-risk members and inspect primary retention risk factors.
+### 10.2 Member Self-Service Portal
+Subscribers manage their platform membership lifecycle, renewal dates, and instant invoice settlement via simulated payment gateway.
+
+![Member Portal](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/04_member_portal.png)
+*Figure 10.2: Member Portal displaying active subscription details, renewal dates, and settled invoices.*
+
+### 10.3 Plans & Pricing Matrix with Demo Card Checkout
+Subscribers choose between the Free Plan and Nexus Pro. Non-admin users are provided with an instant Demo Card ACID Checkout modal to unlock premium entitlements without physical card charges.
+
+![Plans & Pricing](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/05_plans_pricing.png)
+*Figure 10.3: Plans & Pricing comparison matrix with Demo Card upgrade option for members.*
+
+### 10.4 Admin All Subscriptions Management
+System-wide subscription status control allows administrators to transition subscription states (active, paused, past_due, cancelled) with automatic trigger logging.
+
+![Admin Subscriptions](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/08_admin_all_subscriptions.png)
+*Figure 10.4: System-wide subscription lifecycle control panel with status transition triggers.*
 
 ---
 
 ## **11. AI/ML Implementation and Model Evaluation**
 
-### 11.1 Problem Formulation & Feature Engineering
-Customer churn prediction is formulated as a binary classification task: predicting whether an active subscriber will churn ($Y = 1$) or retain ($Y = 0$) within the subsequent 30-day window.
+### 11.1 Problem Formulation & Feature Extraction
+Churn prediction is formulated as binary classification: $Y \in \{0, 1\}$. The feature pipeline constructs a 7-dimensional normalized feature vector $X \in \mathbb{R}^7$:
+1. $x_1$ (**Tenure**): $\min\left(1.0, \frac{\text{Tenure Days}}{365}\right)$
+2. $x_2$ (**Renewal Proximity**): $1.0 - \min\left(1.0, \frac{\text{Days Remaining}}{30}\right)$
+3. $x_3$ (**Invoice Failure Velocity**): $\frac{N_{\text{failed}}}{N_{\text{total\_invoices}} + 1}$
+4. $x_4$ (**Engagement Decay**): $\exp\left(-\frac{\text{Events}_{30d}}{15}\right)$
+5. $x_5$ (**Plan Weight**): $0.0$ for Free, $1.0$ for Pro
+6. $x_6$ (**Chronic Overdue Flag**): $1.0$ if overdue, else $0.0$
+7. $x_7$ (**Payment Recency**): Normalized elapsed time since last successful payment
 
-The feature extraction pipeline constructs a 7-dimensional normalized feature vector $X \in \mathbb{R}^7$:
-1. $x_1$ (**Tenure Months**): Normalized tenure duration: $x_1 = \min\left(1.0, \frac{\text{Tenure Days}}{365}\right)$.
-2. $x_2$ (**Renewal Proximity**): Days remaining in period: $x_2 = 1.0 - \min\left(1.0, \frac{\text{Days Remaining}}{30}\right)$.
-3. $x_3$ (**Invoice Failure Velocity**): Historical failed invoice ratio: $x_3 = \frac{N_{\text{failed}}}{N_{\text{total\_invoices}} + 1}$.
-4. $x_4$ (**Engagement Decay**): Inactive usage drop-off calculated from telemetry events: $x_4 = \exp\left(-\frac{\text{Events}_{30d}}{15}\right)$.
-5. $x_5$ (**Plan Weight**): Binary tier indicator ($0.0$ for Free, $1.0$ for Nexus Pro).
-6. $x_6$ (**Chronic Overdue Flag**): Presence of overdue invoices ($1.0$ if overdue, else $0.0$).
-7. $x_7$ (**Payment Recency**): Normalized elapsed time since last successful payment.
+### 11.2 Calibrated Ensemble Architecture
+$$\hat{P}_{\text{churn}}(X) = 0.6 \cdot P_{\text{RF-calibrated}}(X) + 0.4 \cdot P_{\text{logistic}}(X)$$
 
-### 11.2 Model Architecture & Calibrated Ensemble
-The production model utilizes a calibrated hybrid ensemble combining:
-1. **Logistic Regression Baseline:** Linear decision boundary providing robust probabilistic scaling:
-   $$P_{\text{logistic}}(Y=1|X) = \sigma(\beta^T X) = \frac{1}{1 + e^{-(\beta_0 + \sum_{i=1}^7 \beta_i x_i)}}$$
-2. **Random Forest Classifier:** Non-linear decision trees capturing multi-factor interactions (e.g., high tenure combined with sudden drop in event logging).
-3. **Isotonic Calibration:** Probability alignment mapping raw tree votes into well-calibrated posterior probabilities:
-   $$\hat{P}_{\text{churn}}(X) = 0.6 \cdot P_{\text{RF-calibrated}}(X) + 0.4 \cdot P_{\text{logistic}}(X)$$
-
-### 11.3 Inference Flow Sequence
 ```mermaid
 sequenceDiagram
     participant Admin as Admin / Cron Trigger
@@ -646,112 +616,37 @@ sequenceDiagram
     ML-->>UI: Live Refresh of Risk Queue Sorted by Risk Score DESC
 ```
 
-### 11.4 Evaluation Metrics
-* **Dataset Size:** 1,250 historical subscription lifecycle windows.
-* **Accuracy:** $88.4\%$
-* **Precision:** $85.2\%$
-* **Recall (Sensitivity):** $91.7\%$
-* **F1-Score:** $88.3\%$
-* **Area Under ROC Curve (ROC-AUC):** $\mathbf{0.892}$
+### 11.3 Retention Intelligence Dashboard
+The retention queue highlights accounts at risk with primary attribution factors (e.g., past due invoices, inactive telemetry drop-off).
+
+![Admin Retention Intelligence](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/12_admin_retention_intelligence.png)
+*Figure 11.1: Retention Intelligence module showing model performance metrics (AUC = 0.9124) and prioritized risk queue.*
+
+### 11.4 Revenue & Analytics Reporting
+Normalized MRR trends, monthly revenue aggregations, and paying subscriber distributions are rendered through relational analytics.
+
+![Admin Reports & Revenue](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/11_admin_analytics_revenue.png)
+*Figure 11.2: Revenue analytics and subscriber growth trends.*
 
 ---
 
-## **12. Testing, Results and Screenshots**
+## **12. Testing, Results and Verification**
 
 ### 12.1 Test Verification Matrix
 | Test Case ID | Module Under Test | Input Condition | Expected Behavior | Actual Result | Status |
 |---|---|---|---|---|---|
-| **TC-01** | RBAC Isolation | Member logs in as `Taukeer Akbar` | Member Directory, System MRR, and Churn tabs hidden | Hidden from navigation and URL-guarded | **PASS** |
+| **TC-01** | RBAC Isolation | Member logs in as regular user | Member Directory, System MRR, and Churn tabs hidden | Hidden from navigation and URL-guarded | **PASS** |
 | **TC-02** | RLS Security | Member executes direct SQL fetch on all profiles | Returns only member's own profile row | Other profiles filtered by RLS | **PASS** |
-| **TC-03** | ACID Payment | User clicks "Pay Invoice" for overdue bill | Invoice marked `paid`, subscription `active`, audit logged | Atomic commit; no partial updates | **PASS** |
+| **TC-03** | ACID Payment | User clicks "Authorize Payment" for invoice | Invoice marked `paid`, subscription `active`, audit logged | Atomic commit; no partial updates | **PASS** |
 | **TC-04** | Deduplication | Admin runs ML batch inference twice | `churn_predictions` contains 1 unique row per subscription | Old scores purged prior to insertion | **PASS** |
 | **TC-05** | CSV Export | User clicks "Export CSV" on Central Hub | Generates valid RFC-4180 CSV file with active services | Download successful with correct headers | **PASS** |
+| **TC-06** | Demo Card Checkout | Free member upgrades via Demo Card | Subscriptions table updated to Nexus Pro, invoice settled | Instant access unlocked without page reload | **PASS** |
 
----
+### 12.2 In-App Academic Documentation & Curriculum Viewer
+NEXUS incorporates an in-app project report and academic documentation viewer conforming to the MNNIT Allahabad Department of CSE curriculum.
 
-### 12.2 Production Application Screenshots
-
-#### 1. Public Landing Page
-*Glassmorphic hero showcase with system metrics and feature value propositions.*
-![Public Landing Page](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/01_landing_page.png)
-
----
-
-#### 2. Member Overview Hub
-*Personalized member dashboard displaying personal subscriptions, monthly spend, Nexus Pro status, and quick shortcuts.*
-![Member Overview Hub](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/02_member_dashboard.png)
-
----
-
-#### 3. Central Hub – My Subscriptions & Financial Optimizer
-*Full personal subscription management ledger with category tags, renewal counters, CSV export, and Smart Redundancy Radar.*
-![My Subscriptions Hub](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/03_my_subscriptions_hub.png)
-
----
-
-#### 4. Member Portal & Billing
-*Direct subscription lifecycle control, renewal details, and instant invoice settlement.*
-![Member Portal](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/04_member_portal.png)
-
----
-
-#### 5. Plans & Pricing Matrix
-*Comparison between the Free Plan ($0) and Nexus Pro ($49.99/month).*
-![Plans & Pricing](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/05_plans_pricing.png)
-
----
-
-#### 6. Admin Executive Overview
-*Corporate dashboard with live PostgreSQL metrics, normalized MRR, active plan distribution, and immutable database audit logs.*
-![Admin Executive Overview](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/06_admin_executive_dashboard.png)
-
----
-
-#### 7. Admin Members Directory
-*Role-segregated member directory with account inspection and subscription linkage.*
-![Admin Members Directory](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/07_admin_members_directory.png)
-
----
-
-#### 8. Admin All Subscriptions
-*System-wide subscription status control (active, paused, past-due, cancelled) with automated trigger recording.*
-![Admin Subscriptions](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/08_admin_all_subscriptions.png)
-
----
-
-#### 9. Admin Invoices & Billing Ledger
-*Consolidated invoice status tracking with paid receipts and overdue alerts.*
-![Admin Billing Invoices](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/09_admin_billing_invoices.png)
-
----
-
-#### 10. Admin Renewal Radar
-*Visual 30-day renewal horizon powered by the `view_expiring_soon` relational view.*
-![Admin Renewal Radar](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/10_admin_renewal_radar.png)
-
----
-
-#### 11. Admin Reports & Revenue Analytics
-*Normalized MRR trends, monthly revenue aggregation, and paying subscriber volumes.*
-![Admin Reports & Revenue](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/11_admin_analytics_revenue.png)
-
----
-
-#### 12. Admin Retention Intelligence & ML Churn Engine
-*Predictive retention intelligence queue displaying calibrated churn probabilities, risk levels, and top attribution factors.*
-![Admin Retention Intelligence](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/12_admin_retention_intelligence.png)
-
----
-
-#### 13. DBMS Studio Workbench
-*Interactive database engineering laboratory: Live SQL Studio, ER Canvas, Normalization Engine, Relational Algebra, and ACID Transaction Simulator.*
-![DBMS Studio](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/13_dbms_studio.png)
-
----
-
-#### 14. DBMS Documentation & Project Viewer
-*In-app academic project report and curriculum specification viewer.*
 ![DBMS Documentation](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/14_dbms_documentation.png)
+*Figure 12.1: Integrated in-app DBMS Report & Project Curriculum Documentation Viewer.*
 
 ---
 
