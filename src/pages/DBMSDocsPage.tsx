@@ -163,9 +163,8 @@ export const DBMSDocsPage: React.FC = () => {
             </p>
 
             <div className="py-6 flex justify-center">
-              <div className="w-24 h-24 rounded-full border-2 border-[#8DFFCB]/40 bg-[#071112] flex flex-col items-center justify-center p-2 shadow-[0_0_25px_rgba(141,255,203,0.2)]">
-                <img src="/nexus-logo.png" alt="NEXUS Seal" className="w-12 h-12 object-contain" />
-                <span className="text-[9px] font-mono font-bold text-[#8DFFCB] mt-1">MNNIT CSE</span>
+              <div className="w-24 h-24 rounded-full border-2 border-[#8DFFCB]/40 bg-white flex flex-col items-center justify-center p-2 shadow-[0_0_25px_rgba(141,255,203,0.2)]">
+                <img src="/mnnit_logo.png" alt="MNNIT Logo" className="w-16 h-16 object-contain" />
               </div>
             </div>
 
@@ -173,24 +172,24 @@ export const DBMSDocsPage: React.FC = () => {
               A PROJECT REPORT ON
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#F1F5F0] tracking-tight">
-              NEXUS: Enterprise Subscription Management & Churn Intelligence Engine
+              NEXUS: Subscription Management &amp; DBMS Lab Platform
             </h2>
 
             <div className="pt-2 text-xs font-mono text-[#8E9F9B]">
               PROJECT Number
             </div>
             <div className="text-xl font-mono font-bold text-[#8DFFCB]">
-              Topic 34
+              Topic 34 (CS-DBMS-2026-34)
             </div>
 
             <div className="pt-4 text-xs font-mono text-[#8E9F9B]">
               Submitted By:
             </div>
-            <div className="space-y-1 text-xs font-mono text-[#F1F5F0]">
-              <div className="font-semibold">Student 1 (Reg. No: 20234001)</div>
-              <div className="font-semibold">Student 2 (Reg. No: 20234002)</div>
-              <div className="font-semibold">Student 3 (Reg. No: 20234003)</div>
-              <div className="font-semibold">Student 4 (Reg. No: 20234004)</div>
+            <div className="space-y-1.5 text-xs font-mono text-[#F1F5F0]">
+              <div className="font-semibold"><span className="text-[#8DFFCB]">Taukeer Akbar</span> (Reg. No: 20243294)</div>
+              <div className="font-semibold"><span className="text-[#8DFFCB]">Siddhi Agarwal</span> (Reg. No: 20243276)</div>
+              <div className="font-semibold"><span className="text-[#8DFFCB]">Saksham Varshney</span> (Reg. No: 20243250)</div>
+              <div className="font-semibold"><span className="text-[#8DFFCB]">Suraj Kumar Gupta</span> (Reg. No: 20243285)</div>
             </div>
 
             <div className="pt-6 text-xs text-[#8E9F9B] space-y-1 font-mono">

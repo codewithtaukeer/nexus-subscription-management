@@ -5,15 +5,15 @@
 ---
 
 # A PROJECT REPORT ON
-## **NEXUS: Autonomous Subscription Intelligence & Relational Lifecycle Management System**
+## **NEXUS: Subscription Management & DBMS Lab Platform**
 
 ### **PROJECT NUMBER: CS-DBMS-2026-34**
 
 **Submitted By:**
-* Student 1: **Taukeer Akbar** (Reg. No: 20234001)
-* Student 2: **Sarah Jenkins** (Reg. No: 20234002)
-* Student 3: **Marcus Chen** (Reg. No: 20234003)
-* Student 4: **Alex Vance** (Reg. No: 20234004)
+* Student 1: **Taukeer Akbar** (Reg. No: 20243294)
+* Student 2: **Siddhi Agarwal** (Reg. No: 20243276)
+* Student 3: **Saksham Varshney** (Reg. No: 20243250)
+* Student 4: **Suraj Kumar Gupta** (Reg. No: 20243285)
 
 **Submitted as DBMS Project Work**  
 **Bachelor of Technology (B. Tech.)**  

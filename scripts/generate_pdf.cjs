@@ -13,6 +13,11 @@ const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
 
 console.log('--- Generating Publication-Grade Academic DBMS Report ---');
 
+// Load MNNIT Logo
+const mnnitLogoPath = path.join(ROOT_DIR, 'public', 'mnnit_logo.png');
+const mnnitLogoB64 = fs.existsSync(mnnitLogoPath) ? fs.readFileSync(mnnitLogoPath).toString('base64') : '';
+console.log('MNNIT Logo loaded:', mnnitLogoB64.length > 0 ? `${mnnitLogoB64.length} base64 chars` : 'MISSING');
+
 // Helper to get base64 screenshot
 function getScreenshotB64(filename) {
   const filePath = path.join(SCREENSHOTS_DIR, filename);
@@ -485,120 +490,151 @@ const reportHtml = `<!DOCTYPE html>
       height: auto !important;
     }
 
-    /* Cover Page */
+    /* Cover Page matching Official MNNIT Template */
     .cover-page {
-      border: 3px double #0F766E;
-      padding: 30px 24px;
+      border: 2px solid #000000;
+      padding: 38px 28px 30px 28px;
       text-align: center;
-      background: #FCFDFC;
+      background: #FFFFFF;
       page-break-after: always;
-      margin-bottom: 30px;
-      min-height: 92vh;
+      min-height: 94vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-sizing: border-box;
+      font-family: 'Times New Roman', Times, 'Liberation Serif', serif;
     }
 
-    .cover-institution h1 {
-      font-size: 15pt;
-      font-weight: 800;
-      color: #064E3B;
+    .cover-inst-title {
+      font-size: 14.5pt;
+      font-weight: bold;
+      color: #000000;
       margin: 0;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .cover-institution h3 {
-      font-size: 10pt;
-      color: #0F766E;
-      margin: 4px 0 0 0;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .cover-institution h4 {
-      font-size: 8.5pt;
-      color: #64748B;
-      margin: 2px 0 16px 0;
-      font-weight: 500;
-    }
-
-    .cover-seal {
-      width: 80px;
-      height: 80px;
-      margin: 10px auto;
-    }
-
-    .cover-badge {
-      display: inline-block;
-      background: #F0FDFA;
-      border: 1px solid #0F766E;
-      color: #0F766E;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8pt;
-      font-weight: 700;
-      padding: 3px 12px;
-      border-radius: 20px;
       letter-spacing: 0.5px;
-      margin-bottom: 12px;
+      line-height: 1.35;
     }
 
-    .cover-title-box {
-      border-top: 2.5px solid #0F766E;
-      border-bottom: 2.5px solid #0F766E;
-      padding: 18px 10px;
-      margin: 15px 0;
-      background: linear-gradient(180deg, #F0FDFA 0%, #FFFFFF 100%);
+    .cover-inst-sub {
+      font-size: 11.5pt;
+      font-weight: bold;
+      color: #000000;
+      margin: 4px 0 0 0;
+      text-transform: uppercase;
     }
 
-    .cover-title-box h2 {
-      font-size: 19pt;
-      font-weight: 800;
-      color: #042F2E;
-      margin: 0;
-      border: none;
-      letter-spacing: -0.3px;
-      line-height: 1.25;
-    }
-
-    .cover-title-box p {
-      font-size: 9.5pt;
-      color: #0F766E;
-      margin: 6px 0 0 0;
-      font-weight: 500;
+    .cover-logo-wrapper {
+      margin: 18px auto 20px auto;
       text-align: center;
     }
 
-    .cover-meta-grid {
-      display: flex;
-      justify-content: space-between;
-      text-align: left;
-      margin: 20px 10px;
-      font-size: 8.5pt;
+    .cover-logo-img {
+      width: 125px;
+      height: auto;
+      display: inline-block;
     }
 
-    .cover-meta-col h5 {
-      font-size: 9pt;
-      color: #0F766E;
-      font-weight: 700;
+    .cover-report-lead {
+      font-size: 12.5pt;
+      font-weight: bold;
+      color: #000000;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
       text-transform: uppercase;
-      margin: 0 0 6px 0;
-      border-bottom: 1px solid #CCFBF1;
-      padding-bottom: 3px;
     }
 
-    .cover-meta-col p {
-      margin: 2px 0;
-      font-size: 8.5pt;
-      color: #334155;
-      text-align: left;
+    .cover-project-title {
+      font-size: 20pt;
+      font-weight: bold;
+      color: #DC2626; /* Official red highlight from template */
+      margin: 0 0 18px 0;
+      line-height: 1.25;
     }
 
-    .cover-footer {
-      border-top: 1px solid #CBD5E1;
-      padding-top: 10px;
-      font-size: 8pt;
-      color: #64748B;
+    .cover-shaded-box {
+      background: #F1F5F9;
+      padding: 10px 18px;
+      border-radius: 4px;
+      margin: 10px auto;
+      width: 88%;
+      box-sizing: border-box;
+    }
+
+    .cover-box-label {
+      font-size: 11.5pt;
+      font-weight: bold;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+
+    .cover-box-value {
+      font-size: 13.5pt;
+      font-weight: bold;
+      color: #DC2626; /* Red as in template */
+    }
+
+    .cover-students-box {
+      background: #F1F5F9;
+      padding: 14px 20px;
+      border-radius: 4px;
+      margin: 12px auto;
+      width: 88%;
+      box-sizing: border-box;
+    }
+
+    .cover-students-label {
+      font-size: 11.5pt;
+      font-weight: bold;
+      color: #000000;
+      margin-bottom: 8px;
+    }
+
+    .cover-students-list {
+      font-size: 11pt;
+      font-weight: bold;
+      color: #DC2626; /* Red as in template */
+      line-height: 1.6;
+    }
+
+    .cover-bottom-block {
+      margin-top: 15px;
+      color: #000000;
+    }
+
+    .cover-submitted-lead {
+      font-size: 11.5pt;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .cover-degree-name {
+      font-size: 12pt;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .cover-dept-name {
+      font-size: 10.5pt;
+      margin-bottom: 14px;
+    }
+
+    .cover-inst-bottom {
+      font-size: 11.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .cover-city-bottom {
+      font-size: 9.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .cover-session-year {
+      font-size: 12.5pt;
+      font-weight: bold;
     }
 
     /* Section Page Breaks */
@@ -610,54 +646,47 @@ const reportHtml = `<!DOCTYPE html>
 <body>
 
   <!-- ========================================================================= -->
-  <!-- COVER PAGE -->
+  <!-- COVER PAGE (EXACT MNNIT TEMPLATE REPLICA) -->
   <!-- ========================================================================= -->
   <div class="cover-page">
-    <div class="cover-institution">
-      <h1>Motilal Nehru National Institute of Technology Allahabad</h1>
-      <h3>Department of Computer Science and Engineering</h3>
-      <h4>An Institute of National Importance under Ministry of Education, Govt. of India<br>Prayagraj, Uttar Pradesh — 211004</h4>
-      
-      <svg class="cover-seal" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="46" stroke="#0F766E" stroke-width="2.5" fill="#F0FDFA"/>
-        <circle cx="50" cy="50" r="40" stroke="#0F766E" stroke-width="1" stroke-dasharray="3 3"/>
-        <path d="M50 18 L53 28 L63 28 L55 34 L58 44 L50 38 L42 44 L45 34 L37 28 L47 28 Z" fill="#0F766E"/>
-        <path d="M26 65 Q50 82 74 65" stroke="#0F766E" stroke-width="2.5" fill="none"/>
-        <path d="M30 54 Q50 64 70 54" stroke="#0F766E" stroke-width="1.5" fill="none"/>
-        <circle cx="50" cy="50" r="14" stroke="#042F2E" stroke-width="1.5" fill="#FFFFFF"/>
-        <path d="M46 46 L54 46 L54 54 L46 54 Z" fill="#0F766E"/>
-      </svg>
+    <div>
+      <h1 class="cover-inst-title">MOTILAL NEHRU NATIONAL INSTITUTE OF TECHNOLOGY ALLAHABAD</h1>
+      <h3 class="cover-inst-sub">PRAYAGRAJ, INDIA – 211004</h3>
+    </div>
+
+    <div class="cover-logo-wrapper">
+      <img src="data:image/png;base64,${mnnitLogoB64}" alt="MNNIT Allahabad Logo" class="cover-logo-img" />
     </div>
 
     <div>
-      <div class="cover-badge">PROJECT NUMBER: CS-DBMS-2026-34</div>
-      <div class="cover-title-box">
-        <h2>NEXUS: Relational Subscription Intelligence & Lifecycle Management Platform</h2>
-        <p>A BCNF-Normalized Multi-Tenant Relational Database Architecture with Calibrated Machine Learning Retention Analytics</p>
-      </div>
-      <p style="text-align: center; font-size: 9pt; color: #475569; margin: 0;">
-        Submitted in Partial Fulfillment of the Requirements for the Degree of<br>
-        <strong>Bachelor of Technology (B.Tech.) in Computer Science & Engineering</strong>
-      </p>
+      <div class="cover-report-lead">A PROJECT REPORT ON</div>
+      <h2 class="cover-project-title">Nexus: Subscription Management &amp; DBMS Lab Platform</h2>
     </div>
 
-    <div class="cover-meta-grid">
-      <div class="cover-meta-col" style="width: 48%;">
-        <h5>Submitted By:</h5>
-        <p><strong>Taukeer Akbar</strong> &nbsp;|&nbsp; Reg. No: <code>20234001</code></p>
-        <p><strong>Sarah Jenkins</strong> &nbsp;|&nbsp; Reg. No: <code>20234002</code></p>
-        <p><strong>Marcus Chen</strong> &nbsp;|&nbsp; Reg. No: <code>20234003</code></p>
-        <p><strong>Alex Vance</strong> &nbsp;|&nbsp; Reg. No: <code>20234004</code></p>
-      </div>
-      <div class="cover-meta-col" style="width: 48%;">
-        <h5>Under the Supervision Of:</h5>
-        <p><strong>Faculty Supervisor</strong></p>
-        <p>Department of Computer Science and Engineering</p>
-        <p>MNNIT Allahabad</p>
-        <p style="margin-top: 6px;"><strong>Course:</strong> Database Management Systems (CS-3104)</p>
-        <p><strong>Academic Session:</strong> 2025–2026 (VI Semester)</p>
+    <div class="cover-shaded-box">
+      <div class="cover-box-label">PROJECT Number</div>
+      <div class="cover-box-value">Topic 34 (CS-DBMS-2026-34)</div>
+    </div>
+
+    <div class="cover-students-box">
+      <div class="cover-students-label">Submitted By</div>
+      <div class="cover-students-list">
+        <div>Taukeer Akbar (Reg. No: 20243294)</div>
+        <div>Siddhi Agarwal (Reg. No: 20243276)</div>
+        <div>Saksham Varshney (Reg. No: 20243250)</div>
+        <div>Suraj Kumar Gupta (Reg. No: 20243285)</div>
       </div>
     </div>
+
+    <div class="cover-bottom-block">
+      <div class="cover-submitted-lead">Submitted as DBMS Project Work</div>
+      <div class="cover-degree-name">Bachelor of Technology (B. Tech.)</div>
+      <div class="cover-dept-name">Department of Computer Science and Engineering</div>
+      <div class="cover-inst-bottom">MOTILAL NEHRU NATIONAL INSTITUTE OF TECHNOLOGY ALLAHABAD</div>
+      <div class="cover-city-bottom">PRAYAGRAJ, UTTAR PRADESH – 211004</div>
+      <div class="cover-session-year">2026–2027</div>
+    </div>
+  </div>
 
     <div class="cover-footer">
       Motilal Nehru National Institute of Technology Allahabad • Prayagraj, UP — 211004 • October 2026
