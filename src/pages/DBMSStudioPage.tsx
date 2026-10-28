@@ -24,8 +24,13 @@ import { SQLStudioWorkbench } from '../components/dbms/SQLStudioWorkbench';
 import { TransactionACIDLabWorkbench } from '../components/dbms/TransactionACIDLabWorkbench';
 import { RelationalAlgebraWorkbench } from '../components/dbms/RelationalAlgebraWorkbench';
 import { NormalizationCalculator } from '../components/dbms/NormalizationCalculator';
+import { useAuth } from '../context/AuthContext';
+import { DemoCheckoutModal } from '../components/common/DemoCheckoutModal';
+import { Lock, CreditCard, ArrowRight } from 'lucide-react';
 
 export const DBMSStudioPage: React.FC = () => {
+  const { role, isPremium } = useAuth();
+  const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>('demo-workspace');
   const [activeWorkspace, setActiveWorkspace] = useState<DatabaseWorkspace>(workspaceService.getActiveWorkspace());
   const [workspaceModalOpen, setWorkspaceModalOpen] = useState(false);
@@ -54,6 +59,95 @@ export const DBMSStudioPage: React.FC = () => {
     }
     setActiveTab('sql_studio');
   };
+
+  if (role !== 'admin' && !isPremium) {
+    return (
+      <div className="py-8 px-4 max-w-4xl mx-auto space-y-8 animate-fadeIn">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#0D1919] border border-[#8DFFCB]/30 text-center space-y-6 shadow-[0_0_60px_rgba(141,255,203,0.1)] relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#8DFFCB]/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="w-20 h-20 rounded-2xl bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 mx-auto flex items-center justify-center text-[#8DFFCB] shadow-lg">
+            <Lock className="w-10 h-10 animate-pulse" />
+          </div>
+
+          <div className="space-y-3">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-[#8DFFCB] px-3.5 py-1 rounded-full bg-[#8DFFCB]/10 border border-[#8DFFCB]/25 font-bold">
+              Nexus Pro Entitlement
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#F1F5F0] tracking-tight">
+              DBMS Studio Access Restricted
+            </h1>
+            <p className="text-xs sm:text-sm text-[#8E9F9B] font-mono max-w-xl mx-auto leading-relaxed">
+              Direct access to the Live SQL Console, Interactive ER Schema Canvas, Normalization Calculator, Relational Algebra Engine, and ACID Transaction Simulator is exclusive to Nexus Pro members.
+            </p>
+          </div>
+
+          {/* Feature Teasers */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-2xl mx-auto text-left pt-2">
+            <div className="p-4 rounded-xl bg-[#071112] border border-white/[0.06] space-y-1">
+              <div className="text-xs font-mono font-bold text-[#8DFFCB] flex items-center gap-2">
+                <Code className="w-4 h-4" />
+                <span>Live SQL Console</span>
+              </div>
+              <p className="text-[11px] text-[#8E9F9B] font-mono">
+                Direct read/write query terminal against normalized PostgreSQL tables.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-[#071112] border border-white/[0.06] space-y-1">
+              <div className="text-xs font-mono font-bold text-[#8DFFCB] flex items-center gap-2">
+                <Layers className="w-4 h-4" />
+                <span>Interactive ER Diagram</span>
+              </div>
+              <p className="text-[11px] text-[#8E9F9B] font-mono">
+                Live foreign key topology, cardinality visualizer, and table inspector.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-[#071112] border border-white/[0.06] space-y-1">
+              <div className="text-xs font-mono font-bold text-[#8DFFCB] flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" />
+                <span>ACID Transaction Lab</span>
+              </div>
+              <p className="text-[11px] text-[#8E9F9B] font-mono">
+                Simulate two-phase commits, rollbacks, and concurrent isolation levels.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-[#071112] border border-white/[0.06] space-y-1">
+              <div className="text-xs font-mono font-bold text-[#8DFFCB] flex items-center gap-2">
+                <Calculator className="w-4 h-4" />
+                <span>1NF → BCNF Normalizer</span>
+              </div>
+              <p className="text-[11px] text-[#8E9F9B] font-mono">
+                Automated closure calculation and lossless join decomposition tester.
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="pt-4">
+            <button
+              onClick={() => setCheckoutModalOpen(true)}
+              className="py-3.5 px-8 rounded-xl bg-[#8DFFCB] hover:bg-[#A6FFD8] text-[#071112] font-mono font-bold text-xs uppercase tracking-wider inline-flex items-center gap-2.5 transition-all shadow-[0_0_30px_rgba(141,255,203,0.35)] hover:scale-105"
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>Unlock DBMS Studio with Demo Card</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <div className="text-[11px] font-mono text-[#8E9F9B] mt-2">
+              Instant activation • No physical credit card required
+            </div>
+          </div>
+        </div>
+
+        <DemoCheckoutModal
+          isOpen={checkoutModalOpen}
+          onClose={() => setCheckoutModalOpen(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-fadeIn pb-16">

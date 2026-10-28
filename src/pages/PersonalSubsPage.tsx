@@ -26,9 +26,11 @@ import {
   ArrowUpRight,
   Info,
   LogIn,
-  UserPlus
+  UserPlus,
+  Lock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { DemoCheckoutModal } from '../components/common/DemoCheckoutModal';
 import { 
   personalSubscriptionService, 
   computeNextBillingDate, 
@@ -46,8 +48,9 @@ import type {
 } from '../types/database';
 
 export const PersonalSubsPage: React.FC = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, role, isPremium } = useAuth();
   const userId = currentUser?.id || 'a0000000-0000-0000-0000-000000000001';
+  const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
 
   // Navigation tab
   const [activeTab, setActiveTab] = useState<'dashboard' | 'subscriptions' | 'add' | 'payments' | 'invoices'>('dashboard');
@@ -392,11 +395,17 @@ export const PersonalSubsPage: React.FC = () => {
               <span>Export CSV</span>
             </button>
             <button
-              onClick={() => setActiveTab('add')}
+              onClick={() => {
+                if (role !== 'admin' && !isPremium) {
+                  setCheckoutModalOpen(true);
+                } else {
+                  setActiveTab('add');
+                }
+              }}
               className="px-4 py-2.5 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all flex items-center gap-2"
             >
-              <Plus className="w-4 h-4" />
-              <span>Add Subscription</span>
+              {role !== 'admin' && !isPremium ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              <span>{role !== 'admin' && !isPremium ? 'Add Subscription (Pro)' : 'Add Subscription'}</span>
             </button>
           </div>
         </div>
@@ -419,7 +428,11 @@ export const PersonalSubsPage: React.FC = () => {
         {[
           { id: 'dashboard', label: 'Dashboard & Metrics', icon: TrendingUp },
           { id: 'subscriptions', label: `My Subscriptions (${subscriptions.length})`, icon: CreditCard },
-          { id: 'add', label: 'Add Subscription', icon: Plus },
+          { 
+            id: 'add', 
+            label: role !== 'admin' && !isPremium ? 'Add Subscription (Pro)' : 'Add Subscription', 
+            icon: role !== 'admin' && !isPremium ? Lock : Plus 
+          },
           { id: 'payments', label: `Payment History (${payments.length})`, icon: Clock },
           { id: 'invoices', label: `Invoices & Receipts (${documents.length})`, icon: FileText }
         ].map((tab) => {
@@ -722,10 +735,16 @@ export const PersonalSubsPage: React.FC = () => {
                 </p>
               </div>
               <button
-                onClick={() => setActiveTab('add')}
+                onClick={() => {
+                  if (role !== 'admin' && !isPremium) {
+                    setCheckoutModalOpen(true);
+                  } else {
+                    setActiveTab('add');
+                  }
+                }}
                 className="px-5 py-2.5 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] transition-colors"
               >
-                + Add Your First Subscription
+                {role !== 'admin' && !isPremium ? '🔒 Unlock & Add Subscriptions (Pro)' : '+ Add Your First Subscription'}
               </button>
             </div>
           ) : (
@@ -802,6 +821,29 @@ export const PersonalSubsPage: React.FC = () => {
 
       {/* TAB 3: ADD SUBSCRIPTION FORM */}
       {activeTab === 'add' && (
+        role !== 'admin' && !isPremium ? (
+          <div className="max-w-2xl mx-auto py-12 px-6 rounded-3xl bg-[#0D1919] border border-[#8DFFCB]/30 text-center space-y-6 shadow-2xl relative overflow-hidden animate-fadeIn my-6">
+            <div className="w-16 h-16 rounded-2xl bg-[#8DFFCB]/10 border border-[#8DFFCB]/30 mx-auto flex items-center justify-center text-[#8DFFCB]">
+              <Lock className="w-8 h-8 animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#8DFFCB] px-3 py-1 rounded-full bg-[#8DFFCB]/10 border border-[#8DFFCB]/20 font-bold">
+                Nexus Pro Entitlement
+              </span>
+              <h2 className="text-2xl font-bold text-[#F1F5F0]">Add Subscriptions Locked</h2>
+              <p className="text-xs text-[#8E9F9B] font-mono max-w-lg mx-auto leading-relaxed">
+                Your account is currently on the Free tier. Upgrade to Nexus Pro using our instant Demo Card to unlock centralized subscription tracking, smart redundancy detection, and automated renewal alerts.
+              </p>
+            </div>
+            <button
+              onClick={() => setCheckoutModalOpen(true)}
+              className="px-6 py-3.5 rounded-xl bg-[#8DFFCB] hover:bg-[#A6FFD8] text-[#071112] font-mono font-bold text-xs uppercase tracking-wider inline-flex items-center gap-2 shadow-[0_0_25px_rgba(141,255,203,0.35)] transition-all hover:scale-105"
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>Upgrade with Demo Card (Instant Unlock)</span>
+            </button>
+          </div>
+        ) : (
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Quick Connect Popular Platforms Grid */}
           <div className="p-6 rounded-2xl bg-[#0D1919] border border-[rgba(220,255,245,0.15)] shadow-xl space-y-4">
@@ -1193,6 +1235,7 @@ export const PersonalSubsPage: React.FC = () => {
           </form>
           </div>
         </div>
+        )
       )}
 
       {/* TAB 4: PAYMENT HISTORY */}
@@ -1532,6 +1575,14 @@ export const PersonalSubsPage: React.FC = () => {
           </div>
         </div>
       )}
+      {/* DEMO CARD CHECKOUT MODAL */}
+      <DemoCheckoutModal
+        isOpen={checkoutModalOpen}
+        onClose={() => setCheckoutModalOpen(false)}
+        onSuccess={() => {
+          showFeedback('🎉 Nexus Pro activated! You can now add and track unlimited subscriptions.', 'success');
+        }}
+      />
     </div>
   );
 };

@@ -37,7 +37,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   children,
   unreadCount = 0,
 }) => {
-  const { currentUser, role, switchPersona, signOut } = useAuth();
+  const { currentUser, role, isPremium, switchPersona, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
@@ -54,7 +54,13 @@ export const AppShell: React.FC<AppShellProps> = ({
     { id: 'renewals', label: 'Renewal Radar', icon: CalendarClock, roles: ['admin'] },
     { id: 'analytics', label: 'Reports & Revenue', icon: BarChart3, roles: ['admin'] },
     { id: 'retention', label: 'Retention Intelligence', icon: Sparkles, roles: ['admin'] },
-    { id: 'dbms', label: 'DBMS Studio', icon: Database, roles: ['admin', 'member'], badge: 'Live SQL' },
+    { 
+      id: 'dbms', 
+      label: 'DBMS Studio', 
+      icon: Database, 
+      roles: ['admin', 'member'], 
+      badge: role === 'admin' || isPremium ? 'Live SQL' : 'PRO Locked' 
+    },
     { id: 'dbms_docs', label: 'DBMS Report & Docs', icon: BookOpen, roles: ['admin', 'member'], badge: 'MNNIT' },
     { id: 'notifications', label: 'Notifications', icon: Bell, roles: ['admin', 'member'], count: unreadCount },
     { id: 'settings', label: 'Settings', icon: Settings, roles: ['admin', 'member'] },
