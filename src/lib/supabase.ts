@@ -164,10 +164,23 @@ export async function fetchChurnPredictions(): Promise<ChurnPrediction[]> {
         membership_plans:plan_id(name, price_monthly)
       )
     `)
-    .order('risk_score', { ascending: false });
+    .order('prediction_date', { ascending: false });
 
   if (error) throw error;
-  return data || [];
+  
+  // Deduplicate by subscription_id so each subscriber displays only their latest active risk score
+  const seenSubs = new Set<string>();
+  const uniquePredictions: ChurnPrediction[] = [];
+  for (const item of (data || [])) {
+    if (item.subscription_id && !seenSubs.has(item.subscription_id) && item.subscriptions) {
+      seenSubs.add(item.subscription_id);
+      uniquePredictions.push(item);
+    }
+  }
+
+  // Sort by risk score descending (High Risk on top)
+  uniquePredictions.sort((a, b) => Number(b.risk_score) - Number(a.risk_score));
+  return uniquePredictions;
 }
 
 export async function fetchExpiringSoon(): Promise<ExpiringSoonView[]> {

@@ -187,7 +187,8 @@ export class RetentionMLService {
       const evalResult = this.evaluateModel(features);
       results.push(evalResult);
 
-      // Persist to Supabase database table `churn_predictions`
+      // Replace prior prediction for this subscription to maintain 1 current active score per subscriber
+      await supabase.from('churn_predictions').delete().eq('subscription_id', s.id);
       await supabase.from('churn_predictions').insert({
         subscription_id: s.id,
         risk_score: evalResult.riskScore,

@@ -23,7 +23,7 @@ export const MembersPage: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'operator' | 'member'>('all');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'member'>('all');
   
   // Member Detail Modal
   const [selectedMember, setSelectedMember] = useState<Profile | null>(null);
@@ -93,7 +93,7 @@ export const MembersPage: React.FC = () => {
 
         <div className="flex items-center gap-2 text-xs font-mono">
           <span className="text-[#8E9F9B]">Role:</span>
-          {(['all', 'admin', 'operator', 'member'] as const).map((r) => (
+          {(['all', 'admin', 'member'] as const).map((r) => (
             <button
               key={r}
               onClick={() => setRoleFilter(r)}

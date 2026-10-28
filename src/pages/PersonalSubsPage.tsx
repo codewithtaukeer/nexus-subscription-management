@@ -80,6 +80,34 @@ export const PersonalSubsPage: React.FC = () => {
   // Success / Alert banner
   const [feedback, setFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  const exportToCSV = () => {
+    if (subscriptions.length === 0) {
+      showFeedback('No subscriptions to export.', 'error');
+      return;
+    }
+    const headers = ['Provider', 'Plan Name', 'Category', 'Amount', 'Currency', 'Frequency', 'Next Billing Date', 'Status', 'Payment Method'];
+    const rows = subscriptions.map((s) => [
+      `"${s.sub_providers?.name || s.custom_provider_name || 'Custom'}"`,
+      `"${s.plan_name}"`,
+      `"${s.category}"`,
+      s.amount,
+      s.currency,
+      s.billing_frequency,
+      s.next_billing_date || '',
+      s.status,
+      `"${s.payment_method_label || ''}"`
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `NEXUS_Subscriptions_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showFeedback('Subscription financial ledger exported to CSV successfully.');
+  };
+
   const showFeedback = (message: string, type: 'success' | 'error' = 'success') => {
     setFeedback({ message, type });
     setTimeout(() => setFeedback(null), 4000);
@@ -356,6 +384,14 @@ export const PersonalSubsPage: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <button
+              onClick={exportToCSV}
+              className="px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-[#F1F5F0] text-xs font-mono hover:border-[#8DFFCB]/40 hover:text-[#8DFFCB] transition-all flex items-center gap-2"
+              title="Export all subscriptions as CSV"
+            >
+              <Download className="w-4 h-4 text-[#8DFFCB]" />
+              <span>Export CSV</span>
+            </button>
+            <button
               onClick={() => setActiveTab('add')}
               className="px-4 py-2.5 rounded-xl bg-[#8DFFCB] text-[#071112] text-xs font-mono font-bold hover:bg-[#A6FFD8] hover:shadow-[0_0_20px_rgba(141,255,203,0.3)] transition-all flex items-center gap-2"
             >
@@ -473,6 +509,58 @@ export const PersonalSubsPage: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Smart Financial Intelligence & Cost-Saving Optimizer */}
+          <div className="p-5 rounded-2xl glass-panel border border-[#8DFFCB]/20 space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-[rgba(220,255,245,0.08)]">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#8DFFCB]">
+                <Sparkles className="w-4 h-4" />
+                <span>Financial Optimizer & Redundancy Radar</span>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#8DFFCB]/10 text-[#8DFFCB]">
+                Active Decision Support
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+              <div className="p-3.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] space-y-1.5">
+                <div className="text-[#8DFFCB] font-bold flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Category Redundancy Analysis</span>
+                </div>
+                <div className="text-[#8E9F9B] leading-relaxed text-[11px]">
+                  {Object.entries(metrics.byCategory).some(([_, val]) => val.count >= 2) ? (
+                    <span>
+                      Detected multiple active subscriptions in the same category (e.g.{' '}
+                      <strong className="text-[#F1F5F0]">
+                        {Object.entries(metrics.byCategory).filter(([_, val]) => val.count >= 2).map(([cat]) => cat).join(', ')}
+                      </strong>
+                      ). Review whether all services are actively utilized to prevent overlapping spend.
+                    </span>
+                  ) : (
+                    <span>No redundant categories detected. Your recurring expenses are diversified across unique categories.</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#071112] border border-[rgba(220,255,245,0.08)] space-y-1.5">
+                <div className="text-amber-300 font-bold flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>Immediate Auto-Debit Watch</span>
+                </div>
+                <div className="text-[#8E9F9B] leading-relaxed text-[11px]">
+                  {metrics.upcomingRenewals.length > 0 ? (
+                    <span>
+                      <strong className="text-amber-200">{metrics.upcomingRenewals[0].sub_providers?.name || metrics.upcomingRenewals[0].custom_provider_name}</strong> is renewing on{' '}
+                      <strong className="text-[#F1F5F0]">{metrics.upcomingRenewals[0].next_billing_date}</strong> (₹{metrics.upcomingRenewals[0].amount}). Direct cancellation link is available in details to stop charges before auto-debit triggers.
+                    </span>
+                  ) : (
+                    <span>All tracked subscriptions have safe renewal windows beyond the next 7 days.</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Breakdown Section: Category Spending & Upcoming Renewals */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

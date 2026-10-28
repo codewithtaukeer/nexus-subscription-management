@@ -768,11 +768,40 @@ class PersonalSubscriptionService {
   // 5. Invoices & Receipts Management
   public async fetchInvoiceDocuments(userId: string, subscriptionId?: string): Promise<StoredInvoiceDocument[]> {
     const key = this.getStorageKey('personal_docs', userId);
-    const docs = this.getLocalList<StoredInvoiceDocument>(key);
-    if (subscriptionId) {
-      return docs.filter((d) => d.subscription_id === subscriptionId);
+    const localDocs = this.getLocalList<StoredInvoiceDocument>(key);
+
+    try {
+      let query = supabase.from('personal_sub_invoices').select('*').eq('user_id', userId);
+      if (subscriptionId) {
+        query = query.eq('subscription_id', subscriptionId);
+      }
+      const { data, error } = await query;
+      if (!error && data && data.length > 0) {
+        const remoteDocs: StoredInvoiceDocument[] = data.map((d: any) => ({
+          id: d.id,
+          subscription_id: d.subscription_id,
+          user_id: d.user_id,
+          file_name: d.original_file_name || d.invoice_number || 'receipt.pdf',
+          file_size: Number(d.file_size_bytes) || 24000,
+          file_type: d.mime_type || 'application/pdf',
+          file_data: d.file_path || '',
+          uploaded_at: d.created_at,
+          notes: d.notes || undefined
+        }));
+        const merged = [...remoteDocs];
+        for (const ld of localDocs) {
+          if (!merged.find((m) => m.id === ld.id)) merged.push(ld);
+        }
+        return subscriptionId ? merged.filter((m) => m.subscription_id === subscriptionId) : merged;
+      }
+    } catch {
+      // fallback
     }
-    return docs;
+
+    if (subscriptionId) {
+      return localDocs.filter((d) => d.subscription_id === subscriptionId);
+    }
+    return localDocs;
   }
 
   public async storeInvoiceDocument(userId: string, doc: Omit<StoredInvoiceDocument, 'id' | 'uploaded_at'>): Promise<StoredInvoiceDocument> {
@@ -781,6 +810,26 @@ class PersonalSubscriptionService {
       id: crypto.randomUUID ? crypto.randomUUID() : 'doc-' + Date.now(),
       uploaded_at: new Date().toISOString()
     };
+
+    try {
+      await supabase.from('personal_sub_invoices').insert([{
+        id: newDoc.id,
+        subscription_id: newDoc.subscription_id,
+        user_id: userId,
+        invoice_number: 'INV-' + Date.now().toString().slice(-6),
+        amount: 0,
+        total_amount: 0,
+        original_file_name: newDoc.file_name,
+        file_size_bytes: newDoc.file_size,
+        mime_type: newDoc.file_type,
+        file_path: newDoc.file_data?.substring(0, 500) || '',
+        notes: newDoc.notes || null,
+        payment_status: 'paid'
+      }]);
+    } catch {
+      // fallback
+    }
+
     const key = this.getStorageKey('personal_docs', userId);
     const docs = this.getLocalList<StoredInvoiceDocument>(key);
     docs.unshift(newDoc);
@@ -789,6 +838,11 @@ class PersonalSubscriptionService {
   }
 
   public async deleteInvoiceDocument(userId: string, docId: string): Promise<void> {
+    try {
+      await supabase.from('personal_sub_invoices').delete().eq('id', docId);
+    } catch {
+      // fallback
+    }
     const key = this.getStorageKey('personal_docs', userId);
     const docs = this.getLocalList<StoredInvoiceDocument>(key).filter((d) => d.id !== docId);
     this.setLocalList(key, docs);
