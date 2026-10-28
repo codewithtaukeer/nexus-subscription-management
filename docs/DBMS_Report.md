@@ -144,110 +144,167 @@ The NEXUS relational database consists of eight normalized primary entities:
 11. `personal_sub_payments`: Payment records for tracked subscriptions.
 12. `usage_events`: Telemetry events tracking member platform activity.
 
-### 5.2 ER Diagram (Mermaid)
+### 5.2 Entity-Relationship (ER) Crow's Foot Diagram
+The formal relational schema for NEXUS comprises 12 normalized entities with explicit cardinalities and referential actions:
+
 ```mermaid
-classDiagram
-    class profiles {
+erDiagram
+    PROFILES ||--o{ SUBSCRIPTIONS : "holds (1:N)"
+    MEMBERSHIP_PLANS ||--o{ SUBSCRIPTIONS : "defines (1:N)"
+    MEMBERSHIP_PLANS ||--o{ PLAN_FEATURES : "specifies (1:N)"
+    SUBSCRIPTIONS ||--o{ INVOICES : "generates (1:N)"
+    INVOICES ||--o{ PAYMENT_TRANSACTIONS : "settles (1:N)"
+    SUBSCRIPTIONS ||--o{ USAGE_EVENTS : "emits (1:N)"
+    SUBSCRIPTIONS ||--|| CHURN_PREDICTIONS : "evaluated by (1:1)"
+    PROFILES ||--o{ AUDIT_LOGS : "triggers (1:N)"
+    PROFILES ||--o{ PERSONAL_SUBSCRIPTIONS : "tracks (1:N)"
+    SUB_PROVIDERS ||--o{ PERSONAL_SUBSCRIPTIONS : "provides (1:N)"
+    PERSONAL_SUBSCRIPTIONS ||--o{ PERSONAL_SUB_PAYMENTS : "logs (1:N)"
+    COUPONS ||--o{ COUPON_REDEMPTIONS : "redeems (1:N)"
+    PROFILES ||--o{ COUPON_REDEMPTIONS : "claims (1:N)"
+
+    PROFILES {
         uuid id PK
-        varchar full_name
-        varchar email UK
-        varchar role
-        jsonb notification_preferences
+        string email UK
+        string role "admin | member"
+        string full_name
         timestamp created_at
-        timestamp updated_at
     }
-    class membership_plans {
+    MEMBERSHIP_PLANS {
         uuid id PK
-        varchar name
-        varchar slug UK
+        string slug UK
+        string name
         numeric price_monthly
         numeric price_yearly
-        varchar currency
-        integer trial_days
-        varchar status
+        string status
     }
-    class plan_features {
+    PLAN_FEATURES {
         uuid id PK
         uuid plan_id FK
-        varchar feature_key
-        varchar label
-        boolean included
+        string feature_key
+        string label
         numeric limit_value
     }
-    class subscriptions {
+    SUBSCRIPTIONS {
         uuid id PK
         uuid member_id FK
         uuid plan_id FK
-        varchar status
-        varchar billing_cycle
+        string status "active | paused | cancelled"
+        string billing_cycle "monthly | yearly"
         numeric price_at_signup
-        timestamp current_period_start
         timestamp current_period_end
-        boolean auto_renew
-        boolean cancel_at_period_end
     }
-    class invoices {
+    INVOICES {
         uuid id PK
         uuid subscription_id FK
         uuid member_id FK
-        varchar invoice_number UK
-        numeric subtotal
-        numeric tax_amount
+        string invoice_number UK
         numeric total_amount
-        varchar status
-        timestamp due_at
+        string status "paid | open | void"
         timestamp paid_at
     }
-    class usage_events {
+    PAYMENT_TRANSACTIONS {
         uuid id PK
-        uuid member_id FK
-        uuid subscription_id FK
-        varchar feature_key
-        numeric quantity
-        timestamp event_at
+        uuid invoice_id FK
+        string provider_reference
+        numeric amount
+        string status "settled | failed"
     }
-    class churn_predictions {
+    CHURN_PREDICTIONS {
         uuid id PK
         uuid subscription_id FK
         float risk_score
-        varchar risk_level
+        string risk_level "low | medium | high"
         jsonb top_factors
-        varchar model_version
-        timestamp created_at
     }
-    class audit_logs {
+    AUDIT_LOGS {
         uuid id PK
         uuid actor_id FK
-        varchar action
-        varchar entity_type
-        uuid entity_id
+        string action
+        string entity_type
         jsonb metadata
         timestamp created_at
     }
-    class personal_subscriptions {
+    PERSONAL_SUBSCRIPTIONS {
         uuid id PK
         uuid user_id FK
         uuid provider_id FK
-        varchar plan_name
+        string plan_name
         numeric amount
-        varchar currency
-        varchar billing_frequency
+        string billing_frequency
         date next_billing_date
-        varchar status
-        boolean is_archived
+        string status
     }
-
-    profiles "1" --> "*" subscriptions : holds
-    membership_plans "1" --> "*" subscriptions : defines
-    membership_plans "1" --> "*" plan_features : specifies
-    subscriptions "1" --> "*" invoices : bills
-    subscriptions "1" --> "*" usage_events : records
-    subscriptions "1" --> "1" churn_predictions : evaluates
-    profiles "1" --> "*" audit_logs : triggers
-    profiles "1" --> "*" personal_subscriptions : tracks
+    SUB_PROVIDERS {
+        uuid id PK
+        string name UK
+        string category
+        string website_url
+    }
+    PERSONAL_SUB_PAYMENTS {
+        uuid id PK
+        uuid subscription_id FK
+        numeric amount
+        date payment_date
+        string receipt_url
+    }
+    COUPONS {
+        uuid id PK
+        string code UK
+        numeric discount_percent
+        date expires_at
+    }
+    COUPON_REDEMPTIONS {
+        uuid id PK
+        uuid coupon_id FK
+        uuid member_id FK
+        timestamp redeemed_at
+    }
 ```
 
-### 5.3 Live Schema Explorer & Table Inspector in DBMS Studio
+### 5.3 Enhanced ER (EER) Specialization Hierarchy
+NEXUS implements disjoint specialization ($d$) on the `profiles` entity using the role discriminator:
+
+```mermaid
+flowchart TD
+    subgraph Superclass [Superclass Entity: PROFILES]
+        P[profiles]
+        P_Attr["Attributes: id (PK), email (UK), full_name, created_at, role (Discriminator)"]
+        P --- P_Attr
+    end
+
+    Spec{"Disjoint Specialization (d)"}
+    Superclass --> Spec
+
+    subgraph SubclassAdmin [Subclass: ADMIN]
+        AdminRole[Admin Profile]
+        AdminPerms["Permissions & Workspaces:
+        - System-Wide Telemetry Access
+        - Executive MRR & Revenue Analytics
+        - Multi-Tenant Members Directory
+        - Plan Authoring & Archiving
+        - Machine Learning Retention Queue
+        - Complete Immutable Audit Logs"]
+        AdminRole --- AdminPerms
+    end
+
+    subgraph SubclassMember [Subclass: MEMBER]
+        MemberRole[Member Profile]
+        MemberPerms["Permissions & Workspaces:
+        - Strict Row-Level Security (RLS) Isolation
+        - Personal Subscriptions Ledger
+        - Normalized Monthly Burn Tracking
+        - Nexus Pro Entitlement Upgrades
+        - Holographic Demo Card Checkout
+        - Personal Invoices & Tax Document Vault"]
+        MemberRole --- MemberPerms
+    end
+
+    Spec -->|role = 'admin'| SubclassAdmin
+    Spec -->|role = 'member'| SubclassMember
+```
+
+### 5.4 Live Schema Explorer & Table Inspector in DBMS Studio
 The DBMS Studio workbench provides live entity relationship inspection, schema navigation, and foreign key verification against the deployed PostgreSQL database.
 
 ![DBMS Studio Workbench](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/13_dbms_studio.png)
@@ -487,7 +544,44 @@ FOR EACH ROW EXECUTE FUNCTION process_subscription_audit();
 ```
 
 ### 8.3 Transactions & ACID Payment Execution
-Payment transactions execute within atomic transaction blocks to enforce consistency:
+Payment transactions and subscription upgrades execute within deterministic atomic transaction blocks with row-level locks:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Member as Member / Client UI
+    participant RPC as PostgreSQL RPC (create_subscription_atomic)
+    participant Lock as Concurrency Lock (FOR UPDATE)
+    participant Sub as Subscriptions Table
+    participant Inv as Invoices Table
+    participant Log as Audit Logs Table
+
+    Member->>RPC: CALL create_subscription_atomic(plan_id, billing_cycle, payment_ref)
+    Note over RPC: BEGIN TRANSACTION (ISOLATION: READ COMMITTED)
+    
+    RPC->>Lock: SELECT * FROM profiles WHERE id = auth.uid() FOR UPDATE
+    Lock-->>RPC: Row Locked (Race Condition Blocked)
+
+    RPC->>Sub: Check for existing active subscription
+    alt Already has Active Subscription
+        Sub-->>RPC: Active subscription found
+        Note over RPC: ROLLBACK WITH EXCEPTION 'User already holds an active tier'
+        RPC-->>Member: HTTP 409 Conflict (Transaction Aborted)
+    else No Conflicting Subscription
+        Sub-->>RPC: Clear to proceed
+        RPC->>Sub: INSERT INTO subscriptions (member_id, plan_id, status='active', ...)
+        Sub-->>RPC: Subscription Created (UUID)
+
+        RPC->>Inv: INSERT INTO invoices (subscription_id, invoice_number, total_amount, status='paid')
+        Inv-->>RPC: Invoice Ledgered
+
+        RPC->>Log: INSERT INTO audit_logs (action='SUBSCRIPTION_CREATED', metadata)
+        Log-->>RPC: Audit Trail Immutable
+
+        Note over RPC: COMMIT TRANSACTION (All 3 Rows Committed Atomically)
+        RPC-->>Member: HTTP 200 OK (Subscription & Invoice Receipt Active)
+    end
+```
 
 ```sql
 BEGIN;
@@ -553,29 +647,58 @@ The personalized Member Overview presents individual tracked subscriptions, mont
 
 ## **10. CRUD Operations, User Flow and Business Benefits**
 
-### 10.1 Central Hub – Personal Subscription Tracking
+### 10.1 Subscription Lifecycle Finite State Machine
+Subscriptions follow a formal deterministic finite state machine to govern lifecycle transitions and dunning retries:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Trialing : Signup with Trial Period
+    [*] --> Active : Instant Paid Activation (Nexus Pro)
+    
+    Trialing --> Active : Trial Period Expires & Payment Settles
+    Trialing --> Cancelled : Member Voluntary Cancellation
+
+    Active --> PastDue : Scheduled Billing Attempt Fails
+    PastDue --> Active : Dunning Retry Succeeds (Card Re-charged)
+    PastDue --> Cancelled : Grace Period Exceeded (Max 3 Retries)
+
+    Active --> Paused : Member Temporarily Freezes Service
+    Paused --> Active : Member Unfreezes Service
+
+    Active --> Cancelled : Voluntary Cancellation (cancel_at_period_end)
+    Cancelled --> Expired : Current Billing Cycle Concludes
+    Expired --> [*]
+```
+
+### 10.2 Member Dashboard Hub
+The personalized Member Dashboard provides immediate visibility into active subscriptions, normalized monthly burn, upcoming renewal timelines, and quick action shortcuts.
+
+![Member Dashboard](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/02_member_dashboard.png)
+*Figure 10.1: Personalized Member Dashboard displaying monthly expenditure analytics, renewal countdowns, and quick actions.*
+
+### 10.3 Central Hub – Personal Subscription Tracking
 The Central Hub provides consumers with multi-category recurring liability management, frequency normalization, and a Smart Redundancy Radar that highlights duplicate services across entertainment, cloud, and productivity tools.
 
 ![My Subscriptions Hub](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/03_my_subscriptions_hub.png)
-*Figure 10.1: Central Hub for personal subscriptions featuring financial redundancy radar and CSV ledger export.*
+*Figure 10.2: Central Hub for personal subscriptions featuring financial redundancy radar and CSV ledger export.*
 
-### 10.2 Member Self-Service Portal
+### 10.4 Member Self-Service Portal
 Subscribers manage their platform membership lifecycle, renewal dates, and instant invoice settlement via simulated payment gateway.
 
 ![Member Portal](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/04_member_portal.png)
-*Figure 10.2: Member Portal displaying active subscription details, renewal dates, and settled invoices.*
+*Figure 10.3: Member Portal displaying active subscription details, renewal dates, and settled invoices.*
 
-### 10.3 Plans & Pricing Matrix with Demo Card Checkout
+### 10.5 Plans & Pricing Matrix with Demo Card Checkout
 Subscribers choose between the Free Plan and Nexus Pro. Non-admin users are provided with an instant Demo Card ACID Checkout modal to unlock premium entitlements without physical card charges.
 
 ![Plans & Pricing](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/05_plans_pricing.png)
-*Figure 10.3: Plans & Pricing comparison matrix with Demo Card upgrade option for members.*
+*Figure 10.4: Plans & Pricing comparison matrix with Demo Card upgrade option for members.*
 
-### 10.4 Admin All Subscriptions Management
+### 10.6 Admin All Subscriptions Management
 System-wide subscription status control allows administrators to transition subscription states (active, paused, past_due, cancelled) with automatic trigger logging.
 
 ![Admin Subscriptions](/C:/Users/husna/.gemini/antigravity/brain/f49209e4-a812-4965-aa56-af714b6489c5/screenshots/08_admin_all_subscriptions.png)
-*Figure 10.4: System-wide subscription lifecycle control panel with status transition triggers.*
+*Figure 10.5: System-wide subscription lifecycle control panel with status transition triggers.*
 
 ---
 
